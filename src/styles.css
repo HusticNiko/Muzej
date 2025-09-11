@@ -1,0 +1,754 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: #f5f1e3;
+    font-family: 'Georgia', serif;
+    color: #5a3e1b;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    font-size: 32px; /* Base font size doubled */
+  }
+  
+  .app {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* center vertically */
+    align-items: center; /* center horizontally */
+    min-height: 100vh;
+    width: 100vw;
+    padding: 2rem;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+  
+  .menu, .wheel {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 800px; /* nice limit for tablet */
+  }
+  
+  
+  .title {
+    font-size: 6rem; /* 3rem × 2 */
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+  
+  .btn {
+    border: 2px solid #c3a574;
+    background-color: #fff4dc;
+    color: #5a3e1b;
+    border-radius: 12px;
+    padding: 2rem 4rem; /* 2x bigger */
+    font-size: 3rem;    /* 1.5rem × 2 */
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .fortune-text {
+    font-size: 3.6rem;
+  }
+  
+  
+  .btn:hover {
+    background-color: #e3cba5;
+    transform: translateY(-2px);
+  }
+  
+  .spin-btn {
+    background: linear-gradient(135deg, #d4b07a, #f5e1c0);
+    position: absolute;
+    justify-self: anchor-center;
+    left: 40%;
+    bottom: 50px;
+  }
+  
+  .back-btn:hover {
+    background-color: #e3cba5;
+    transform: translateY(-2px);
+  }
+
+
+  .back-btn {
+    position: absolute;
+    justify-self: anchor-center;
+    left: 40%;
+    bottom: 50px;
+    border: 1px solid #c3a574;
+    background-color: #fff4dc;
+    color: #5a3e1b;
+    padding: 0.5rem 1.5rem;
+    border-radius: 8px;
+    font-weight: bold;
+    z-index: 10;
+  }
+
+  .back-btn-stars {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    text-align: center;
+    height: 10%;
+    width: 23%;
+    left: 40%;
+    border: 1px solid #c3a574;
+    background-color: #fff4dc;
+    color: #5a3e1b;
+    border-radius: 8px;
+    font-weight: bold;
+    z-index: 10;
+  }
+
+  .question-btn {
+    justify-content: space-evenly;
+    padding: 20px;
+    margin-right: 10px;
+    border: 1px solid #c3a574;
+    background-color: #fff4dc;
+    color: #5a3e1b;
+    border-radius: 8px;
+    font-weight: bold;
+    z-index: 10;
+  }
+
+  .wrong-answer-overlay {
+    color: red;
+    z-index: 10;
+    padding: 0;
+    font-size: small;
+    margin-top: 10px;
+    text-align: center;
+  }
+  
+  .fortune {
+    font-size: 1.5rem;
+    color: #7b4f24;
+    padding: 1rem;
+    border-top: 1px dashed #8c6018;
+    margin-top: 1rem;
+    text-align: center;
+    max-width: 80%;
+  }
+  
+  .wheel-inner {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(0deg);
+    transition: transform 10s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+  }
+  
+  .spinning .wheel-inner {
+    transform: rotate(3600deg);
+  }
+  
+  .wheel-slice {
+    width: 50%;
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #5a3e1b;
+    font-weight: bold;
+    transform: rotate(0deg);
+  }
+  .wheel-wrapper {
+    position: relative;
+    width: 840px; /* 420px × 2 */
+    height: 840px;
+    margin-bottom: 4rem;
+  }
+    .wheel-frame {
+    position: absolute;
+    width: 40%;
+    height: 50%;
+    left: 30%;
+    top: 0%;
+    object-fit: contain;
+    z-index: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+  }
+  
+  .faded {
+    opacity: 0.1;
+  }
+  
+  .wheel-image {
+    position: absolute;
+    width: 30%; /* Keep proportions inside frame */
+    height: 30%;
+    top: 20%;
+    left: 35%;
+    object-fit: contain;
+    z-index: 1;
+    transform-origin: center center;
+    pointer-events: none;
+  }
+  
+  .fortune-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #f5f1e3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 1s ease-in-out;
+    z-index: 3;
+    text-align: center;
+    padding: 1rem;
+    cursor: pointer;
+  }
+  
+  .fortune-text {
+    position: absolute;
+    top: 20%;
+    left: 10%;
+    width: 100%;
+    height: 100%;
+    font-size: 1.2rem;
+    color: #5a3e1b;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    max-width: 80%;
+    line-height: 1.4;
+  }
+  
+  .tap-to-spin {
+    font-size: 1.8rem;
+    color: #7b5b3a;
+    margin-top: 1rem;
+    font-style: italic;
+  }
+  .quiz {
+    text-align: center;
+    max-width: 100%;
+    margin: auto;
+    padding: 2rem;
+  }
+  
+  .stage-title {
+    font-size: 1.5rem;
+    color: #6b4c2c;
+    margin-bottom: 1rem;
+  }
+  
+  .question {
+    font-size: x-large;
+    margin-top: 1rem;
+    color: #4a3b2c;
+  }
+  
+  .btn {
+    margin: 0.5rem;
+    background-color: #e7d3b3;
+    border: 2px solid #b19878;
+    color: #442c1c;
+    font-size: x-large;
+  }
+
+  .options {
+    margin: 1.5rem;
+    color: #442c1c;
+    font-size: x-large;
+    padding: 10px;
+  }
+  
+  .result {
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+
+  .warning-popup {
+    position: absolute;
+    transform: translateX(-50%);
+    background-color: #fff4dc;
+    color: #5a3e1b;
+    border: 2px solid #c3a574;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    padding: 2rem 4rem;
+    font-size: 2rem;
+    animation: fadeIn 1s ease forwards;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  
+  .correct {
+    color: green;
+  }
+  
+  .wrong {
+    color: red;
+  }
+  
+  .final-stage {
+    background-color: #f5f1e3;
+    padding: 2rem;
+    border-radius: 10px;
+    animation: fadeIn 2s ease-in-out;
+  }
+  
+  .fade-animation {
+    font-style: italic;
+    color: #5a3e1b;
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  .stepper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px; /* even more spacing between steps */
+    position: relative;
+    padding-bottom: 10px;
+  }
+  
+  .step-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  
+  .step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 0px;
+    font-size: 1.6rem;
+    width: 50px; /* Was 60px originally */
+    z-index: 2;
+  }
+  
+  
+  
+  .step-symbol {
+    font-size: 4rem; /* Was 2rem originally */
+    margin-bottom: 1rem;
+  }
+  
+  
+  
+  .step-name {
+    font-size: 1.6rem; /* Was 0.8rem originally */
+    margin-top: 0.5rem;
+  }
+  
+  
+  
+  .active .step-symbol,
+  .active .step-name {
+    opacity: 1;
+    color: #5a3e1b;
+    font-weight: bold;
+  }
+  
+  .inactive .step-symbol,
+  .inactive .step-name {
+    opacity: 0.3;
+    color: #a89c91;
+  }
+  
+  /* Glow effect on current step */
+  .glow .step-symbol {
+    animation: glowAnimation 1.5s infinite alternate;
+  }
+  
+  @keyframes glowAnimation {
+    from {
+      text-shadow: 0 0 5px #f7d774, 0 0 10px #f7d774;
+    }
+    to {
+      text-shadow: 0 0 10px #f7d774, 0 0 20px #f7d774;
+    }
+  }
+  
+  /* Connector lines */
+  .connector {
+    width: 80px; /* Was 40px originally */
+    height: 6px; /* Was 4px originally */
+    background-color: #c8b188;
+    margin: 0 10px;
+    border-radius: 4px;
+    transition: background-color 0.5s;
+    z-index: 1;
+  }
+  
+  
+  .active-line {
+    background-color: #5a3e1b;
+  }
+  
+  .inactive-line {
+    background-color: #d1c3b0;
+  }
+  
+  /* Animation for fading unlocked stages */
+  .step.active {
+    animation: fadeInStep 0.8s ease forwards;
+  }
+
+  .sparkle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: radial-gradient(white, rgba(255, 255, 255, 0));
+    border-radius: 50%;
+    animation: sparkleMove 5s linear infinite;
+    pointer-events: none;
+    opacity: 0.8;
+  }
+
+  .step-icon {
+    width: 80px;   /* 2× bigger than original 30px */
+    height: 80px;
+    margin-bottom: 0.8rem;
+    object-fit: contain;
+  }
+  
+  .twinkling-star {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(white, rgba(255, 255, 255, 0.5));
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: twinkle 20s infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  @keyframes twinkle {
+    0% {
+      opacity: 0.3;
+      transform: scale(0.9);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+  }
+  
+  
+    
+
+  .starry-sky-wrapper {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url('./assets/stars.png');
+    overflow: hidden;
+  }
+  
+  .starry-sky {
+    width: 100%;
+    height: 100%;
+    cursor: crosshair;
+    position: relative;
+  }
+  
+  .instruction {
+    position: absolute;
+    top: 10px;
+    left: 15%;
+    width: 70%;
+    text-align: center;
+    color: #f5f1e3;
+    font-size: 3.6rem;
+    z-index: 2;
+  }
+  
+  .constellation-revealed {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: gold;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+  
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 0.7; }
+    50% { transform: scale(1.5); opacity: 1; }
+    100% { transform: scale(1); opacity: 0.7; }
+  }
+  
+  .quiz-overlay {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff4dc;
+    padding: 2rem;
+    border: 2px solid #8c6018;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    z-index: 10;
+    text-align: center;
+    top: 30%;
+    width: 80%;
+  }
+  
+  .wrong-click {
+    animation: wrongFlash 0.6s;
+  }
+  
+  @keyframes wrongFlash {
+    0% { background-color: rgba(255, 0, 0, 0.1); }
+    100% { background-color: transparent; }
+  }
+  
+  .final-reveal {
+    display: list-item;
+    text-align: center;
+    justify-content: center;
+    color: #f5f1e3;
+    animation: fadeIn 3s ease forwards;
+  }
+  
+  .relief-image {
+    width: 300px; /* 300px × 2 */
+    height: 300px;
+    margin: 4rem auto;
+    background: url('./assets/relief.png') no-repeat center center/contain;
+  }
+
+  .constellation-star {
+    position: absolute;
+    width: 80px; /* 40px × 2 */
+    height: 80px;
+    animation: popStar 0.8s ease;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    
+    /* Add the glow */
+    filter: drop-shadow(0 0 6px #ffd700) drop-shadow(0 0 12px #ffd700);
+  }
+  
+
+  .star-particle {
+    position: absolute;
+    width: 10px; /* 5px × 2 */
+    height: 10px;
+    background: radial-gradient(white, rgba(255,255,255,0));
+    border-radius: 50%;
+    animation: particleBurst 1.2s ease forwards;
+    opacity: 0;
+  }
+  
+  @keyframes particleBurst {
+    0% {
+      transform: scale(0.5);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-20px) scale(0);
+      opacity: 0;
+    }
+  }
+  
+  
+  @keyframes popStar {
+    0% {
+      transform: scale(0) translate(-50%, -50%);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.2) translate(-50%, -50%);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1) translate(-50%, -50%);
+      opacity: 1;
+    }
+  }
+  
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  
+  
+  @keyframes sparkleMove {
+    0% {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(-150px) scale(0.5);
+      opacity: 0;
+    }
+  }
+  
+  
+  @keyframes fadeInStep {
+    0% {
+      opacity: 0.2;
+      transform: scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  
+  
+  @keyframes glow {
+    from { opacity: 0.7; }
+    to { opacity: 1; }
+  }
+  
+  
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @media (min-width: 1200px) and (max-width: 3000px) and (orientation: landscape) {
+    .app {
+      padding: 3rem;
+    }
+  
+    .menu, .wheel {
+      gap: 2.5rem;
+      max-width: 1000px;
+    }
+  
+    .btn {
+      padding: 1.5rem 3rem;
+      font-size: 1.7rem;
+    }
+  
+    .title {
+      font-size: 3.5rem;
+    }
+  
+    .fortune-text {
+      font-size: 2rem;
+    }
+  
+    .wheel-wrapper {
+      width: 1200px;
+      height: 1200px;
+    }
+  
+    .quiz-overlay {
+      width: 90%;
+      max-width: 700px;
+      padding: 3rem;
+    }
+  }
+
+@media screen and (min-width: 2300px) and (max-width: 2600px) and (orientation: landscape) {
+  html, body {
+    font-size: 28px;
+  }
+
+  .app {
+    padding: 4rem;
+    max-width: 2400px;
+    margin: 0 auto;
+  }
+
+  .title {
+    font-size: 5.2rem;
+    margin-bottom: 3rem;
+  }
+
+  .btn {
+    font-size: 2.6rem;
+    padding: 2.5rem 5rem;
+  }
+
+  .wheel-wrapper {
+    width: 960px;
+    height: 960px;
+    margin-bottom: 5rem;
+  }
+
+  .quiz-overlay {
+    max-width: 1200px;
+    padding: 5rem;
+  }
+
+  .question {
+    font-size: 3rem;
+  }
+
+  .options .btn {
+    font-size: 2.4rem;
+    padding: 2rem 3.5rem;
+  }
+
+  .fortune-text,
+  .tap-to-spin {
+    font-size: 2.2rem;
+  }
+
+  .step {
+    width: 140px;
+  }
+
+  .step-symbol {
+    font-size: 4.2rem;
+  }
+
+  .step-name {
+    font-size: 2rem;
+  }
+
+  .instruction {
+    font-size: 3.4rem;
+  }
+
+  .relief-image {
+    width: 700px;
+    height: 700px;
+  }
+
+  .constellation-star {
+    width: 100px;
+    height: 100px;
+  }
+
+  .star-particle {
+    width: 12px;
+    height: 12px;
+  }
+}
