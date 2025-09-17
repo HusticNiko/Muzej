@@ -759,6 +759,7 @@ body {
   flex-direction: column;
   position: relative;
   font-family: 'Georgia', serif;
+
 }
 
 .language-switcher-top {
@@ -775,11 +776,11 @@ body {
   justify-content: center;
   align-items: center;
   padding: 2rem;
+  padding-bottom: 4rem;
 }
 
 .welcome-section {
   text-align: center;
-  margin-bottom: 3rem;
   color: #5a3e1b; /* Main museum text color */
 }
 
@@ -1040,6 +1041,7 @@ body {
 .menu-controls {
   display: flex;
   gap: 1.5rem;
+  margin: auto;
   align-items: center;
 }
 
@@ -1534,3 +1536,267 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+
+/* ===== Galaxy Tab S9 FE+ landscape overrides (auto-added) ===== */
+html, body { height: 100%; }
+
+:root {
+  --base-rem: clamp(18px, 1.8vw + 12px, 24px);
+}
+
+body {
+  min-height: 100dvh;
+  width: 100vw;
+  overflow: hidden;
+  font-size: var(--base-rem);
+}
+
+.app,
+.user-selection-container,
+.menu-container {
+  min-height: 100dvh;
+}
+
+/* Core scaling */
+.title        { font-size: clamp(2.6rem, 5vw, 6rem); }
+.fortune-text { font-size: clamp(1.2rem, 2.2vw, 3.6rem); }
+.question     { font-size: clamp(1.4rem, 2.8vw, 2rem); }
+.options      { font-size: clamp(1.2rem, 2.2vw, 1.8rem); }
+.btn {
+  padding: clamp(1.2rem, 2vw, 2rem) clamp(2rem, 4vw, 4rem);
+  font-size: clamp(1.4rem, 2.6vw, 3rem);
+}
+
+/* Wheel stays within landscape height */
+.wheel-wrapper {
+  width: min(90vw, 70dvh);
+  height: min(90vw, 70dvh);
+  margin-bottom: clamp(2rem, 3.5vw, 4rem);
+}
+
+/* Overlays comfortable on tablets */
+.quiz-overlay {
+  width: 88%;
+  max-width: 1100px;
+  padding: clamp(1.5rem, 3vw, 3rem);
+  top: 22%;
+}
+
+/* Bottom controls centered & safe-area aware */
+.spin-btn,
+.back-btn {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: max(env(safe-area-inset-bottom), 3dvh, 24px);
+}
+
+.back-btn-stars {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: max(env(safe-area-inset-bottom) + 6dvh, 96px);
+  width: clamp(220px, 30vw, 460px);
+  height: auto;
+  padding: 0.8rem 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Frame/image proportions remain consistent */
+.wheel-frame {
+  width: clamp(32%, 40vw, 40%);
+  height: clamp(40%, 50vw, 50%);
+  left: 30%;
+  top: 0%;
+}
+.wheel-image {
+  width: clamp(22%, 30vw, 30%);
+  height: clamp(22%, 30vw, 30%);
+  top: 20%;
+  left: 35%;
+}
+
+/* Stepper scaling */
+.step        { width: clamp(46px, 6.5vw, 90px); }
+.step-symbol { font-size: clamp(2.2rem, 3.6vw, 4rem); }
+.step-name   { font-size: clamp(1.1rem, 1.8vw, 1.6rem); }
+
+/* Relief/constellation */
+.relief-image {
+  width: clamp(260px, 36vw, 700px);
+  height: clamp(260px, 36vw, 700px);
+}
+.constellation-star {
+  width: clamp(60px, 7vw, 100px);
+  height: clamp(60px, 7vw, 100px);
+}
+
+/* Exact Galaxy Tab S9 FE+ landscape (CSS viewport ~1280x800 @ DPR>=2) */
+@media screen and (orientation: landscape)
+  and (device-width: 1280px) and (device-height: 800px)
+  and (-webkit-min-device-pixel-ratio: 2),
+screen and (orientation: landscape)
+  and (device-width: 1280px) and (device-height: 800px)
+  and (min-resolution: 192dpi) {
+  .app { padding: 2.5rem; }
+  .wheel-wrapper {
+    width: min(88vw, 64dvh);
+    height: min(88vw, 64dvh);
+    margin-bottom: 3rem;
+  }
+  .title { font-size: clamp(2.8rem, 4.8vw, 5rem); }
+  .quiz-overlay {
+    width: 86%;
+    max-width: 1000px;
+    top: 18%;
+    padding: clamp(1.8rem, 2.8vw, 3rem);
+  }
+  .instruction,
+  .tap-to-spin,
+  .fortune-text { font-size: clamp(1.2rem, 2vw, 2rem); }
+  .spin-btn,
+  .back-btn {
+    bottom: max(env(safe-area-inset-bottom), 3.5dvh, 28px);
+  }
+  .back-btn-stars {
+    bottom: max(calc(env(safe-area-inset-bottom) + 6dvh), 100px);
+  }
+}
+
+/* Generic landscape tablet fallback */
+@media screen and (orientation: landscape) and (min-width: 980px) and (max-width: 1400px) {
+  .app { padding: 2.5rem; }
+  .wheel-wrapper {
+    width: min(88vw, 66dvh);
+    height: min(88vw, 66dvh);
+  }
+}
+
+
+/* ===== UserSelection auto-fit to viewport (auto-added) ===== */
+/* Design reference size for the UserSelection section (width × height in px) */
+:root {
+  --us-design-w: 1200; /* tweak if your design is wider/narrower */
+  --us-design-h: 900;  /* tweak if your design is taller/shorter */
+  --us-scale: min(calc(100vw / (1px * var(--us-design-w))),
+                  calc(100dvh / (1px * var(--us-design-h))));
+}
+
+/* Make the page area a fixed fullscreen canvas and center contents */
+.user-selection-container {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: start center;
+  overflow: hidden;
+  width: 100vw;
+  height: 100dvh;
+  padding: 0; /* outer padding can push content off-screen */
+}
+
+/* Scale the ENTIRE content to fit the viewport while keeping layout intact */
+.user-selection-content {
+  transform: scale(0.8);
+  transform-origin: top center;
+  /* Constrain natural width to design width for predictable scaling */
+  width: min(var(--us-design-w) * 1px, 92vw);
+  /* Give it a top margin so it doesn't hug the very top after scaling */
+  margin-top: clamp(8px, 2dvh, 24px);
+}
+
+/* Keep the language switcher visible and pinned */
+.language-switcher-top {
+  position: fixed;
+  top: clamp(8px, 2dvh, 24px);
+  right: clamp(8px, 2vw, 24px);
+  z-index: 20;
+}
+
+/* Relax fixed pixel widths so buttons fit on smaller viewports */
+.user-option-btn {
+  padding: clamp(1.6rem, 2.6vw, 3rem) clamp(1.2rem, 2vw, 3rem);
+}
+
+/* Title and subtitle stay within the design width after scaling */
+.welcome-title {
+  font-size: clamp(2.4rem, 5.4vw, 6rem);
+  margin-bottom: clamp(0.6rem, 1.4vw, 1.5rem);
+}
+
+.welcome-subtitle {
+  font-size: clamp(1.4rem, 2.6vw, 2.4rem);
+}
+
+/* Buttons row wraps gracefully and centers */
+.user-options {
+  gap: clamp(1rem, 3vw, 4rem);
+  justify-content: center;
+  transform: scale(0.7) 
+}
+
+/* Ensure dialogs also fit if opened on this page */
+.admin-dialog-overlay {
+  align-items: start;
+  padding-top: clamp(10px, 6dvh, 64px);
+}
+
+
+
+/* ===== AdminMenu auto-fit to viewport (auto-added) ===== */
+:root {
+  --am-design-w: 1200; /* reference canvas width in px */
+  --am-design-h: 900;  /* reference canvas height in px */
+  --am-scale: min(calc(100vw / (1px * var(--am-design-w))),
+                  calc(100dvh / (1px * var(--am-design-h))));
+}
+
+/* Make AdminMenu a fullscreen canvas */
+.menu-container {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100dvh;
+  overflow: hidden;
+  padding: 0; /* prevent outer padding from pushing content off-screen */
+  display: grid;
+  place-items: start center;
+}
+
+/* Scale the immediate sections (header + grid) together */
+.menu-container > * {
+  transform: scale(var(--am-scale));
+  transform-origin: top center;
+  width: min(var(--am-design-w) * 1px, 92vw); /* constrain each section's natural width */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Tweak internal spacing after scaling for nicer balance */
+.menu-header {
+  margin-top: clamp(8px, 2dvh, 24px);
+  margin-bottom: clamp(12px, 3dvh, 32px);
+}
+
+.admin-menu-grid {
+  row-gap: clamp(12px, 2.5dvh, 32px);
+  column-gap: clamp(12px, 2.5vw, 32px);
+}
+
+/* Buttons shrink within the scaled canvas without overflow */
+.admin-menu-item {
+  padding: clamp(1.6rem, 2.4vw, 3rem);
+}
+.admin-menu-icon { font-size: clamp(2.4rem, 3.2vw, 4rem); }
+.admin-menu-content h3 { font-size: clamp(1.6rem, 2.4vw, 2.2rem); }
+.admin-menu-content p  { font-size: clamp(1.2rem, 2vw, 1.6rem); }
+
+/* Header typography stays in-bounds */
+.menu-title h1 { font-size: clamp(2.6rem, 4.4vw, 5rem); margin-left: 50px; }
+.menu-title p  { font-size: clamp(1.4rem, 2.4vw, 2.4rem); margin-left: 50px}
+
+/* Controls remain clickable and readable */
+.logout-btn { font-size: clamp(1.2rem, 1.8vw, 1.6rem); }
+.logout-icon { font-size: clamp(1.4rem, 2vw, 1.8rem); }

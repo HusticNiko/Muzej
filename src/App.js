@@ -23,7 +23,7 @@ const useSilentLongPress = (onLongPress, delay = 10000) => {
     if (event.type === 'touchstart') {
       event.preventDefault();
     }
-    
+    console.log(isPressed);
     setIsPressed(true);
     
     // Long press timer
@@ -99,8 +99,8 @@ const App = () => {
         setShowWarning(false);    // hide warning
       }
     },
-    6000, // 4 min for warning
-    120000  // 5 min for timeout
+    1000, // 4 min for warning
+    2000  // 5 min for timeout
   );
 
   const AppContent = () => {
@@ -125,7 +125,7 @@ const App = () => {
 
     if (user === 'customer') {
       return (
-        <div 
+        <div
           className="app"
           {...longPressProps}
           style={{ 
@@ -154,7 +154,7 @@ const App = () => {
           {currentGame === "quiz" && <QuizOfMithras onBack={() => setCurrentGame(null)} />}
           {currentGame === "stars" && <StarrySkyMystery onBack={() => setCurrentGame(null)} />}
           
-          <LanguageSwitcher variant="toggle" />
+          <LanguageSwitcher variant="" />
           
           {/* Hidden logout button that appears after 10s hold */}
           {longPressProps.showButton && (

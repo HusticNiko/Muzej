@@ -46,13 +46,13 @@ const LanguageSwitcher = ({ variant = 'button' }) => {
         onClick={() => changeLanguage('en')}
         className={`language-btn ${currentLanguage === 'en' ? 'active' : ''}`}
       >
-        🇬🇧 EN
+         🇸🇮 SL
       </button>
       <button
         onClick={() => changeLanguage('sl')}
         className={`language-btn ${currentLanguage === 'sl' ? 'active' : ''}`}
       >
-        🇸🇮 SL
+        🇬🇧 EN
       </button>
     </div>
   );
