@@ -7,6 +7,10 @@ import useInactivityTimer from "./useInactivityTimer"; // Adjust path
 import "./styles.css";
 import LanguageSwitcher from "./components/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
+import AdminMenu from "./components/AdminMenu";
+import UserSelection from "./components/UserSelection";
+import { UserProvider, useUser } from './context/UserContext';
+
 
 const App = () => {
   const { t } = useTranslation();
@@ -48,8 +52,15 @@ const App = () => {
     120000  // 5 min for timeout
   );
 
-  return (
-    <div className="app">
+  const AppContent = () => {
+  const { user, isAuthenticated } = useUser();
+
+  if (!isAuthenticated) {
+    return <UserSelection />;
+  }
+
+  if (user === 'customer') {
+    return  ( <div className="app">
     {showWarning && (
         <div className="warning-popup">
           <p>⚠️ You will return to the main menu in 1 minute due to inactivity.</p>
@@ -68,7 +79,23 @@ const App = () => {
       {currentGame === "quiz" && <QuizOfMithras onBack={() => setCurrentGame(null)} />}
       {currentGame === "stars" && <StarrySkyMystery onBack={() => setCurrentGame(null)} />}
       <LanguageSwitcher variant="toggle" />
-    </div>
+    </div>)
+  }
+
+  if (user === 'admin') {
+    return <AdminMenu />;
+  }
+
+  return <UserSelection />;
+};
+
+  return (
+      <UserProvider>
+      <div className="App">
+        <AppContent />
+      </div>
+    </UserProvider>
+  
   );
 };
 
