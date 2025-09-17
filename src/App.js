@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef  } from "react";
 import wheelImage from './assets/wheel3.png'; // or use public path directly in src
 import frameImage from './assets/fortuna.png'; // Adjust path if using public folder
 import QuizOfMithras from './QuizOfMithras';
@@ -11,6 +11,57 @@ import AdminMenu from "./components/AdminMenu";
 import UserSelection from "./components/UserSelection";
 import { UserProvider, useUser } from './context/UserContext';
 
+
+  // Silent Long Press Hook (no visual feedback)
+const useSilentLongPress = (onLongPress, delay = 10000) => {
+  const [isPressed, setIsPressed] = useState(false);
+  const [showButton, setShowButton] = useState(false);
+  const timerRef = useRef(null);
+
+  const start = (event) => {
+    // Prevent default touch behaviors
+    if (event.type === 'touchstart') {
+      event.preventDefault();
+    }
+    
+    setIsPressed(true);
+    
+    // Long press timer
+    timerRef.current = setTimeout(() => {
+      setShowButton(true);
+      clear();
+    }, delay);
+  };
+
+  const clear = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
+    }
+    setIsPressed(false);
+  };
+
+  const hideButton = () => {
+    setShowButton(false);
+  };
+
+  useEffect(() => {
+    return () => {
+      clear();
+    };
+  }, []);
+
+  return {
+    onMouseDown: start,
+    onMouseUp: clear,
+    onMouseLeave: clear,
+    onTouchStart: start,
+    onTouchEnd: clear,
+    onTouchCancel: clear,
+    showButton,
+    hideButton
+  };
+};
 
 const App = () => {
   const { t } = useTranslation();
@@ -52,59 +103,92 @@ const App = () => {
     120000  // 5 min for timeout
   );
 
-  
-
   const AppContent = () => {
   const { user, isAuthenticated, logout } = useUser();
 
-  if (!isAuthenticated) {
+    const longPressProps = useSilentLongPress(() => {}, 10000);
+
+    // Auto-hide logout button after 5 seconds of inactivity
+    useEffect(() => {
+      if (longPressProps.showButton) {
+        const hideTimer = setTimeout(() => {
+          longPressProps.hideButton();
+        }, 5000); // Hide after 5 seconds
+
+        return () => clearTimeout(hideTimer);
+      }
+    }, [longPressProps.showButton]);
+
+    if (!isAuthenticated) {
+      return <UserSelection />;
+    }
+
+    if (user === 'customer') {
+      return (
+        <div 
+          className="app"
+          {...longPressProps}
+          style={{ 
+            position: 'relative',
+            userSelect: 'none', // Prevent text selection during long press
+            WebkitUserSelect: 'none',
+            MozUserSelect: 'none',
+            msUserSelect: 'none'
+          }}
+        >
+          {showWarning && (
+            <div className="warning-popup">
+              <p>⚠️ You will return to the main menu in 1 minute due to inactivity.</p>
+            </div>
+          )}
+
+          {currentGame === null && (
+            <div className="menu">
+              <h1>{t('welcome')}</h1>
+              <button onClick={() => setCurrentGame("quiz")} className="btn">{t('trial_of_mithras')}</button>
+              <button onClick={() => setCurrentGame("stars")} className="btn">{t('mysteri_of_skyes')}</button>
+            </div>
+          )}
+
+          {currentGame === "wheel" && <WheelOfFortuna onBack={() => setCurrentGame(null)} />}
+          {currentGame === "quiz" && <QuizOfMithras onBack={() => setCurrentGame(null)} />}
+          {currentGame === "stars" && <StarrySkyMystery onBack={() => setCurrentGame(null)} />}
+          
+          <LanguageSwitcher variant="toggle" />
+          
+          {/* Hidden logout button that appears after 10s hold */}
+          {longPressProps.showButton && (
+            <button 
+              className="logout-btn customer-logout-btn" 
+              onClick={() => {
+                logout();
+                longPressProps.hideButton();
+              }}
+            >
+              <span className="logout-icon">🚪</span>
+              {t('logout')}
+            </button>
+          )}
+        </div>
+      );
+    }
+
+    if (user === 'admin') {
+      return <AdminMenu />;
+    }
+
     return <UserSelection />;
-  }
-
-  if (user === 'customer') {
-    return  ( 
-    <div className="app">
-    {showWarning && (
-        <div className="warning-popup">
-          <p>⚠️ You will return to the main menu in 1 minute due to inactivity.</p>
-        </div>
-      )}
-
-      {currentGame === null && (
-        <div className="menu">
-          <h1>{t('welcome')}</h1>
-          <button onClick={() => setCurrentGame("quiz")} className="btn">{t('trial_of_mithras')}</button>
-          <button onClick={() => setCurrentGame("stars")} className="btn">{t('mysteri_of_skyes')}</button>
-        </div>
-      )}
-
-      {currentGame === "wheel" && <WheelOfFortuna onBack={() => setCurrentGame(null)} />}
-      {currentGame === "quiz" && <QuizOfMithras onBack={() => setCurrentGame(null)} />}
-      {currentGame === "stars" && <StarrySkyMystery onBack={() => setCurrentGame(null)} />}
-      <LanguageSwitcher variant="toggle" />
-      <button className="logout-btn" onClick={logout}>
-            <span className="logout-icon">🚪</span>
-            {t('logout')}
-          </button>
-    </div>)
-  }
-
-  if (user === 'admin') {
-    return <AdminMenu />;
-  }
-
-  return <UserSelection />;
-};
+  };
 
   return (
-      <UserProvider>
+    <UserProvider>
       <div className="App">
         <AppContent />
       </div>
     </UserProvider>
-  
   );
 };
+
 
 
 
