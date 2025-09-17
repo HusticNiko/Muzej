@@ -754,10 +754,11 @@ body {
 }
 .user-selection-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #f5f1e3; /* Main museum background */
   display: flex;
   flex-direction: column;
   position: relative;
+  font-family: 'Georgia', serif;
 }
 
 .language-switcher-top {
@@ -779,95 +780,87 @@ body {
 .welcome-section {
   text-align: center;
   margin-bottom: 3rem;
-  color: white;
+  color: #5a3e1b; /* Main museum text color */
 }
 
 .welcome-title {
-  font-size: 3rem;
+  font-size: 6rem; /* Matching .title size */
   font-weight: 700;
   margin-bottom: 1rem;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  color: #5a3e1b;
+  text-shadow: 2px 2px 4px rgba(90, 62, 27, 0.2);
 }
 
 .welcome-subtitle {
-  font-size: 1.2rem;
-  opacity: 0.9;
+  font-size: 2.4rem; /* Scaled up for consistency */
+  opacity: 0.8;
   font-weight: 300;
+  color: #7b4f24; /* Fortune text color */
 }
 
 .user-options {
   display: flex;
-  gap: 2rem;
+  gap: 4rem; /* Larger gap for museum theme */
   flex-wrap: wrap;
   justify-content: center;
 }
 
 .user-option-btn {
-  background: white;
-  border: none;
-  border-radius: 20px;
-  padding: 2rem;
-  width: 280px;
+  background: #fff4dc; /* Museum button background */
+  border: 2px solid #c3a574; /* Museum border color */
+  border-radius: 12px; /* Matching museum border radius */
+  padding: 3rem 2rem; /* Larger padding */
+  width: 320px; /* Slightly larger */
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.2); /* Museum shadow */
+  font-family: 'Georgia', serif;
 }
 
 .user-option-btn:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+  background-color: #e3cba5; /* Museum hover color */
+  transform: translateY(-2px); /* Museum hover transform */
+  box-shadow: 4px 4px 12px rgba(0,0,0,0.3);
 }
 
 .user-icon {
-  font-size: 4rem;
-  margin-bottom: 1rem;
+  font-size: 5rem; /* Larger icon */
+  margin-bottom: 1.5rem;
+  color: #5a3e1b;
 }
 
 .user-option-btn h3 {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: #333;
+  font-size: 2.4rem; /* Larger text */
+  margin-bottom: 1rem;
+  color: #5a3e1b;
+  font-weight: bold;
 }
 
 .user-option-btn p {
-  color: #666;
-  font-size: 0.9rem;
+  color: #7b4f24;
+  font-size: 1.6rem; /* Larger description text */
   line-height: 1.4;
 }
 
 .customer-btn:hover {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  color: white;
+  background: linear-gradient(135deg, #d4b07a, #f5e1c0); /* Museum gradient */
+  color: #5a3e1b;
 }
 
 .admin-btn:hover {
-  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-  color: white;
+  background: linear-gradient(135deg, #c3a574, #e3cba5); /* Museum admin gradient */
+  color: #5a3e1b;
 }
 
-@media (max-width: 768px) {
-  .welcome-title {
-    font-size: 2rem;
-  }
-  
-  .user-options {
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .user-option-btn {
-    width: 100%;
-    max-width: 300px;
-  }
-}
+/* ADMIN LOGIN DIALOG - Museum theme */
 .admin-dialog-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(90, 62, 27, 0.7); /* Museum overlay */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -876,13 +869,15 @@ body {
 }
 
 .admin-dialog {
-  background: white;
-  border-radius: 20px;
-  padding: 2rem;
+  background: #fff4dc; /* Museum background */
+  border: 2px solid #c3a574; /* Museum border */
+  border-radius: 12px;
+  padding: 3rem;
   width: 90%;
-  max-width: 400px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  max-width: 500px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.5); /* Museum shadow */
   animation: slideIn 0.3s ease;
+  font-family: 'Georgia', serif;
 }
 
 @keyframes slideIn {
@@ -900,164 +895,178 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .admin-dialog-header h2 {
   margin: 0;
-  color: #333;
-  font-size: 1.5rem;
+  color: #5a3e1b;
+  font-size: 2.4rem;
 }
 
 .close-btn {
   background: none;
   border: none;
-  font-size: 2rem;
+  font-size: 3rem;
   cursor: pointer;
-  color: #999;
+  color: #7b4f24;
   padding: 0;
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .close-btn:hover {
-  color: #666;
+  color: #5a3e1b;
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   font-weight: 600;
-  color: #333;
+  color: #5a3e1b;
+  font-size: 1.8rem;
 }
 
 .form-group input {
   width: 100%;
-  padding: 12px 16px;
-  border: 2px solid #ddd;
-  border-radius: 10px;
-  font-size: 1rem;
+  padding: 1.5rem 2rem;
+  border: 2px solid #c3a574;
+  border-radius: 8px;
+  font-size: 1.6rem;
   transition: border-color 0.3s ease;
   box-sizing: border-box;
+  background: #f5f1e3;
+  color: #5a3e1b;
+  font-family: 'Georgia', serif;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #8c6018;
+  background: #fff4dc;
 }
 
 .form-group input.error {
-  border-color: #e74c3c;
+  border-color: #d32f2f;
 }
 
 .error-message {
-  color: #e74c3c;
-  font-size: 0.9rem;
+  color: #d32f2f;
+  font-size: 1.4rem;
   margin-top: 0.5rem;
   display: block;
 }
 
 .form-actions {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
   justify-content: flex-end;
 }
 
 .cancel-btn, .login-btn {
-  padding: 12px 24px;
-  border: none;
-  border-radius: 10px;
-  font-size: 1rem;
+  padding: 1.5rem 3rem;
+  border: 2px solid #c3a574;
+  border-radius: 8px;
+  font-size: 1.6rem;
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 600;
+  font-family: 'Georgia', serif;
 }
 
 .cancel-btn {
-  background: #f8f9fa;
-  color: #666;
+  background: #f5f1e3;
+  color: #7b4f24;
 }
 
 .cancel-btn:hover {
-  background: #e9ecef;
+  background: #e3cba5;
+  color: #5a3e1b;
 }
 
 .login-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, #d4b07a, #f5e1c0);
+  color: #5a3e1b;
 }
 
 .login-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+  background: #e3cba5;
 }
 
 .login-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* MENU CONTAINERS - Museum theme */
 .menu-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #f5f1e3; /* Museum background */
   padding: 2rem;
+  font-family: 'Georgia', serif;
 }
 
 .menu-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 3rem;
-  color: white;
+  margin-bottom: 4rem;
+  color: #5a3e1b;
 }
 
 .menu-title h1 {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  font-size: 4.5rem; /* Large museum title */
+  margin-bottom: 1rem;
+  color: #5a3e1b;
+  text-shadow: 2px 2px 4px rgba(90, 62, 27, 0.2);
 }
 
 .menu-title p {
-  font-size: 1.1rem;
-  opacity: 0.9;
+  font-size: 2rem;
+  opacity: 0.8;
   margin: 0;
+  color: #7b4f24;
 }
 
 .menu-controls {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
   align-items: center;
 }
 
 .logout-btn {
-  background: rgba(255, 255, 255, 0.2);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  color: white;
-  padding: 10px 20px;
-  border-radius: 25px;
+  background: #fff4dc;
+  border: 2px solid #c3a574;
+  color: #5a3e1b;
+  padding: 1.2rem 2.4rem;
+  border-radius: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.8rem;
   font-weight: 600;
   transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  font-size: 1.6rem;
+  font-family: 'Georgia', serif;
 }
 
 .logout-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: rgba(255, 255, 255, 0.5);
+  background: #e3cba5;
   transform: translateY(-2px);
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
 }
 
 .logout-icon {
-  font-size: 1.2rem;
+  font-size: 1.8rem;
 }
 
 /* Customer Menu Grid */
@@ -1070,96 +1079,201 @@ body {
 }
 
 .menu-item {
-  background: white;
-  border: none;
-  border-radius: 20px;
-  padding: 2rem;
+  background: #fff4dc; /* Museum button background */
+  border: 2px solid #c3a574; /* Museum border */
+  border-radius: 12px;
+  padding: 3rem;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.2); /* Museum shadow */
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 1.5rem;
+  font-family: 'Georgia', serif;
 }
 
 .menu-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  color: white;
+  transform: translateY(-2px); /* Museum hover transform */
+  box-shadow: 4px 4px 12px rgba(0,0,0,0.3);
+  background: linear-gradient(135deg, #d4b07a, #f5e1c0); /* Museum gradient */
+  color: #5a3e1b;
 }
 
 .menu-item-icon {
-  font-size: 3rem;
+  font-size: 4rem; /* Large icons */
+  color: #5a3e1b;
 }
 
 .menu-item-label {
-  font-size: 1.2rem;
+  font-size: 2rem; /* Large text */
   font-weight: 600;
+  color: #5a3e1b;
 }
 
 /* Admin Menu Grid */
 .admin-menu-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 2rem;
-  max-width: 800px;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 3rem;
+  max-width: 1000px;
   margin: 0 auto;
 }
 
 .admin-menu-item {
-  background: white;
-  border: none;
-  border-radius: 20px;
-  padding: 2rem;
+  background: #fff4dc; /* Museum background */
+  border: 2px solid #c3a574; /* Museum border */
+  border-radius: 12px;
+  padding: 3rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.2); /* Museum shadow */
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 2rem;
   text-align: left;
+  font-family: 'Georgia', serif;
 }
 
 .admin-menu-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+  transform: translateY(-2px); /* Museum hover transform */
+  box-shadow: 4px 4px 12px rgba(0,0,0,0.3);
 }
 
 .projection-with-subtitles:hover {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-  color: white;
+  background: linear-gradient(135deg, #d4b07a, #f5e1c0); /* Museum gradient */
+  color: #5a3e1b;
 }
 
 .projection-without-subtitles:hover {
-  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-  color: white;
+  background: linear-gradient(135deg, #c3a574, #e3cba5); /* Alternate museum gradient */
+  color: #5a3e1b;
 }
 
 .admin-menu-icon {
-  font-size: 3rem;
+  font-size: 4rem; /* Large icons */
   flex-shrink: 0;
+  color: #5a3e1b;
 }
 
 .admin-menu-content h3 {
-  font-size: 1.3rem;
-  margin-bottom: 0.5rem;
+  font-size: 2.2rem; /* Large headings */
+  margin-bottom: 0.8rem;
   font-weight: 600;
+  color: #5a3e1b;
 }
 
 .admin-menu-content p {
-  font-size: 0.9rem;
+  font-size: 1.6rem; /* Large description */
   opacity: 0.8;
   margin: 0;
   line-height: 1.4;
+  color: #7b4f24;
 }
 
+/* Language Switcher - Museum theme */
+.language-switcher-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.language-btn {
+  padding: 1rem 1.5rem;
+  border: 2px solid #c3a574; /* Museum border */
+  background: #fff4dc; /* Museum background */
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.4rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  color: #5a3e1b;
+  font-family: 'Georgia', serif;
+}
+
+.language-btn:hover {
+  border-color: #8c6018;
+  background: #f5f1e3;
+}
+
+.language-btn.active {
+  background: linear-gradient(135deg, #d4b07a, #f5e1c0);
+  color: #5a3e1b;
+  border-color: #8c6018;
+}
+
+.language-switcher-dropdown {
+  position: relative;
+}
+
+.language-select {
+  padding: 1rem 1.5rem;
+  border: 2px solid #c3a574;
+  border-radius: 6px;
+  background: #fff4dc;
+  cursor: pointer;
+  font-size: 1.4rem;
+  color: #5a3e1b;
+  font-family: 'Georgia', serif;
+}
+
+.language-switcher-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.language-toggle-btn {
+  padding: 1rem 2rem;
+  border: 2px solid #c3a574;
+  background: #fff4dc;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 1.4rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  color: #5a3e1b;
+  font-family: 'Georgia', serif;
+}
+
+.language-toggle-btn:hover {
+  border-color: #8c6018;
+  background: #f5f1e3;
+}
+
+/* Responsive design for new components */
 @media (max-width: 768px) {
+  .welcome-title {
+    font-size: 4rem;
+  }
+  
+  .welcome-subtitle {
+    font-size: 1.8rem;
+  }
+  
+  .user-options {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+  
+  .user-option-btn {
+    width: 100%;
+    max-width: 350px;
+    padding: 2rem;
+  }
+  
+  .user-option-btn h3 {
+    font-size: 2rem;
+  }
+  
+  .user-option-btn p {
+    font-size: 1.4rem;
+  }
+  
   .menu-header {
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5rem;
     align-items: flex-start;
   }
   
@@ -1168,15 +1282,255 @@ body {
   }
   
   .menu-title h1 {
-    font-size: 2rem;
+    font-size: 3rem;
+  }
+  
+  .menu-title p {
+    font-size: 1.6rem;
   }
   
   .admin-menu-item {
     flex-direction: column;
     text-align: center;
+    gap: 1.5rem;
   }
   
   .admin-menu-grid {
     grid-template-columns: 1fr;
   }
+  
+  .menu-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .admin-dialog {
+    padding: 2rem;
+    margin: 1rem;
+  }
+  
+  .admin-dialog-header h2 {
+    font-size: 2rem;
+  }
+  
+  .form-group label {
+    font-size: 1.6rem;
+  }
+  
+  .form-group input {
+    font-size: 1.4rem;
+    padding: 1.2rem 1.5rem;
+  }
+  
+  .cancel-btn, .login-btn {
+    font-size: 1.4rem;
+    padding: 1.2rem 2rem;
+  }
+  
+  .language-switcher-buttons {
+    gap: 4px;
+  }
+  
+  .language-btn {
+    padding: 0.8rem 1.2rem;
+    font-size: 1.2rem;
+  }
+  
+  .language-toggle-btn {
+    padding: 0.8rem 1.5rem;
+    font-size: 1.2rem;
+  }
+}
+
+/* Large screen adjustments for new components */
+@media (min-width: 1200px) and (max-width: 3000px) and (orientation: landscape) {
+  .user-selection-container {
+    padding: 3rem;
+  }
+
+  .welcome-title {
+    font-size: 7rem;
+  }
+
+  .welcome-subtitle {
+    font-size: 2.8rem;
+  }
+
+  .user-option-btn {
+    width: 380px;
+    padding: 4rem 3rem;
+  }
+
+  .user-option-btn h3 {
+    font-size: 2.8rem;
+  }
+
+  .user-option-btn p {
+    font-size: 1.8rem;
+  }
+
+  .menu-title h1 {
+    font-size: 5rem;
+  }
+
+  .menu-title p {
+    font-size: 2.4rem;
+  }
+
+  .admin-dialog {
+    max-width: 600px;
+    padding: 4rem;
+  }
+
+  .admin-dialog-header h2 {
+    font-size: 2.8rem;
+  }
+
+  .form-group label {
+    font-size: 2rem;
+  }
+
+  .form-group input {
+    font-size: 1.8rem;
+    padding: 1.8rem 2.4rem;
+  }
+
+  .cancel-btn, .login-btn {
+    font-size: 1.8rem;
+    padding: 1.8rem 3.5rem;
+  }
+}
+
+/* Extra large screen adjustments */
+@media screen and (min-width: 2300px) and (max-width: 2600px) and (orientation: landscape) {
+  .welcome-title {
+    font-size: 8rem;
+  }
+
+  .welcome-subtitle {
+    font-size: 3.2rem;
+  }
+
+  .user-option-btn {
+    width: 450px;
+    padding: 5rem 4rem;
+  }
+
+  .user-option-btn h3 {
+    font-size: 3.2rem;
+  }
+
+  .user-option-btn p {
+    font-size: 2.2rem;
+  }
+
+  .user-icon {
+    font-size: 6rem;
+  }
+
+  .menu-title h1 {
+    font-size: 6rem;
+  }
+
+  .menu-title p {
+    font-size: 2.8rem;
+  }
+
+  .menu-item-icon, .admin-menu-icon {
+    font-size: 5rem;
+  }
+
+  .menu-item-label {
+    font-size: 2.4rem;
+  }
+
+  .admin-menu-content h3 {
+    font-size: 2.6rem;
+  }
+
+  .admin-menu-content p {
+    font-size: 2rem;
+  }
+
+  .admin-dialog {
+    max-width: 700px;
+    padding: 5rem;
+  }
+
+  .admin-dialog-header h2 {
+    font-size: 3.2rem;
+  }
+
+  .form-group label {
+    font-size: 2.4rem;
+  }
+
+  .form-group input {
+    font-size: 2rem;
+    padding: 2rem 2.8rem;
+  }
+
+  .cancel-btn, .login-btn {
+    font-size: 2rem;
+    padding: 2rem 4rem;
+  }
+
+  .logout-btn {
+    font-size: 1.8rem;
+    padding: 1.4rem 2.8rem;
+  }
+
+  .language-btn, .language-toggle-btn {
+    font-size: 1.6rem;
+    padding: 1.2rem 2rem;
+  }
+}
+
+/* Animation enhancements for museum theme */
+@keyframes museumFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.user-selection-container {
+  animation: museumFadeIn 0.8s ease forwards;
+}
+
+.menu-container {
+  animation: museumFadeIn 0.8s ease forwards;
+}
+
+.admin-dialog {
+  animation: museumFadeIn 0.5s ease forwards;
+}
+
+/* Additional museum-themed hover effects */
+.user-option-btn:active {
+  transform: translateY(0);
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+
+.menu-item:active, .admin-menu-item:active {
+  transform: translateY(0);
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+
+.logout-btn:active, .login-btn:active, .cancel-btn:active {
+  transform: translateY(0);
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+
+/* Ensure consistent font rendering */
+.user-selection-container *,
+.menu-container *,
+.admin-dialog * {
+  font-family: 'Georgia', serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
