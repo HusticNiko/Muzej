@@ -11,6 +11,7 @@ const resources = {
       "trial_of_mithras": "Sojenje Mitri",
       "mysteri_of_skyes": "Skrivnostno ozvezdje",
       "stage1": "Katero bitje je povezano s stopnjo Corax?",
+      "back": "Nazaj na meni",
       "home": "Home",
       "about": "About",
       "contact": "Contact",
@@ -36,6 +37,7 @@ const resources = {
       "slovenian": "Slovenščina",
       "change_language": "Spremeni jezik",
       "war": "vojna",
+      "back": "Back to Menu",
       "What creature is associated with the Corax stage?": "test",
       // Add more translations as needed
     }

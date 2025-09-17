@@ -4,8 +4,6 @@ import frameImage from './assets/fortuna.png'; // Adjust path if using public fo
 import QuizOfMithras from './QuizOfMithras';
 import StarrySkyMystery from './StarrySkyMystery';
 import useInactivityTimer from "./useInactivityTimer"; // Adjust path
-
-
 import "./styles.css";
 import LanguageSwitcher from "./components/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
@@ -46,8 +44,8 @@ const App = () => {
         setShowWarning(false);    // hide warning
       }
     },
-    240000, // 4 min for warning
-    300000  // 5 min for timeout
+    60000, // 4 min for warning
+    120000  // 5 min for timeout
   );
 
   return (
@@ -78,6 +76,7 @@ const App = () => {
 
 
 const WheelOfFortuna = ({ onBack }) => {
+  const { t } = useTranslation();
   const fortunes = [
     "Fortuna smiles upon your endeavors.",
     "A twist of fate is near, be ready.",
@@ -158,7 +157,7 @@ const WheelOfFortuna = ({ onBack }) => {
       )}
       {isSpinning && (
         <button onClick={onBack} className="btn back-btn">
-        Back to Menu
+        {t("back")}
       </button>
       )
       }

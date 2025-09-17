@@ -101,8 +101,7 @@ const QuizOfMithras = ({ onBack }) => {
     <button onClick={onBack} className="btn back-btn">Back to Menu</button>
   </div>
 )}
-      <LanguageSwitcher variant="toggle" />
-    </div>
+</div>
   );
 
 };
