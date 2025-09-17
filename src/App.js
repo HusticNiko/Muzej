@@ -8,8 +8,10 @@ import useInactivityTimer from "./useInactivityTimer"; // Adjust path
 
 import "./styles.css";
 import LanguageSwitcher from "./components/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 
 const App = () => {
+  const { t } = useTranslation();
   const [currentGame, setCurrentGame] = useState(null);
   const [showWarning, setShowWarning] = useState(false);
 
@@ -58,17 +60,16 @@ const App = () => {
 
       {currentGame === null && (
         <div className="menu">
-          <h1>Welcome to Fortuna's Temple</h1>
-          <button onClick={() => setCurrentGame("wheel")} className="btn">Wheel of Fortuna</button>
-          <button onClick={() => setCurrentGame("quiz")} className="btn">Trial of Mithras</button>
-          <button onClick={() => setCurrentGame("stars")} className="btn">Mysteries of the Starry Sky</button>
+          <h1>{t('welcome')}</h1>
+          <button onClick={() => setCurrentGame("quiz")} className="btn">{t('trial_of_mithras')}</button>
+          <button onClick={() => setCurrentGame("stars")} className="btn">{t('mysteri_of_skyes')}</button>
         </div>
       )}
 
       {currentGame === "wheel" && <WheelOfFortuna onBack={() => setCurrentGame(null)} />}
       {currentGame === "quiz" && <QuizOfMithras onBack={() => setCurrentGame(null)} />}
       {currentGame === "stars" && <StarrySkyMystery onBack={() => setCurrentGame(null)} />}
-      <LanguageSwitcher variant="dropdown" />
+      <LanguageSwitcher variant="toggle" />
     </div>
   );
 };

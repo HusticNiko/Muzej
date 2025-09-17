@@ -1,7 +1,7 @@
 .language-switcher-buttons {
   display: flex;
   gap: 8px;
-  align-items: center;
+  align-items: right;
 }
 
 .language-btn {
@@ -41,14 +41,17 @@
 
 .language-switcher-toggle {
   display: flex;
-  align-items: center;
+  align-items: right;
+  align-self: flex-end;
 }
 
 .language-toggle-btn {
   padding: 8px 16px;
+  display: flex;
   border: 2px solid #ddd;
   background: white;
   border-radius: 20px;
+  align-items: end;
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;

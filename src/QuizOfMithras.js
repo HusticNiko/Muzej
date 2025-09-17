@@ -6,10 +6,18 @@ import ring from './icons/ring.png'; // Adjust path if using public folder
 import cesar from './icons/cesar.png'; // Adjust path if using public folder
 import lion from './icons/lion.png'; // Adjust path if using public folder
 import stars from './icons/stars.png'; // Adjust path if using public folder
+import LanguageSwitcher from "./components/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
+
+const QuizOfMithras = ({ onBack }) => {
+  const { t } = useTranslation();
+  const [stageIndex, setStageIndex] = useState(0);
+  const [showResult, setShowResult] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(null);
 
 
-const stages = [
-  { name: "Corax", symbol: "🐦", icon: crow, question: "What creature is associated with the Corax stage?", options: ["Crow", "Bull", "Lion"], answer: "Crow" },
+  const stages = [
+  { name: "Corax", symbol: "🐦", icon: crow, question: t("stage1"), options: ["Crow", "Bull", "Lion"], answer: "Crow" },
   { name: "Nymphus", symbol: "💍",icon: ring, question: "What does the Nymphus stage represent?", options: ["Sun", "War", "Marriage"], answer: "Marriage" },
   { name: "Miles", symbol: "⚔️", icon: cesar, question: "What is a Miles in Mithraism?", options: ["A farmer", "A priest", "A soldier"], answer: "A soldier" },
   { name: "Leo", symbol: "🦁", icon: lion, question: "Which element is associated with Leo?", options: ["Fire", "Water", "Earth"], answer: "Fire" },
@@ -17,11 +25,6 @@ const stages = [
   { name: "Heliodromus", symbol: "☀️", icon: stars, question: "What is the role of Heliodromus?", options: ["Bull Slayer", "Moon Watcher", "Sun Runner"], answer: "Sun Runner" },
   { name: "Pater", symbol: "🧙", question: "What happens at the Pater stage?", options: ["War", "Sacrifice", "Enlightenment"], answer: "Enlightenment" }
 ];
-
-const QuizOfMithras = ({ onBack }) => {
-  const [stageIndex, setStageIndex] = useState(0);
-  const [showResult, setShowResult] = useState(false);
-  const [isCorrect, setIsCorrect] = useState(null);
 
   const current = stages[stageIndex];
 
@@ -98,8 +101,10 @@ const QuizOfMithras = ({ onBack }) => {
     <button onClick={onBack} className="btn back-btn">Back to Menu</button>
   </div>
 )}
+      <LanguageSwitcher variant="toggle" />
     </div>
   );
+
 };
 
 export default QuizOfMithras;
