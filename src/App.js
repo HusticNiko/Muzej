@@ -7,6 +7,7 @@ import useInactivityTimer from "./useInactivityTimer"; // Adjust path
 
 
 import "./styles.css";
+import LanguageSwitcher from "./components/LanguageSwitcher";
 
 const App = () => {
   const [currentGame, setCurrentGame] = useState(null);
@@ -67,6 +68,7 @@ const App = () => {
       {currentGame === "wheel" && <WheelOfFortuna onBack={() => setCurrentGame(null)} />}
       {currentGame === "quiz" && <QuizOfMithras onBack={() => setCurrentGame(null)} />}
       {currentGame === "stars" && <StarrySkyMystery onBack={() => setCurrentGame(null)} />}
+      <LanguageSwitcher variant="dropdown" />
     </div>
   );
 };
