@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import './AdminLoginDialog.css';
+import "../styles.css";
 
 const AdminLoginDialog = ({ onClose, onLogin }) => {
   const { t } = useTranslation();

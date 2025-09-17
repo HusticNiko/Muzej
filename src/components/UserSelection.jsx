@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useUser } from '../context/UserContext';
 import AdminLoginDialog from './AdminLoginDialog';
 import LanguageSwitcher from './LanguageSwitcher';
-import './UserSelection.css';
+import "../styles.css";
 
 const UserSelection = () => {
   const { t } = useTranslation();

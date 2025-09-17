@@ -48,19 +48,22 @@ const App = () => {
         setShowWarning(false);    // hide warning
       }
     },
-    60000, // 4 min for warning
+    6000, // 4 min for warning
     120000  // 5 min for timeout
   );
 
+  
+
   const AppContent = () => {
-  const { user, isAuthenticated } = useUser();
+  const { user, isAuthenticated, logout } = useUser();
 
   if (!isAuthenticated) {
     return <UserSelection />;
   }
 
   if (user === 'customer') {
-    return  ( <div className="app">
+    return  ( 
+    <div className="app">
     {showWarning && (
         <div className="warning-popup">
           <p>⚠️ You will return to the main menu in 1 minute due to inactivity.</p>
@@ -79,6 +82,10 @@ const App = () => {
       {currentGame === "quiz" && <QuizOfMithras onBack={() => setCurrentGame(null)} />}
       {currentGame === "stars" && <StarrySkyMystery onBack={() => setCurrentGame(null)} />}
       <LanguageSwitcher variant="toggle" />
+      <button className="logout-btn" onClick={logout}>
+            <span className="logout-icon">🚪</span>
+            {t('logout')}
+          </button>
     </div>)
   }
 

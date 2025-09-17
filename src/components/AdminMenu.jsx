@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUser } from '../context/UserContext';
 import LanguageSwitcher from './LanguageSwitcher';
-import './Menu.css';
+import "../styles.css";
 
 const AdminMenu = () => {
   const { t } = useTranslation();
