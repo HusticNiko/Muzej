@@ -1,63 +1,64 @@
-import React from 'react';
+import React , {useState, useEffect, useRef} from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUser } from '../context/UserContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import "../styles.css";
+import Player from '../projector/player';
 
 const AdminMenu = () => {
   const { t } = useTranslation();
   const { logout } = useUser();
+  const [start, setStart] = useState(false);
+  const [videoRelPath, setVideoRelPath] = useState('video.mp4');
+  const [log, setLog] = useState([]);
+  const [events, setEvents] = useState([]);
+  const domHandlerRef = useRef(null);
 
-  const handleProjectionWithSubtitles = () => {
-    console.log('Starting projection with subtitles');
-    // Add your projection logic here
+  const playAll = async () => {
+  // If you want to choose a different file at runtime, update videoRelPath
+  // Passing nothing falls back to assets/video.mp4 via ipcMain
+  console.log('[UI] playAll clicked');
+  await window.projectors?.playAll();
   };
 
-  const handleProjectionWithoutSubtitles = () => {
-    console.log('Starting projection without subtitles');
-    // Add your projection logic here
+
+  useEffect(() => {
+    const handler = (e) => {
+      const data = e.detail; // e.g., { displayId, type: 'ENDED' }
+      console.log('[App] DOM projector-state:', data);
+      if(data.type === "ENDED") {
+        setStart(false)
+      }
+       if(data.type === "PLAYING") {
+        setStart(true)
+      }
+    };
+    domHandlerRef.current = handler;
+    window.addEventListener('projector-state', handler);
+    return () => window.removeEventListener('projector-state', handler);
+  }, []);
+
+
+  const pauseAll = async () => {
+  await window.projectors?.pauseAll();
   };
+  const handleProjectionWithSubtitles = async () => {
+      setStart(true);
+      await window.projectors?.play1();
+  };
+
+  const handleProjectionWithoutSubtitles = async () => {
+      setStart(true);
+      await window.projectors?.play2();
+  };
+
 
   return (
-    <div className="menu-container">
-      <div className="menu-header">
-        <div className="menu-title">
-          <h1>{t('admin_menu')}</h1>
-          <p>{t('welcome_admin')}</p>
-        </div>
-        <div className="menu-controls">
-          <LanguageSwitcher variant="toggle" />
-          <button className="logout-btn" onClick={logout}>
-            <span className="logout-icon">🚪</span>
-            {t('logout')}
-          </button>
-        </div>
-      </div>
+    
+               start &&     <Player />
 
-      <div className="admin-menu-grid">
-        <button
-          className="admin-menu-item projection-with-subtitles"
-          onClick={handleProjectionWithSubtitles}
-        >
-          <div className="admin-menu-icon">🎬</div>
-          <div className="admin-menu-content">
-            <h3>{t('projection_with_subtitles')}</h3>
-            <p>{t('projection_with_subtitles_desc')}</p>
-          </div>
-        </button>
-
-        <button
-          className="admin-menu-item projection-without-subtitles"
-          onClick={handleProjectionWithoutSubtitles}
-        >
-          <div className="admin-menu-icon">🎥</div>
-          <div className="admin-menu-content">
-            <h3>{t('projection_without_subtitles')}</h3>
-            <p>{t('projection_without_subtitles_desc')}</p>
-          </div>
-        </button>
-      </div>
-    </div>
+   
+   
   );
 };
 

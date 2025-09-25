@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import AdminMenu from "./components/AdminMenu";
 import UserSelection from "./components/UserSelection";
 import { UserProvider, useUser } from './context/UserContext';
-
+import GeneralQuiz from "./GeneralQuiz";
 
   // Silent Long Press Hook (no visual feedback)
 const useSilentLongPress = (onLongPress, delay = 10000) => {
@@ -23,7 +23,6 @@ const useSilentLongPress = (onLongPress, delay = 10000) => {
     if (event.type === 'touchstart') {
       event.preventDefault();
     }
-    console.log(isPressed);
     setIsPressed(true);
     
     // Long press timer
@@ -67,7 +66,6 @@ const App = () => {
   const { t } = useTranslation();
   const [currentGame, setCurrentGame] = useState(null);
   const [showWarning, setShowWarning] = useState(false);
-
   const isGameActive = currentGame !== null;
 
   useEffect(() => {
@@ -99,8 +97,8 @@ const App = () => {
         setShowWarning(false);    // hide warning
       }
     },
-    1000, // 4 min for warning
-    2000  // 5 min for timeout
+    50000, // 4 min for warning
+    100000  // 5 min for timeout
   );
 
   const AppContent = () => {
@@ -119,11 +117,11 @@ const App = () => {
       }
     }, [longPressProps.showButton]);
 
-    if (!isAuthenticated) {
+    /*if (!isAuthenticated) {
       return <UserSelection />;
     }
 
-    if (user === 'customer') {
+    if (user === 'customer') {*/
       return (
         <div
           className="app"
@@ -145,13 +143,15 @@ const App = () => {
           {currentGame === null && (
             <div className="menu">
               <h1>{t('welcome')}</h1>
-              <button onClick={() => setCurrentGame("quiz")} className="btn">{t('trial_of_mithras')}</button>
-              <button onClick={() => setCurrentGame("stars")} className="btn">{t('mysteri_of_skyes')}</button>
+              <button onClick={() => setCurrentGame("quiz2")} className="home_btn">{t('general_faith')}</button>
+              <button onClick={() => setCurrentGame("quiz")} className="home_btn">{t('trial_of_mithras')}</button>
+              {/*<button onClick={() => setCurrentGame("stars")} className="btn">{t('mysteri_of_skyes')}</button> */}
             </div>
           )}
 
           {currentGame === "wheel" && <WheelOfFortuna onBack={() => setCurrentGame(null)} />}
           {currentGame === "quiz" && <QuizOfMithras onBack={() => setCurrentGame(null)} />}
+          {currentGame === "quiz2" && <GeneralQuiz onBack={() => setCurrentGame(null)} />}
           {currentGame === "stars" && <StarrySkyMystery onBack={() => setCurrentGame(null)} />}
           
           <LanguageSwitcher variant="" />
@@ -171,13 +171,13 @@ const App = () => {
           )}
         </div>
       );
-    }
+    /*}
 
     if (user === 'admin') {
       return <AdminMenu />;
     }
 
-    return <UserSelection />;
+    return <UserSelection />;*/
   };
 
   return (

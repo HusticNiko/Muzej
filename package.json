@@ -2,6 +2,7 @@
   "name": "fortuna-app",
   "version": "0.1.0",
   "private": true,
+  "main": "electron/main.js",
   "dependencies": {
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
@@ -13,15 +14,27 @@
     "react-dom": "^19.1.0",
     "react-i18next": "^15.7.3",
     "react-scripts": "5.0.1",
+    "express": "^4",
     "web-vitals": "^2.1.4"
   },
+  "devDependencies": {
+    "@babel/plugin-proposal-optional-chaining-assign": "^7.27.1",
+    "ajv": "^8.17.1",
+    "concurrently": "^9",
+    "wait-on": "^7"
+  },
   "scripts": {
-    "start": "NODE_NO_WARNINGS=1 react-scripts start ",
+    "start": "concurrently \"NODE_NO_WARNINGS=1 node server.js\" \"react-scripts start\"",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "electron": "electron .",
+    "dev": "concurrently \"react-scripts start\" \"wait-on http://localhost:3000 && electron .\" --silent",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
+    "parserOptions": {
+    "ecmaVersion": 2022
+    },
     "extends": [
       "react-app",
       "react-app/jest"

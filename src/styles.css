@@ -18,6 +18,7 @@ body {
     min-height: 100vh;
     width: 100vw;
     padding: 2rem;
+    z-index: 0;
     box-sizing: border-box;
     overflow: hidden;
   }
@@ -50,6 +51,62 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
   }
+
+
+   .home_btn {
+     border: 2px solid #c3a574;
+    background-color: #fff4dc;
+    color: #5a3e1b;
+    border-radius: 12px;
+    padding: 2rem 4rem; /* 2x bigger */
+    font-size: 3rem;    /* 1.5rem × 2 */
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.7rem;
+    width: 500px;
+    }
+
+    .question_btn {
+     border: 2px solid #c3a574;
+    background-color: #fff4dc;
+    color: #5a3e1b;
+    border-radius: 12px;
+    padding: 1rem 2rem; /* 2x bigger */
+    font-size: 3rem;    /* 1.5rem × 2 */
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.2rem;
+    width: 800px;
+    height: 200px;
+    font-weight: bold;
+    transform: scale(0.7);
+    white-space: normal;   
+    overflow-wrap: break-word;
+    }
+
+    .question_btn_corrrect {
+       border: 2px solid #c3a574;
+    background-color: green;
+    color: #5a3e1b;
+    border-radius: 12px;
+    padding: 2rem 4rem; /* 2x bigger */
+    font-size: 3rem;    /* 1.5rem × 2 */
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.7rem;
+    width: 500px;
+    transform: scale(0.7);
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: row;
+      margin: 10px;
+    }
+    
   
   .fortune-text {
     font-size: 3.6rem;
@@ -74,6 +131,25 @@ body {
     transform: translateY(-2px);
   }
 
+  .back_to_menu_btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 50px;
+    margin-left: 200px;
+    margin-top: 150px;
+    border: 2px solid #c3a574;
+    background-color: #fff4dc;
+    color: #5a3e1b;
+    border-radius: 12px;
+    padding: 1rem 2rem; /* 2x bigger */
+    font-size: 3rem;    /* 1.5rem × 2 */
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.7rem;
+    width: 300px;
+}
 
   .back-btn {
     position: absolute;
@@ -240,6 +316,7 @@ body {
     max-width: 100%;
     margin: auto;
     padding: 2rem;
+    margin-bottom: 200px;
   }
   
   .stage-title {
@@ -263,10 +340,15 @@ body {
   }
 
   .options {
-    margin: 1.5rem;
+    margin-left: 10px;
+    margin-right: 10px;
     color: #442c1c;
     font-size: x-large;
+    align-items: center;
+    justify-content: center;
     padding: 10px;
+    margin-bottom: 50px;
+    margin-top: 200px;
   }
   
   .result {
@@ -320,10 +402,12 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    width: 1000px;
     gap: 5px; /* even more spacing between steps */
-    position: relative;
-    padding-bottom: 10px;
+    position: fixed;
+    margin: 5px;
+    transform: scale(0.8);
   }
   
   .step-wrapper {
@@ -1136,6 +1220,23 @@ body {
   gap: 2rem;
   text-align: left;
   font-family: 'Georgia', serif;
+}
+
+.admin_menu_pause {
+  background: #fff4dc; /* Museum background */
+  border: 2px solid #c3a574; /* Museum border */
+  border-radius: 12px;
+  padding: 3rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  justify-content: center;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.2); /* Museum shadow */
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  text-align: left;
+  font-family: 'Georgia', serif;
+  transform: scale(0.5);
 }
 
 .admin-menu-item:hover {
