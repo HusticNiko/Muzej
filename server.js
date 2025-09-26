@@ -8,8 +8,8 @@ const net = require('net');
 
 // ---- constants ----
 const VLC_BIN = '/Applications/VLC.app/Contents/MacOS/VLC';
-const RC_HOST = '192.168.4.136';      // VLC RC listens on localhost
-const RC_PORT = 3001;             // <-- RC control port (NOT your HTTP port)
+const RC_HOST = '127.0.0.1';      // VLC RC listens on localhost
+const RC_PORT = 5050;             // <-- RC control port (NOT your HTTP port)
 const PORT = Number(process.env.CONTROL_PORT || 3001); // HTTP server port
 
 // ---- paths ----
@@ -29,8 +29,9 @@ function killVLC() {
 
 function vlcRc(cmd) {
   return new Promise((resolve, reject) => {
-    const sock = net.createConnection({ host: RC_HOST, port: RC_PORT }, () => {
+    const sock = net.createConnection({ host: "127.0.0.1", port: 5050 }, () => {
       sock.write(cmd + '\n');
+      // give VLC a moment; you can also listen for data if you want responses
       setTimeout(() => { sock.end(); resolve(); }, 80);
     });
     sock.on('error', reject);
@@ -112,7 +113,12 @@ server.on('error', (err) => {
   }
 });
 
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`[HTTP] Control server listening on http://0.0.0.0:${PORT}`);
-  console.log('[HTTP] Use Mac mini IP on tablets, e.g. http://192.168.x.x:' + PORT);
-});
+  server.listen(PORT, '0.0.0.0', () =>
+    console.log(`[HTTP] Control server listening on http://<mac-ip>:${PORT}`)
+  );
+  const HOST = '0.0.0.0'; // listen on LAN
+  server.listen(PORT, HOST, () => {
+    console.log(`[HTTP] Control server listening on http://${HOST}:${PORT}`);
+    console.log('[HTTP] If accessing from tablet, use Mac mini IP, e.g. http://192.168.x.x:3001');
+  });
+
