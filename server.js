@@ -45,11 +45,32 @@ async function playWallWithVLC(videoAbsPath, cols = 3, rows = 1) {
   await killVLC();
 
   const args = [
-    '--video-splitter=wall',
-    `--wall-cols=${cols}`,
-    `--wall-rows=${rows}`,
+    '--no-osd',
     '--no-video-title-show',
     '--fullscreen',
+    '--extraintf=rc',
+    `--rc-host=${RC_HOST}:${RC_PORT}`, // ✅ RC on 127.0.0.1:5050
+    videoAbsPath,
+  ];
+
+  console.log('[VLC] launching:', VLC_BIN, args.join(' '));
+  const child = spawn(VLC_BIN, ['-vvv', ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+  child.stdout.on('data', d => console.log('[VLC]', d.toString()));
+  child.stderr.on('data', d => console.error('[VLC E]', d.toString()));
+  child.on('exit', code => console.log('[VLC] exited with code', code));
+  child.on('error', (e) => console.error('[VLC] spawn error:', e));
+}
+
+async function playWallWithVLC2(videoAbsPath, cols = 3, rows = 1) {
+  if (!fs.existsSync(VLC_BIN)) throw new Error(`VLC not found at ${VLC_BIN}`);
+  if (!fs.existsSync(videoAbsPath)) throw new Error(`Video not found at ${videoAbsPath}`);
+
+  await killVLC();
+
+  const args = [
+    '--no-video-title-show',
+    '--fullscreen',
+    '--loop',
     '--extraintf=rc',
     `--rc-host=${RC_HOST}:${RC_PORT}`, // ✅ RC on 127.0.0.1:5050
     videoAbsPath,
@@ -73,7 +94,7 @@ app.use(express.static(path.join(process.cwd(), 'remote-ui')));
 // controls
 app.get('/play', async (_req, res) => {
   try {
-    await playWallWithVLC(getVideoAbsPath(), 3, 1);
+    await playWallWithVLC(getVideoAbsPath(), 1, 0);
     res.send('OK');
   } catch (err) {
     console.error('[HTTP] /play', err);
@@ -83,7 +104,7 @@ app.get('/play', async (_req, res) => {
 
 app.get('/play2', async (_req, res) => {
   try {
-    await playWallWithVLC(getVideoAbsPath2(), 3, 1);
+    await playWallWithVLC2(getVideoAbsPath2(), 3, 1);
     res.send('OK');
   } catch (err) {
     console.error('[HTTP] /play2', err);
