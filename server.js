@@ -10,7 +10,7 @@ const net = require('net');
 const VLC_BIN = '/Applications/VLC.app/Contents/MacOS/VLC';
 const RC_HOST = '127.0.0.1';      // VLC RC listens on localhost
 const RC_PORT = 5050;             // <-- RC control port (NOT your HTTP port)
-const PORT = Number(process.env.CONTROL_PORT || 3001); // HTTP server port
+const PORT = Number(process.env.CONTROL_PORT || 3002); // HTTP server port
 
 // ---- paths ----
 function getVideoAbsPath() {
@@ -63,6 +63,32 @@ async function playWallWithVLC(videoAbsPath, cols = 3, rows = 1) {
   child.on('error', (e) => console.error('[VLC] spawn error:', e));
 }
 
+async function playWallWithVLC2(videoAbsPath, cols = 3, rows = 1) {
+  if (!fs.existsSync(VLC_BIN)) throw new Error(`VLC not found at ${VLC_BIN}`);
+  if (!fs.existsSync(videoAbsPath)) throw new Error(`Video not found at ${videoAbsPath}`);
+
+  await killVLC();
+
+  const args = [
+    '--video-splitter=wall',
+    `--wall-cols=${cols}`,
+    `--wall-rows=${rows}`,
+    '--no-video-title-show',
+    '--loop',
+    '--fullscreen',
+    '--extraintf=rc',
+    `--rc-host=${RC_HOST}:${RC_PORT}`, // ✅ RC on 127.0.0.1:5050
+    videoAbsPath,
+  ];
+
+  console.log('[VLC] launching:', VLC_BIN, args.join(' '));
+  const child = spawn(VLC_BIN, ['-vvv', ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+  child.stdout.on('data', d => console.log('[VLC]', d.toString()));
+  child.stderr.on('data', d => console.error('[VLC E]', d.toString()));
+  child.on('exit', code => console.log('[VLC] exited with code', code));
+  child.on('error', (e) => console.error('[VLC] spawn error:', e));
+}
+
 // ---- server ----
 const app = express();
 const server = http.createServer(app);
@@ -83,7 +109,7 @@ app.get('/play', async (_req, res) => {
 
 app.get('/play2', async (_req, res) => {
   try {
-    await playWallWithVLC(getVideoAbsPath2(), 3, 1);
+    await playWallWithVLC2(getVideoAbsPath2(), 3, 1);
     res.send('OK');
   } catch (err) {
     console.error('[HTTP] /play2', err);
