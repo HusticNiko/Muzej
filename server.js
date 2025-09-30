@@ -18,7 +18,7 @@ function getVideoAbsPath() {
   return path.join(process.cwd(), 'assets', 'video.mp4');
 }
 function getVideoAbsPath2() {
-  return path.join(process.cwd(), 'assets', 'video2.mp4');
+  return path.join(process.cwd(), 'assets', 'video2.mov');
 }
 
 function sendCmdO() {
@@ -60,11 +60,6 @@ async function playWallWithVLC(videoAbsPath, cols = 3, rows = 1) {
     `--wall-rows=${rows}`,
     '--no-video-title-show',
     '--fullscreen',
-    '--crop=1280x1080+0+0 ',
-    '--width=1280',
-    '--height=1080',
-    '--video-x=0',
-    '--video-y=0',
     '--extraintf=rc',
     `--rc-host=${RC_HOST}:${RC_PORT}`, // ✅ RC on 127.0.0.1:5050
     videoAbsPath,
@@ -72,101 +67,23 @@ async function playWallWithVLC(videoAbsPath, cols = 3, rows = 1) {
 
   console.log('[VLC] launching:', VLC_BIN, args.join(' '));
   const child = spawn(VLC_BIN, ['-vvv', ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+    setTimeout(() => {
+    sendCmdO().catch(err => console.error('Failed to send CMD+O:', err));
+  }, 1000 ); // wait a bit so VLC has time to launch
+   setTimeout(() => {
+    sendCmdO().catch(err => console.error('Failed to send CMD+O:', err));
+  }, 3000 ); // wait a bit so VLC has time to launch
+   setTimeout(() => {
+    sendCmdO().catch(err => console.error('Failed to send CMD+O:', err));
+  }, 6000 ); // wait a bit so VLC has time to launch
   setTimeout(() => {
     sendCmdO().catch(err => console.error('Failed to send CMD+O:', err));
-  }, 2000); // wait a bit so VLC has time to launch
+  }, 8000 ); // wait a bit so VLC has time to launch
   child.stdout.on('data', d => console.log('[VLC]', d.toString()));
   child.stderr.on('data', d => console.error('[VLC E]', d.toString()));
   child.on('exit', code => console.log('[VLC] exited with code', code));
   child.on('error', (e) => console.error('[VLC] spawn error:', e));
 }
-
-
-async function playWallWithVLCLevo(videoAbsPath, cols = 3, rows = 1) {
-  if (!fs.existsSync(VLC_BIN)) throw new Error(`VLC not found at ${VLC_BIN}`);
-  if (!fs.existsSync(videoAbsPath)) throw new Error(`Video not found at ${videoAbsPath}`);
-
-  await killVLC();
-
-  const args = [
-    '--video-filter=croppadd',
-    '--no-video-title-show',
-    '--fullscreen',
-    '--crop=1920+0+0 ',
-    '--width=1920',
-    '--height=1080',
-    '--video-x=1920',
-    '--video-y=0',
-    '--extraintf=rc',
-    `--rc-host=${RC_HOST}:${RC_PORT}`, // ✅ RC on 127.0.0.1:5050
-    videoAbsPath,
-  ];
-
-  console.log('[VLC] launching:', VLC_BIN, args.join(' '));
-  const child = spawn(VLC_BIN, ['-vvv', ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
-  child.stdout.on('data', d => console.log('[VLC]', d.toString()));
-  child.stderr.on('data', d => console.error('[VLC E]', d.toString()));
-  child.on('exit', code => console.log('[VLC] exited with code', code));
-  child.on('error', (e) => console.error('[VLC] spawn error:', e));
-}
-
-async function playWallWithVLCSredina(videoAbsPath, cols = 3, rows = 1) {
-  if (!fs.existsSync(VLC_BIN)) throw new Error(`VLC not found at ${VLC_BIN}`);
-  if (!fs.existsSync(videoAbsPath)) throw new Error(`Video not found at ${videoAbsPath}`);
-
-  await killVLC();
-
-  const args = [
-    '--video-filter=croppadd',
-    '--no-video-title-show',
-    '--fullscreen',
-    '--crop=1920x1080+1920+0',
-    '--width=1920',
-    '--height=1080',
-    '--video-x=3840',
-    '--video-y=0',
-    '--extraintf=rc',
-    `--rc-host=${RC_HOST}:${RC_PORT}`, // ✅ RC on 127.0.0.1:5050
-    videoAbsPath,
-  ];
-
-  console.log('[VLC] launching:', VLC_BIN, args.join(' '));
-  const child = spawn(VLC_BIN, ['-vvv', ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
-  child.stdout.on('data', d => console.log('[VLC]', d.toString()));
-  child.stderr.on('data', d => console.error('[VLC E]', d.toString()));
-  child.on('exit', code => console.log('[VLC] exited with code', code));
-  child.on('error', (e) => console.error('[VLC] spawn error:', e));
-}
-
-async function playWallWithVLCDesno(videoAbsPath, cols = 3, rows = 1) {
-  if (!fs.existsSync(VLC_BIN)) throw new Error(`VLC not found at ${VLC_BIN}`);
-  if (!fs.existsSync(videoAbsPath)) throw new Error(`Video not found at ${videoAbsPath}`);
-
-  await killVLC();
-
-  const args = [
-    '--video-filter=croppadd',
-    '--no-video-title-show',
-    '--fullscreen',
-    '--crop=1920x1080+3840+0',
-    '--width=1920',
-    '--height=1080',
-    '--video-x=5760',
-    '--video-y=0',
-    '--extraintf=rc',
-    `--rc-host=${RC_HOST}:${RC_PORT}`, // ✅ RC on 127.0.0.1:5050
-    videoAbsPath,
-  ];
-
-  console.log('[VLC] launching:', VLC_BIN, args.join(' '));
-  const child = spawn(VLC_BIN, ['-vvv', ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
-  child.stdout.on('data', d => console.log('[VLC]', d.toString()));
-  child.stderr.on('data', d => console.error('[VLC E]', d.toString()));
-  child.on('exit', code => console.log('[VLC] exited with code', code));
-  child.on('error', (e) => console.error('[VLC] spawn error:', e));
-}
-
-
 
 async function playWallWithVLC2(videoAbsPath, cols = 3, rows = 1) {
   if (!fs.existsSync(VLC_BIN)) throw new Error(`VLC not found at ${VLC_BIN}`);
@@ -188,6 +105,18 @@ async function playWallWithVLC2(videoAbsPath, cols = 3, rows = 1) {
 
   console.log('[VLC] launching:', VLC_BIN, args.join(' '));
   const child = spawn(VLC_BIN, ['-vvv', ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+   setTimeout(() => {
+    sendCmdO().catch(err => console.error('Failed to send CMD+O:', err));
+  }, 1000 ); // wait a bit so VLC has time to launch
+   setTimeout(() => {
+    sendCmdO().catch(err => console.error('Failed to send CMD+O:', err));
+  }, 2000 ); // wait a bit so VLC has time to launch
+   setTimeout(() => {
+    sendCmdO().catch(err => console.error('Failed to send CMD+O:', err));
+  }, 3000 ); // wait a bit so VLC has time to launch
+   setTimeout(() => {
+    sendCmdO().catch(err => console.error('Failed to send CMD+O:', err));
+  }, 4000 ); // wait a bit so VLC has time to launch
   child.stdout.on('data', d => console.log('[VLC]', d.toString()));
   child.stderr.on('data', d => console.error('[VLC E]', d.toString()));
   child.on('exit', code => console.log('[VLC] exited with code', code));
@@ -234,7 +163,8 @@ app.get('/resume', async (_req, res) => {
 });
 
 app.get('/stop', async (_req, res) => {
-  try { await killVLC(); res.send('OK'); }
+  try { await vlcRc('stop'); res.send('OK'); }
+
   catch (e) { console.error('[HTTP] /stop', e); res.status(500).send('Failed to kill VLC'); }
 });
 
