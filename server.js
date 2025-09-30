@@ -191,10 +191,7 @@ app.use(express.static(path.join(process.cwd(), 'remote-ui')));
 // controls
 app.get('/play', async (_req, res) => {
   try {
-    await playWallWithVLCLevo(getVideoAbsPath(), 3, 1);
-    await playWallWithVLCSredina(getVideoAbsPath(), 3, 1);
-    await playWallWithVLCDesno(getVideoAbsPath(), 3, 1);
-
+    await playWallWithVLC(getVideoAbsPath(), 3, 1);
     res.send('OK');
   } catch (err) {
     console.error('[HTTP] /play', err);
