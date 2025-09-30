@@ -50,6 +50,11 @@ async function playWallWithVLC(videoAbsPath, cols = 3, rows = 1) {
     `--wall-rows=${rows}`,
     '--no-video-title-show',
     '--fullscreen',
+    '--crop=1280x1080+0+0 ',
+    '--width=1280',
+    '--height=1080',
+    '--video-x=0',
+    '--video-y=0',
     '--extraintf=rc',
     `--rc-host=${RC_HOST}:${RC_PORT}`, // ✅ RC on 127.0.0.1:5050
     videoAbsPath,
@@ -62,6 +67,93 @@ async function playWallWithVLC(videoAbsPath, cols = 3, rows = 1) {
   child.on('exit', code => console.log('[VLC] exited with code', code));
   child.on('error', (e) => console.error('[VLC] spawn error:', e));
 }
+
+
+async function playWallWithVLCLevo(videoAbsPath, cols = 3, rows = 1) {
+  if (!fs.existsSync(VLC_BIN)) throw new Error(`VLC not found at ${VLC_BIN}`);
+  if (!fs.existsSync(videoAbsPath)) throw new Error(`Video not found at ${videoAbsPath}`);
+
+  await killVLC();
+
+  const args = [
+    '--video-filter=croppadd',
+    '--no-video-title-show',
+    '--fullscreen',
+    '--crop=1280x1080+0+0 ',
+    '--width=1280',
+    '--height=1080',
+    '--video-x=0',
+    '--video-y=0',
+    '--extraintf=rc',
+    `--rc-host=${RC_HOST}:${RC_PORT}`, // ✅ RC on 127.0.0.1:5050
+    videoAbsPath,
+  ];
+
+  console.log('[VLC] launching:', VLC_BIN, args.join(' '));
+  const child = spawn(VLC_BIN, ['-vvv', ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+  child.stdout.on('data', d => console.log('[VLC]', d.toString()));
+  child.stderr.on('data', d => console.error('[VLC E]', d.toString()));
+  child.on('exit', code => console.log('[VLC] exited with code', code));
+  child.on('error', (e) => console.error('[VLC] spawn error:', e));
+}
+
+async function playWallWithVLCSredina(videoAbsPath, cols = 3, rows = 1) {
+  if (!fs.existsSync(VLC_BIN)) throw new Error(`VLC not found at ${VLC_BIN}`);
+  if (!fs.existsSync(videoAbsPath)) throw new Error(`Video not found at ${videoAbsPath}`);
+
+  await killVLC();
+
+  const args = [
+    '--video-filter=croppadd',
+    '--no-video-title-show',
+    '--fullscreen',
+    '--crop=1280x1080+1280+0',
+    '--width=1280',
+    '--height=1080',
+    '--video-x=1280',
+    '--video-y=0',
+    '--extraintf=rc',
+    `--rc-host=${RC_HOST}:${RC_PORT}`, // ✅ RC on 127.0.0.1:5050
+    videoAbsPath,
+  ];
+
+  console.log('[VLC] launching:', VLC_BIN, args.join(' '));
+  const child = spawn(VLC_BIN, ['-vvv', ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+  child.stdout.on('data', d => console.log('[VLC]', d.toString()));
+  child.stderr.on('data', d => console.error('[VLC E]', d.toString()));
+  child.on('exit', code => console.log('[VLC] exited with code', code));
+  child.on('error', (e) => console.error('[VLC] spawn error:', e));
+}
+
+async function playWallWithVLCDesno(videoAbsPath, cols = 3, rows = 1) {
+  if (!fs.existsSync(VLC_BIN)) throw new Error(`VLC not found at ${VLC_BIN}`);
+  if (!fs.existsSync(videoAbsPath)) throw new Error(`Video not found at ${videoAbsPath}`);
+
+  await killVLC();
+
+  const args = [
+    '--video-filter=croppadd',
+    '--no-video-title-show',
+    '--fullscreen',
+    '--crop=1280x1080+2560+0',
+    '--width=1280',
+    '--height=1080',
+    '--video-x=2560',
+    '--video-y=0',
+    '--extraintf=rc',
+    `--rc-host=${RC_HOST}:${RC_PORT}`, // ✅ RC on 127.0.0.1:5050
+    videoAbsPath,
+  ];
+
+  console.log('[VLC] launching:', VLC_BIN, args.join(' '));
+  const child = spawn(VLC_BIN, ['-vvv', ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+  child.stdout.on('data', d => console.log('[VLC]', d.toString()));
+  child.stderr.on('data', d => console.error('[VLC E]', d.toString()));
+  child.on('exit', code => console.log('[VLC] exited with code', code));
+  child.on('error', (e) => console.error('[VLC] spawn error:', e));
+}
+
+
 
 async function playWallWithVLC2(videoAbsPath, cols = 3, rows = 1) {
   if (!fs.existsSync(VLC_BIN)) throw new Error(`VLC not found at ${VLC_BIN}`);
@@ -99,7 +191,10 @@ app.use(express.static(path.join(process.cwd(), 'remote-ui')));
 // controls
 app.get('/play', async (_req, res) => {
   try {
-    await playWallWithVLC(getVideoAbsPath(), 3, 1);
+    await playWallWithVLCLevo(getVideoAbsPath(), 3, 1);
+    await playWallWithVLCSredina(getVideoAbsPath(), 3, 1);
+    await playWallWithVLCDesno(getVideoAbsPath(), 3, 1);
+
     res.send('OK');
   } catch (err) {
     console.error('[HTTP] /play', err);
