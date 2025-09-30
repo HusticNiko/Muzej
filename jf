@@ -1,38 +1,87 @@
--- ===== VLC triple-screen auto-arranger =====
+-- ===== VLC triple-screen auto-arranger (robust) =====
 -- Requirements: grant Hammerspoon Accessibility permissions in System Settings.
 
+-- ---------- helpers ----------
 local function sortScreensLeftToRight(screens)
-  table.sort(screens, function(a, b)
-    return a:frame().x < b:frame().x
-  end)
+  table.sort(screens, function(a, b) return a:frame().x < b:frame().x end)
   return screens
 end
 
 local function visibleStandardWindows(app)
   local wins = {}
   for _, w in ipairs(app:allWindows()) do
-    if w:isStandard() and w:isVisible() then
-      table.insert(wins, w)
-    end
+    if w:isStandard() and w:isVisible() then table.insert(wins, w) end
   end
   return wins
 end
 
-local function fullscreenSafe(win)
-  -- Prefer macOS fullscreen; fallback to VLC's Cmd+F if needed.
-  if win and win.setFullScreen then
-    win:setFullScreen(true)
-  end
-  -- Some VLC builds ignore setFullScreen; send Cmd+F as fallback.
-  if win then
-    win:focus()
-    hs.eventtap.keyStroke({"cmd"}, "f", 0)  -- VLC's fullscreen toggle
-  end
+local function nearly(a, b, tol) return math.abs(a - b) <= tol end
+
+local function framesNearlyEqual(f1, f2, tol)
+  return nearly(f1.x, f2.x, tol)
+     and nearly(f1.y, f2.y, tol)
+     and nearly(f1.w, f2.w, tol)
+     and nearly(f1.h, f2.h, tol)
 end
 
+local function coversScreen(win, scr, tol)
+  local wf, sf = win:frame(), scr:frame()
+  -- consider it "fullscreen enough" if it's very close to the screen frame
+  if framesNearlyEqual(wf, sf, tol) then return true end
+  -- or if it covers >= 98% of the screen area
+  local areaW, areaS = (wf.w * wf.h), (sf.w * sf.h)
+  return win:screen() == scr and areaW >= (areaS * 0.98)
+end
+
+local function ensureFullscreen(win, scr)
+  if not win then return false end
+  -- If macOS fullscreen is already on, we're good.
+  if win.isFullScreen and win:isFullScreen() then return true end
+
+  -- Try macOS fullscreen first.
+  if win.setFullScreen then
+    win:setFullScreen(true)
+    hs.timer.usleep(250000) -- 0.25s settle
+    if win.isFullScreen and win:isFullScreen() then return true end
+  end
+
+  -- Fallback: VLC's own fullscreen (Cmd+F). This often does NOT flip isFullScreen().
+  win:focus()
+  hs.eventtap.keyStroke({"cmd"}, "f", 0)
+  hs.timer.usleep(350000) -- give VLC time to animate
+
+  -- Heuristic: treat as fullscreen if it covers the screen.
+  local scr = scr or win:screen()
+  return coversScreen(win, scr, 4)
+end
+
+local function ensureOnScreen(win, scr)
+  if not win or not scr then return false end
+  local ok = true
+  if win:screen() ~= scr then ok = false end
+  if not coversScreen(win, scr, 4) then ok = false end
+  if not ok then
+    win:moveToScreen(scr, false, true)  -- no animation, keep frame proportion
+    win:setFrame(scr:frame())
+    hs.timer.usleep(100000)
+  end
+  return coversScreen(win, scr, 4)
+end
+
+-- Verify that the first three windows are each on their target screen and fullscreen.
+local function verifyArrangement(wins, screens)
+  for i = 1, 3 do
+    local w, s = wins[i], screens[i]
+    if not (w and s) then return false end
+    if not coversScreen(w, s, 4) then return false end
+  end
+  return true
+end
+
+-- ---------- core pass ----------
 local function arrangeVLCOnce()
   local vlc = hs.appfinder.appFromName("VLC")
-  if not vlc then return false end
+  if not vlc or vlc:isHidden() then return false end
 
   local wins = visibleStandardWindows(vlc)
   local screens = sortScreensLeftToRight(hs.screen.allScreens())
@@ -42,61 +91,67 @@ local function arrangeVLCOnce()
     return true -- stop retrying; environment not ready
   end
 
-  if #wins < 3 then
-    return false -- not ready yet; keep retrying
-  end
+  -- Need 3 visible standard windows before trying to place.
+  if #wins < 3 then return false end
 
-  -- Ensure deterministic order by sorting windows left->right before moving,
-  -- so the same content stays on the same display across runs.
-  table.sort(wins, function(a, b)
-    return a:frame().x < b:frame().x
-  end)
+  table.sort(wins, function(a, b) return a:frame().x < b:frame().x end)
 
-  -- Move each of the first three VLC windows to the three screens
   for i = 1, 3 do
-    local win = wins[i]
-    local scr = screens[i]
+    local win, scr = wins[i], screens[i]
     if win and scr then
-      -- Move and size to the target screen before fullscreen
-      win:moveToScreen(scr)
+      -- Place to target screen and size to the full frame first.
+      ensureOnScreen(win, scr)
       win:setFrame(scr:frame())
-      fullscreenSafe(win)
+      -- Then ensure fullscreen (macOS or VLC-internal).
+      if not ensureFullscreen(win, scr) then
+        -- If still not fullscreen, try one more nudge: place & fullscreen again.
+        ensureOnScreen(win, scr)
+        win:setFrame(scr:frame())
+        ensureFullscreen(win, scr)
+      end
     end
   end
 
-  return true
+  -- Final verification: if anything isn't aligned/fullscreen, signal "not done".
+  wins = visibleStandardWindows(vlc) -- refresh references
+  table.sort(wins, function(a, b) return a:frame().x < b:frame().x end)
+  return verifyArrangement(wins, screens)
 end
 
--- Retry loop: wait for VLC to fully spawn its 3 windows.
+-- ---------- retry loop ----------
+local retryTimer = nil
+local function stopRetryTimer()
+  if retryTimer then retryTimer:stop(); retryTimer = nil end
+end
+
 local function arrangeVLCWithRetries()
-  local attempts = 0
-  local maxAttempts = 20  -- ~10 seconds total
-  local timer = nil
-  timer = hs.timer.doEvery(0.5, function()
-    attempts = attempts + 1
+  stopRetryTimer()
+  retryTimer = hs.timer.doEvery(0.5, function()
+    local vlc = hs.appfinder.appFromName("VLC")
+    if not vlc or vlc:isTerminated() then
+      stopRetryTimer()
+      return
+    end
     local done = arrangeVLCOnce()
-    if done or attempts >= maxAttempts then
-      if not done then
-        hs.alert.show("VLC auto-arrange timed out.")
-      end
-      timer:stop()
+    if done then
+      stopRetryTimer()
+      hs.alert.show("VLC arranged and fullscreen on all 3 screens.")
     end
   end)
 end
 
--- Auto-trigger when VLC launches or becomes active
+-- ---------- watchers / hotkey ----------
 local appWatcher = hs.application.watcher.new(function(name, event, app)
   if name == "VLC" and (event == hs.application.watcher.launched
                         or event == hs.application.watcher.activated) then
-    -- Small delay so windows exist
+    -- small delay so windows exist
     hs.timer.doAfter(1.0, arrangeVLCWithRetries)
+  end
+  if name == "VLC" and event == hs.application.watcher.terminated then
+    stopRetryTimer()
   end
 end)
 appWatcher:start()
 
--- Optional: manual hotkey to rerun arrangement (Cmd+Alt+Ctrl+V)
-hs.hotkey.bind({"cmd","alt","ctrl"}, "V", arrangeVLCWithRetries)
-
-
-mkdir -p ~/.hammerspoon
-touch ~/.hammerspoon/init.lua
+-- Manual hotkey to (re)run arrangement — Cmd+Alt+Ctrl+V (adjust if you like)
+hs.hotkey.bind({"cmd"}, "O", arrangeVLCWithRetries)
