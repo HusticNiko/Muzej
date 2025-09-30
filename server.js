@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const { spawn, exec } = require('child_process');
 const net = require('net');
+const { execFile } = require('child_process');
 
 // ---- constants ----
 const VLC_BIN = '/Applications/VLC.app/Contents/MacOS/VLC';
@@ -18,6 +19,15 @@ function getVideoAbsPath() {
 }
 function getVideoAbsPath2() {
   return path.join(process.cwd(), 'assets', 'video2.mp4');
+}
+
+function sendCmdO() {
+  return new Promise((resolve, reject) => {
+    execFile('osascript', ['-e', 'tell application "System Events" to keystroke "o" using {command down}'], (err) => {
+      if (err) return reject(err);
+      resolve();
+    });
+  });
 }
 
 // ---- helpers ----
@@ -62,6 +72,9 @@ async function playWallWithVLC(videoAbsPath, cols = 3, rows = 1) {
 
   console.log('[VLC] launching:', VLC_BIN, args.join(' '));
   const child = spawn(VLC_BIN, ['-vvv', ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+  setTimeout(() => {
+    sendCmdO().catch(err => console.error('Failed to send CMD+O:', err));
+  }, 2000); // wait a bit so VLC has time to launch
   child.stdout.on('data', d => console.log('[VLC]', d.toString()));
   child.stderr.on('data', d => console.error('[VLC E]', d.toString()));
   child.on('exit', code => console.log('[VLC] exited with code', code));
