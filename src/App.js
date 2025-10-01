@@ -117,11 +117,11 @@ const App = () => {
       }
     }, [longPressProps.showButton]);
 
-    /*if (!isAuthenticated) {
+    if (!isAuthenticated) {
       return <UserSelection />;
     }
 
-    if (user === 'customer') {*/
+    if (user === 'customer') {
       return (
         <div
           className="app"
@@ -143,7 +143,7 @@ const App = () => {
           {currentGame === null && (
             <div className="menu">
               <h1>{t('welcome')}</h1>
-              <button onClick={() => setCurrentGame("quiz2")} className="home_btn">{t('general_faith')}</button>
+              {/*<button onClick={() => setCurrentGame("quiz2")} className="home_btn">{t('general_faith')}</button>*/}
               <button onClick={() => setCurrentGame("quiz")} className="home_btn">{t('trial_of_mithras')}</button>
               {/*<button onClick={() => setCurrentGame("stars")} className="btn">{t('mysteri_of_skyes')}</button> */}
             </div>
@@ -171,13 +171,60 @@ const App = () => {
           )}
         </div>
       );
-    /*}
+    } else {
+      return (
+        <div
+          className="app"
+          {...longPressProps}
+          style={{ 
+            position: 'relative',
+            userSelect: 'none', // Prevent text selection during long press
+            WebkitUserSelect: 'none',
+            MozUserSelect: 'none',
+            msUserSelect: 'none'
+          }}
+        >
+          {showWarning && (
+            <div className="warning-popup">
+              <p>⚠️ You will return to the main menu in 1 minute due to inactivity.</p>
+            </div>
+          )}
 
-    if (user === 'admin') {
-      return <AdminMenu />;
+          {currentGame === null && (
+            <div className="menu">
+              <h1>{t('welcome')}</h1>
+              <button onClick={() => setCurrentGame("quiz2")} className="home_btn">{t('general_faith')}</button>
+              {/*<button onClick={() => setCurrentGame("quiz")} className="home_btn">{t('trial_of_mithras')}</button>*/}
+              {/*<button onClick={() => setCurrentGame("stars")} className="btn">{t('mysteri_of_skyes')}</button> */}
+            </div>
+          )}
+
+          {currentGame === "wheel" && <WheelOfFortuna onBack={() => setCurrentGame(null)} />}
+          {currentGame === "quiz" && <QuizOfMithras onBack={() => setCurrentGame(null)} />}
+          {currentGame === "quiz2" && <GeneralQuiz onBack={() => setCurrentGame(null)} />}
+          {currentGame === "stars" && <StarrySkyMystery onBack={() => setCurrentGame(null)} />}
+          
+          <LanguageSwitcher variant="" />
+          
+          {/* Hidden logout button that appears after 10s hold */}
+          {longPressProps.showButton && (
+            <button 
+              className="logout-btn customer-logout-btn" 
+              onClick={() => {
+                logout();
+                longPressProps.hideButton();
+              }}
+            >
+              <span className="logout-icon">🚪</span>
+              {t('logout')}
+            </button>
+          )}
+        </div>
+      );
     }
 
-    return <UserSelection />;*/
+
+    return <UserSelection />;
   };
 
   return (
@@ -187,11 +234,10 @@ const App = () => {
       </div>
     </UserProvider>
   );
-};
 
 
 
-
+}
 
 const WheelOfFortuna = ({ onBack }) => {
   const { t } = useTranslation();

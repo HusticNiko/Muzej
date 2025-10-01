@@ -15,14 +15,11 @@ const UserSelection = () => {
   };
 
   const handleAdminSelect = () => {
-    setShowAdminDialog(true);
+    setShowAdminDialog(false);
   };
 
-  const handleAdminLogin = (success) => {
-    setShowAdminDialog(false);
-    if (success) {
+  const handleAdminLogin = () => {
       login('admin');
-    }
   };
 
   return (
@@ -42,16 +39,16 @@ const UserSelection = () => {
             className="user-option-btn customer-btn"
             onClick={handleCustomerSelect}
           >
-            <div className="user-icon">👤</div>
+            <div className="user-icon">←</div>
             <h3>{t('customer')}</h3>
             <p>{t('customer_description')}</p>
           </button>
 
           <button 
             className="user-option-btn admin-btn"
-            onClick={handleAdminSelect}
+            onClick={handleAdminLogin}
           >
-            <div className="user-icon">🔐</div>
+            <div className="user-icon">→</div>
             <h3>{t('admin')}</h3>
             <p>{t('admin_description')}</p>
           </button>
