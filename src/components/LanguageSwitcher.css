@@ -5,6 +5,7 @@
   margin-top: 30px;
   transform: scale(1);
   align-self: center;
+  justify-content: center;
 }
 
 .language-btn {

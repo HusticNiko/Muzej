@@ -1,18 +1,21 @@
 import React, { useMemo, useState, useEffect } from "react";
 import "./styles.css";
-import obelisk from "./icons/obelisk.svg";
-import emperor from "./icons/emperor.svg";
-import columns from "./icons/colums.svg";
-import coloseum from "./icons/coloseum.svg";
-import ship from "./icons/ship.svg";
-import circus from "./icons/circus.svg";
-import crown from "./icons/crown.svg";
-import sword from "./icons/sword.svg";
-import eagle from "./icons/eagle.svg";
-import shield from "./icons/shield.svg";
-import temple from "./icons/temple.svg";
-import legion from "./icons/legion.svg";
-import helmet from "./icons/helmet.svg";
+import obelisk from "./icons/obelisk1.svg";
+import emperor from "./icons/emperor1.svg";
+import columns from "./icons/columns1.svg";
+import coloseum from "./icons/coloseum1.svg";
+import ship from "./icons/ship1.svg";
+import circus from "./icons/circus1.svg";
+import crown from "./icons/crown1.svg";
+import sword from "./icons/sword1.svg";
+import eagle from "./icons/eagle1.svg";
+import shield from "./icons/shield1.svg";
+import temple from "./icons/temple1.svg";
+import legion from "./icons/legion1.svg";
+import helmet from "./icons/helmet1.svg";
+import correct from "./icons/correct.svg";
+import wrong from "./icons/wrong.svg";
+
 import { useTranslation } from "react-i18next";
 
 // Helper: sample k unique items without mutating original
@@ -79,7 +82,7 @@ const QuizOfMithras = ({ onBack }) => {
                     index === stageIndex ? "glow" : ""
                   }`}
                 >
-                  {stage.icon && <img src={stage.icon} alt={stage.name} className="step-icon" />}
+                  {stage.icon && <img src={stage.icon} stroke={"white"} alt={stage.name} className="step-icon" />}
                   
                 </div>
                 {index !== stages.length - 1 && (
@@ -100,7 +103,7 @@ const QuizOfMithras = ({ onBack }) => {
           </div>
 
           <div className="options">
-            <p className="question">{t(current.qKey)}</p>
+            <p className="question title-gold">{t(current.qKey)}</p>
             <div className="buttons">
             {current.opt.map((optKey) => (
               <button key={optKey} className="question_btn" onClick={() => handleAnswer(optKey)}>
@@ -108,9 +111,9 @@ const QuizOfMithras = ({ onBack }) => {
               </button>
             ))}
           </div>
-            {showResult && (
+          {showResult && (
             <div className={`result ${isCorrect ? "correct" : "wrong"}`}>
-              {isCorrect ? t("correct") : t("incorrect")}
+              {isCorrect ? <img src={correct} className="step-icon" /> : <img src={wrong} className="step-icon" />}
             </div>
           )}
           </div>

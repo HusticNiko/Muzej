@@ -7,7 +7,7 @@ const resources = {
   en: {
     translation: {
       // Common UI elements
-      "welcome": "Dobrodošli v templju Fortuna",
+      "welcome": "Dobrodošli v Vicus Fortunae",
       "trial_of_mithras": "Sojenje Mitri",
       "mysteri_of_skyes": "Skrivnostno ozvezdje",
       "stage1": "Katero bitje je povezano s stopnjo Corax?",
@@ -161,7 +161,7 @@ const resources = {
   "odgovor_16_4": "Fortuna",
   "pravilen_16": "A",
   "pravilen_idx_16": 1,
-  "vprasanje_17": "Kateri boginji sta Rimljanom prišli iz vzhoda?",
+  "vprasanje_17": "Kateri boginji sta k Rimljanom prišli iz vzhoda?",
   "odgovor_17_1": "Izida in Kibela",
   "odgovor_17_2": "Juno in Minerva",
   "odgovor_17_3": "Afrodita in Hera",
@@ -224,6 +224,7 @@ const resources = {
   "odgovor_25_4": "Pesniki, igralci, zdravniki",
   "pravilen_25": "B",
   "completed_text": "Čestitke ! Sedaj si PATER Mitraizma.",
+  "completed_text2": "Čestitke ! Bogovi so ti naklonjeni.",
   "completed_subtext": "Zvezde se poravnajo. Nosiš zlati plašč modrosti.",
   "back_to_menu": "Nazaj na meni",
   "pause": "Pavza",
@@ -236,7 +237,7 @@ const resources = {
       "change_language": "Change language",
       "general_faith": "Start Quiz",
       "trial_of_mithras": "Mithraism ",
-      "welcome": "Welcome to Fortuna Temple's",
+      "welcome": "Welcome to Vicus Fortunae",
       "stage1": "What creature is associated with the Corax stage?",
       "trial_of_mithras": "Start Quiz",
       "mysteri_of_skyes": "Mysteries of the Starry Sky",
@@ -424,6 +425,7 @@ const resources = {
   "odgovor_13_3": "Because it had more temples",
   "odgovor_13_4": "Because it was supported by Mars",
   "completed_text": "You are now a PATER of the Mysteries",
+  "completed_text2": "congratulations! Gods are in your favour.",
   "completed_subtext": "The torch is passed. The stars align. You wear the golden cloak of wisdom.",
   "back_to_menu": "Back to menu",
   "pause": "Pause",

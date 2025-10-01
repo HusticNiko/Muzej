@@ -3,7 +3,7 @@ body {
     padding: 0;
     background: #f5f1e3;
     font-family: 'Georgia', serif;
-    color: #5a3e1b;
+    color: white;
     height: 100vh;
     width: 100vw;
     overflow: hidden;
@@ -54,23 +54,92 @@ body {
 
 
    .home_btn {
-     border: 2px solid #c3a574;
     background-color: #fff4dc;
     color: #5a3e1b;
     border-radius: 12px;
+    border: 0;
     padding: 2rem 4rem; /* 2x bigger */
     font-size: 3rem;    /* 1.5rem × 2 */
+    font-weight: 800;
     box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 1.7rem;
     width: 500px;
-    }
+  }
+
+
+  .home_btn2 {
+  color: #3a260d; /* dark bronze text on gold */
+  background: linear-gradient(180deg, var(--gold-hi) 0%, var(--gold) 45%, var(--bronze) 100%);
+  border: 1px solid rgba(74, 47, 17, .55);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.45),  /* top bevel */
+    inset 0 -6px 12px rgba(0,0,0,.18),    /* lower bevel */
+    0 10px 28px rgba(0,0,0,.45),          /* lift from stone */
+    0 0 24px rgba(246,195,106,.35);       /* torch glow */
+  text-shadow: 0 1px 0 rgba(255,255,255,.4);    padding: 2rem;
+    border-radius: 10px;
+    animation: fadeIn 2s ease-in-out;
+    padding: 2rem 4rem; /* 2x bigger */
+    font-size: 1.7rem;    /* 1.5rem × 2 */
+    font-weight: 800;
+    width: 500px;
+  }
+
+
+  :root{
+  --gold-hi: #FFF4CF;  /* highlight */
+  --gold:    #F6C36A;  /* mid */
+  --bronze:  #B5732A;  /* depth */
+}
+
+/* Solid gilded button */
+.btn-gold {
+  position: relative;
+  width: 500px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;  
+  gap: .6rem;
+  padding: 2rem 4rem; /* 2x bigger */
+  border-radius: 14px;
+  font: 800 1rem/1.1 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-size: 1.7rem;
+  color: #3a260d; /* dark bronze text on gold */
+  background: linear-gradient(180deg, var(--gold-hi) 0%, var(--gold) 45%, var(--bronze) 100%);
+  border: 1px solid rgba(74, 47, 17, .55);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.45),  /* top bevel */
+    inset 0 -6px 12px rgba(0,0,0,.18),    /* lower bevel */
+    0 10px 28px rgba(0,0,0,.45),          /* lift from stone */
+    0 0 24px rgba(246,195,106,.35);       /* torch glow */
+  text-shadow: 0 1px 0 rgba(255,255,255,.4);
+  transform: translateZ(0);
+  transition: transform .15s ease, filter .2s ease, box-shadow .2s ease;
+}
+
+
+  /* Gentle bob */
+@keyframes floatY {
+  0%, 100% { transform: translateY(-1px); }
+  50%      { transform: translateY(2px); }
+}
+
+    .btn-float {
+  position: relative;
+  will-change: transform, box-shadow;
+  transform: translate3d(0,0,0);
+  animation: floatY 4.5s ease-in-out infinite;
+  box-shadow:
+    0 12px 28px rgba(0,0,0,.35),     /* ambient */
+    0 2px 0 rgba(0,0,0,.25) inset;   /* subtle rim */
+}
 
     .question_btn {
      border: 2px solid #c3a574;
     background-color: #fff4dc;
-    color: #5a3e1b;
+    color: #3a260d;
     border-radius: 12px;
     padding: 1rem 2rem; /* 2x bigger */
     font-size: 3rem;    /* 1.5rem × 2 */
@@ -85,6 +154,14 @@ body {
     white-space: normal;   
     overflow-wrap: break-word;
     }
+
+    .title-gold {
+  background: linear-gradient(180deg, #FFF4CF 0%, #F6C36A 45%, #B5732A 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 4px rgba(0,0,0,.55);
+}
 
     .question_btn_corrrect {
        border: 2px solid #c3a574;
@@ -138,17 +215,24 @@ body {
     margin-bottom: 50px;
     margin-left: 200px;
     margin-top: 150px;
-    border: 2px solid #c3a574;
-    background-color: #fff4dc;
-    color: #5a3e1b;
-    border-radius: 12px;
     padding: 1rem 2rem; /* 2x bigger */
     font-size: 3rem;    /* 1.5rem × 2 */
-    box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 1.7rem;
     width: 300px;
+    font-weight: 800;
+    color: #3a260d; /* dark bronze text on gold */
+  background: linear-gradient(180deg, var(--gold-hi) 0%, var(--gold) 45%, var(--bronze) 100%);
+  border: 1px solid rgba(74, 47, 17, .55);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.45),  /* top bevel */
+    inset 0 -6px 12px rgba(0,0,0,.18),    /* lower bevel */
+    0 10px 28px rgba(0,0,0,.45),          /* lift from stone */
+    0 0 24px rgba(246,195,106,.35);       /* torch glow */
+  text-shadow: 0 1px 0 rgba(255,255,255,.4);    padding: 2rem;
+    border-radius: 10px;
+    animation: fadeIn 2s ease-in-out;
 }
 
   .back-btn {
@@ -314,7 +398,11 @@ body {
   .quiz {
     text-align: center;
     max-width: 100%;
+    justify-items: center;
+    justify-content: center;
     margin: auto;
+    color: white;
+    z-index: 2;
     padding: 2rem;
     margin-bottom: 200px;
   }
@@ -326,9 +414,22 @@ body {
   }
   
   .question {
-    font-size: x-large;
+    font-size: 1.7rem;
+    font-weight: 800;
     margin-top: 1rem;
-    color: #4a3b2c;
+    border-radius: 8px;
+    color: #3a260d; /* dark bronze text on gold */
+    background: #fff4dc;
+    border: 1px solid rgba(74, 47, 17, .55);
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.45),  /* top bevel */
+    inset 0 -6px 12px rgba(0,0,0,.18),    /* lower bevel */
+    0 10px 28px rgba(0,0,0,.45),          /* lift from stone */
+    0 0 24px rgba(246,195,106,.35);       /* torch glow */
+    text-shadow: 0 1px 0 rgba(255,255,255,.4);    padding: 2rem;
+    z-index: 10;
   }
   
   .btn {
@@ -340,19 +441,18 @@ body {
   }
 
   .options {
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-right: 60px;
     color: #442c1c;
     font-size: x-large;
     align-items: center;
+    align-content: center;
+    height: 200px;
     justify-content: center;
-    padding: 10px;
-    margin-bottom: 50px;
-    margin-top: 200px;
+    margin-bottom: 80px;
+    margin-top: 150px;
   }
   
   .result {
-    margin-top: 20px;
     font-weight: bold;
     font-size: 1.1rem;
   }
@@ -386,8 +486,18 @@ body {
   }
   
   .final-stage {
-    background-color: #f5f1e3;
-    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    margin-top: 100px;
+color: #3a260d; /* dark bronze text on gold */
+  background: linear-gradient(180deg, var(--gold-hi) 0%, var(--gold) 45%, var(--bronze) 100%);
+  border: 1px solid rgba(74, 47, 17, .55);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.45),  /* top bevel */
+    inset 0 -6px 12px rgba(0,0,0,.18),    /* lower bevel */
+    0 10px 28px rgba(0,0,0,.45),          /* lift from stone */
+    0 0 24px rgba(246,195,106,.35);       /* torch glow */
+  text-shadow: 0 1px 0 rgba(255,255,255,.4);    padding: 2rem;
     border-radius: 10px;
     animation: fadeIn 2s ease-in-out;
   }
@@ -404,6 +514,7 @@ body {
     align-items: center;
     flex-wrap: nowrap;
     width: 1000px;
+    color: white;
     gap: 5px; /* even more spacing between steps */
     position: fixed;
     margin: 5px;
@@ -482,7 +593,7 @@ body {
   
   
   .active-line {
-    background-color: #5a3e1b;
+    background-color: gold;
   }
   
   .inactive-line {
@@ -509,6 +620,7 @@ body {
     width: 80px;   /* 2× bigger than original 30px */
     height: 80px;
     margin-bottom: 0.8rem;
+    color: white;
     object-fit: contain;
   }
   
@@ -598,6 +710,21 @@ body {
     width: 80%;
   }
   
+
+  .bg-video {
+  position: absolute;         /* stays inside .app */
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;          /* fills without distortion */
+  z-index: 0;
+  pointer-events: none;       /* keeps UI clickable */
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+}
   .wrong-click {
     animation: wrongFlash 0.6s;
   }
@@ -730,7 +857,7 @@ body {
     }
   
     .menu, .wheel {
-      gap: 2.5rem;
+      gap: 10rem;
       max-width: 1000px;
     }
   

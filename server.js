@@ -58,6 +58,32 @@ async function startVlcIfNeeded(cols = 3, rows = 1) {
   await new Promise(r => setTimeout(r, 300));
 }
 
+async function startVlcIfNeeded3() {
+  // If RC is reachable, VLC is already running in RC mode -> reuse it.
+  if (await isRcUp()) return;
+
+  if (!fs.existsSync(VLC_BIN)) throw new Error(`VLC not found at ${VLC_BIN}`);
+
+  const args = [
+    '--no-video-title-show',
+    '--fullscreen',
+    '--extraintf=rc',
+    `--rc-host=${RC_HOST}:${RC_PORT}`,
+    // NOTE: no initial media here; we add via RC
+  ];
+
+  console.log('[VLC] launching persistent instance:', VLC_BIN, args.join(' '));
+  vlcChild = spawn(VLC_BIN, ['-vvv', ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+  vlcChild.stdout.on('data', d => console.log('[VLC]', d.toString()));
+  vlcChild.stderr.on('data', d => console.error('[VLC E]', d.toString()));
+  vlcChild.on('exit', code => { console.log('[VLC] exited with code', code); vlcChild = null; });
+  vlcChild.on('error', e => console.error('[VLC] spawn error:', e));
+
+  // give VLC a brief moment to bring up the RC
+  await new Promise(r => setTimeout(r, 300));
+}
+
+
 async function startVlcIfNeeded2(cols = 3, rows = 1) {
   // If RC is reachable, VLC is already running in RC mode -> reuse it.
   if (await isRcUp()) return;
@@ -141,6 +167,18 @@ async function playWallWithVLC(videoAbsPath, cols = 3, rows = 1) {
 
 }
 
+async function playWallWithVLCSingleScreen(videoAbsPath) {
+  if (!fs.existsSync(videoAbsPath)) throw new Error(`Video not found at ${videoAbsPath}`);
+  await startVlcIfNeeded3();
+  const fileUrl = pathToFileURL(videoAbsPath).href; // e.g., file:///Users/you/Videos/My%20Clip.mp4
+  await vlcRc('stop').catch(() => {});
+  await vlcRc('clear').catch(() => {});
+  // Use 'add' (plays current item) or 'enqueue' + 'play'
+  await vlcRc(`add ${fileUrl}`);   // or: await vlcRc(`enqueue ${fileUrl}`);
+  await vlcRc('play');
+
+}
+
 async function playWallWithVLC2(videoAbsPath, cols = 3, rows = 1) {
  if (!fs.existsSync(videoAbsPath)) throw new Error(`Video not found at ${videoAbsPath}`);
   await startVlcIfNeeded2(cols, rows);
@@ -166,7 +204,10 @@ app.use(express.static(path.join(process.cwd(), 'remote-ui')));
 // controls
 app.get('/play', async (_req, res) => {
   try {
+
     await playWallWithVLC(getVideoAbsPath(), 3, 1);
+    //await playWallWithVLCSingleScreen(getVideoAbsPath()); ZA PREDVAJANJE NA ENEM EKRANU FULLSCREEN
+
     res.send('OK');
   } catch (err) {
     console.error('[HTTP] /play', err);

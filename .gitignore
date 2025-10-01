@@ -3,6 +3,9 @@
 # dependencies
 /node_modules
 /assets
+/src/assets/Mitraizem.mp4
+/src/assets/Rimljani.mp4
+
 /.pnp
 .pnp.js
 

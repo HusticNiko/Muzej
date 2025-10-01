@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef  } from "react";
 import wheelImage from './assets/wheel3.png'; // or use public path directly in src
 import frameImage from './assets/fortuna.png'; // Adjust path if using public folder
+import mitraizem from './assets/Mitraizem.mp4'; // Adjust path if using public folder
+import rimljani from './assets/Rimljani.mp4'; // Adjust path if using public folder
+
 import QuizOfMithras from './QuizOfMithras';
 import StarrySkyMystery from './StarrySkyMystery';
 import useInactivityTimer from "./useInactivityTimer"; // Adjust path
@@ -89,7 +92,7 @@ const App = () => {
 
   useInactivityTimer(
     () => {
-      if (isGameActive) setShowWarning(true); // show warning only if inside a game
+      if (isGameActive) setShowWarning(false); // show warning only if inside a game
     },
     () => {
       if (isGameActive) {
@@ -133,7 +136,21 @@ const App = () => {
             MozUserSelect: 'none',
             msUserSelect: 'none'
           }}
+        > 
+           <video
+          className="bg-video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
         >
+          <source src={mitraizem} type="video/mp4" />
+          {/* Optional fallback text */}
+          Your browser does not support the video tag.
+        </video>
+          <div className="content">
+
           {showWarning && (
             <div className="warning-popup">
               <p>⚠️ You will return to the main menu in 1 minute due to inactivity.</p>
@@ -144,10 +161,11 @@ const App = () => {
             <div className="menu">
               <h1>{t('welcome')}</h1>
               {/*<button onClick={() => setCurrentGame("quiz2")} className="home_btn">{t('general_faith')}</button>*/}
-              <button onClick={() => setCurrentGame("quiz")} className="home_btn">{t('trial_of_mithras')}</button>
+              <button onClick={() => setCurrentGame("quiz")} className="home_btn btn_float">{t('trial_of_mithras')}</button>
               {/*<button onClick={() => setCurrentGame("stars")} className="btn">{t('mysteri_of_skyes')}</button> */}
             </div>
           )}
+          </div>
 
           {currentGame === "wheel" && <WheelOfFortuna onBack={() => setCurrentGame(null)} />}
           {currentGame === "quiz" && <QuizOfMithras onBack={() => setCurrentGame(null)} />}
@@ -184,6 +202,19 @@ const App = () => {
             msUserSelect: 'none'
           }}
         >
+            <video
+          className="bg-video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+        >
+          <source src={rimljani} type="video/mp4" />
+          {/* Optional fallback text */}
+          Your browser does not support the video tag.
+        </video>
+          <div className="content">
           {showWarning && (
             <div className="warning-popup">
               <p>⚠️ You will return to the main menu in 1 minute due to inactivity.</p>
@@ -193,12 +224,12 @@ const App = () => {
           {currentGame === null && (
             <div className="menu">
               <h1>{t('welcome')}</h1>
-              <button onClick={() => setCurrentGame("quiz2")} className="home_btn">{t('general_faith')}</button>
+              <button onClick={() => setCurrentGame("quiz2")} className="home_btn2">{t('general_faith')}</button>
               {/*<button onClick={() => setCurrentGame("quiz")} className="home_btn">{t('trial_of_mithras')}</button>*/}
               {/*<button onClick={() => setCurrentGame("stars")} className="btn">{t('mysteri_of_skyes')}</button> */}
             </div>
           )}
-
+          </div>
           {currentGame === "wheel" && <WheelOfFortuna onBack={() => setCurrentGame(null)} />}
           {currentGame === "quiz" && <QuizOfMithras onBack={() => setCurrentGame(null)} />}
           {currentGame === "quiz2" && <GeneralQuiz onBack={() => setCurrentGame(null)} />}
@@ -220,6 +251,7 @@ const App = () => {
             </button>
           )}
         </div>
+
       );
     }
 

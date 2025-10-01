@@ -2,18 +2,20 @@
 import React, { useMemo, useState, useEffect } from "react";
 import "./styles.css";
 import obelisk from "./icons/obelisk.svg";
-import emperor from "./icons/emperor.svg";
-import columns from "./icons/colums.svg";
-import coloseum from "./icons/coloseum.svg";
-import ship from "./icons/ship.svg";
-import circus from "./icons/circus.svg";
-import crown from "./icons/crown.svg";
-import sword from "./icons/sword.svg";
-import eagle from "./icons/eagle.svg";
-import shield from "./icons/shield.svg";
-import temple from "./icons/temple.svg";
-import legion from "./icons/legion.svg";
-import helmet from "./icons/helmet.svg";
+import emperor from "./icons/emperor1.svg";
+import columns from "./icons/columns1.svg";
+import coloseum from "./icons/coloseum1.svg";
+import ship from "./icons/ship1.svg";
+import circus from "./icons/circus1.svg";
+import crown from "./icons/crown1.svg";
+import sword from "./icons/sword1.svg";
+import eagle from "./icons/eagle1.svg";
+import shield from "./icons/shield1.svg";
+import temple from "./icons/temple1.svg";
+import legion from "./icons/legion1.svg";
+import helmet from "./icons/helmet1.svg";
+import correct from "./icons/correct.svg";
+import wrong from "./icons/wrong.svg";
 import { useTranslation } from "react-i18next";
 
 // Helper: sample k unique items without mutating original
@@ -67,69 +69,66 @@ const GeneralQuiz = ({ onBack }) => {
     }, 800);
   };
 
-  return (
-    <div className="quiz">
-      {stageIndex < stages.length ? (
-        <>
-          <div className="stepper">
-            {stages.map((stage, index) => (
-              <div key={index} className="step-wrapper">
-                <div
-                  className={`step ${index <= stageIndex ? "active" : "inactive"} ${
-                    index === stageIndex ? "glow" : ""
-                  }`}
-                >
-                  {stage.icon && <img src={stage.icon} alt={stage.name} className="step-icon" />}
-                  
+   return (
+      <div className="quiz">
+        {stageIndex < stages.length ? (
+          <>
+            <div className="stepper">
+              {stages.map((stage, index) => (
+                <div key={index} className="step-wrapper">
+                  <div
+                    className={`step ${index <= stageIndex ? "active" : "inactive"} ${
+                      index === stageIndex ? "glow" : ""
+                    }`}
+                  >
+                    {stage.icon && <img src={stage.icon} stroke={"white"} alt={stage.name} className="step-icon" />}
+                    
+                  </div>
+                  {index !== stages.length - 1 && (
+                    <div className={`connector ${index < stageIndex ? "active-line" : "inactive-line"}`} />
+                  )}
                 </div>
-                {index !== stages.length - 1 && (
-                  <div className={`connector ${index < stageIndex ? "active-line" : "inactive-line"}`} />
-                )}
-              </div>
-            ))}
-            {Array.from({ length: 10 }).map((_, i) => (
-              <div
-                key={i}
-                className="sparkle"
-                style={{
-                  top: `${Math.random() * 100}%`,
-                  left: `${Math.random() * 100}%`,
-                }}
-              />
-            ))}
-          </div>
-
-          <div className="options">
-            <p className="question">{t(current.qKey)}</p>
-            <div className="buttons">
-            {current.opt.map((optKey) => (
-              <button key={optKey} className="question_btn" onClick={() => handleAnswer(optKey)}>
-                {t(optKey)}
-              </button>
-            ))}
-          </div>
-            {showResult && (
-            <div className={`result ${isCorrect ? "correct" : "wrong"}`}>
-              {isCorrect ? t("correct") : t("incorrect")}
+              ))}
+              {Array.from({ length: 10 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="sparkle"
+                  style={{
+                    top: `${Math.random() * 100}%`,
+                    left: `${Math.random() * 100}%`,
+                  }}
+                />
+              ))}
             </div>
-          )}
+  
+            <div className="options">
+              <p className="question title-gold">{t(current.qKey)}</p>
+              <div className="buttons">
+              {current.opt.map((optKey) => (
+                <button key={optKey} className="question_btn" onClick={() => handleAnswer(optKey)}>
+                  {t(optKey)}
+                </button>
+              ))}
+            </div>
+            {showResult && (
+              <div className={`result ${isCorrect ? "correct" : "wrong"}`}>
+                {isCorrect ? <img src={correct} className="step-icon" /> : <img src={wrong} className="step-icon" />}
+              </div>
+            )}
+            </div>
+          </>
+        ) : (
+          <div className="final-stage-stage">
+          <div className="final-stage">
+            <h2 className="pater-title">{t("completed_text2")}</h2>
           </div>
-        </>
-      ) : (
-        <div>
-        <div className="final-stage">
-          <h2 className="pater-title">{t("completed_text")}</h2>
-          <p className="fade-animation">
-           {t("completed_subtext")}
-          </p>
-        </div>
-         <button onClick={onBack} className="back_to_menu_btn">
-            {t("back_to_menu")}
-          </button>
-          </div>
-      )}
-    </div>
-  );
-};
+           <button onClick={onBack} className="back_to_menu_btn">
+              {t("back_to_menu")}
+            </button>
+            </div>
+        )}
+      </div>
+    );
+  };
 
 export default GeneralQuiz;
