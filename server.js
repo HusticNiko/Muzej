@@ -6,6 +6,7 @@ const fs = require('fs');
 const { spawn, exec } = require('child_process');
 const net = require('net');
 const { execFile } = require('child_process');
+const { pathToFileURL } = require('url');
 
 // ---- constants ----
 const VLC_BIN = '/Applications/VLC.app/Contents/MacOS/VLC';
@@ -13,12 +14,86 @@ const RC_HOST = '127.0.0.1';      // VLC RC listens on localhost
 const RC_PORT = 5050;             // <-- RC control port (NOT your HTTP port)
 const PORT = Number(process.env.CONTROL_PORT || 3002); // HTTP server port
 
+
+let vlcChild = null;
+
+function isRcUp() {
+  // try connecting to RC; resolves true if socket connects
+  return new Promise((resolve) => {
+    const sock = net.createConnection({ host: RC_HOST, port: RC_PORT }, () => {
+      sock.end(); resolve(true);
+    });
+    sock.on('error', () => resolve(false));
+  });
+}
+
+async function startVlcIfNeeded(cols = 3, rows = 1) {
+  // If RC is reachable, VLC is already running in RC mode -> reuse it.
+  if (await isRcUp()) return;
+
+  if (!fs.existsSync(VLC_BIN)) throw new Error(`VLC not found at ${VLC_BIN}`);
+
+  const args = [
+    '--video-splitter=wall',
+    `--wall-cols=${cols}`,
+    `--wall-rows=${rows}`,
+    '--no-video-title-show',
+    '--fullscreen',
+    '--no-loop',
+    '--no-repeat',
+    '--extraintf=rc',
+    `--rc-host=${RC_HOST}:${RC_PORT}`,
+    // NOTE: no initial media here; we add via RC
+  ];
+
+  console.log('[VLC] launching persistent instance:', VLC_BIN, args.join(' '));
+  vlcChild = spawn(VLC_BIN, ['-vvv', ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+  vlcChild.stdout.on('data', d => console.log('[VLC]', d.toString()));
+  vlcChild.stderr.on('data', d => console.error('[VLC E]', d.toString()));
+  vlcChild.on('exit', code => { console.log('[VLC] exited with code', code); vlcChild = null; });
+  vlcChild.on('error', e => console.error('[VLC] spawn error:', e));
+
+  // give VLC a brief moment to bring up the RC
+  await new Promise(r => setTimeout(r, 300));
+}
+
+async function startVlcIfNeeded2(cols = 3, rows = 1) {
+  // If RC is reachable, VLC is already running in RC mode -> reuse it.
+  if (await isRcUp()) return;
+
+  if (!fs.existsSync(VLC_BIN)) throw new Error(`VLC not found at ${VLC_BIN}`);
+
+  const args = [
+    '--video-splitter=wall',
+    `--wall-cols=${cols}`,
+    `--wall-rows=${rows}`,
+    '--no-video-title-show',
+    '--fullscreen',
+    '--input-repeat=-1',        // loop each item forever
+    '--extraintf=rc',
+    `--rc-host=${RC_HOST}:${RC_PORT}`,
+    // NOTE: no initial media here; we add via RC
+  ];
+
+  console.log('[VLC] launching persistent instance:', VLC_BIN, args.join(' '));
+  vlcChild = spawn(VLC_BIN, ['-vvv', ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
+  vlcChild.stdout.on('data', d => console.log('[VLC]', d.toString()));
+  vlcChild.stderr.on('data', d => console.error('[VLC E]', d.toString()));
+  vlcChild.on('exit', code => { console.log('[VLC] exited with code', code); vlcChild = null; });
+  vlcChild.on('error', e => console.error('[VLC] spawn error:', e));
+
+  // give VLC a brief moment to bring up the RC
+  await new Promise(r => setTimeout(r, 300));
+}
+
+
+
 // ---- paths ----
 function getVideoAbsPath() {
   return path.join(process.cwd(), 'assets', 'video.mp4');
 }
 function getVideoAbsPath2() {
-  return path.join(process.cwd(), 'assets', 'video2.mov');
+  return path.join(process.cwd(), 'assets', 'video2.mp4');
 }
 
 function sendCmdO() {
@@ -49,78 +124,34 @@ function vlcRc(cmd) {
 }
 
 async function playWallWithVLC(videoAbsPath, cols = 3, rows = 1) {
-  if (!fs.existsSync(VLC_BIN)) throw new Error(`VLC not found at ${VLC_BIN}`);
   if (!fs.existsSync(videoAbsPath)) throw new Error(`Video not found at ${videoAbsPath}`);
+  await startVlcIfNeeded(cols, rows);
 
-  await killVLC();
-
-  const args = [
-    '--video-splitter=wall',
-    `--wall-cols=${cols}`,
-    `--wall-rows=${rows}`,
-    '--no-video-title-show',
-    '--fullscreen',
-    '--extraintf=rc',
-    `--rc-host=${RC_HOST}:${RC_PORT}`, // ✅ RC on 127.0.0.1:5050
-    videoAbsPath,
-  ];
-
-  console.log('[VLC] launching:', VLC_BIN, args.join(' '));
-  const child = spawn(VLC_BIN, ['-vvv', ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
-    setTimeout(() => {
-    sendCmdO().catch(err => console.error('Failed to send CMD+O:', err));
-  }, 1000 ); // wait a bit so VLC has time to launch
-   setTimeout(() => {
-    sendCmdO().catch(err => console.error('Failed to send CMD+O:', err));
-  }, 3000 ); // wait a bit so VLC has time to launch
-   setTimeout(() => {
-    sendCmdO().catch(err => console.error('Failed to send CMD+O:', err));
-  }, 6000 ); // wait a bit so VLC has time to launch
+  const fileUrl = pathToFileURL(videoAbsPath).href; // e.g., file:///Users/you/Videos/My%20Clip.mp4
+  console.log(fileUrl);
   setTimeout(() => {
     sendCmdO().catch(err => console.error('Failed to send CMD+O:', err));
-  }, 8000 ); // wait a bit so VLC has time to launch
-  child.stdout.on('data', d => console.log('[VLC]', d.toString()));
-  child.stderr.on('data', d => console.error('[VLC E]', d.toString()));
-  child.on('exit', code => console.log('[VLC] exited with code', code));
-  child.on('error', (e) => console.error('[VLC] spawn error:', e));
+  }, 3000 ); // wait a bit so VLC has time to launch
+  await vlcRc('stop').catch(() => {});
+  await vlcRc('clear').catch(() => {});
+  // Use 'add' (plays current item) or 'enqueue' + 'play'
+  await vlcRc(`add ${fileUrl}`);   // or: await vlcRc(`enqueue ${fileUrl}`);
+  await vlcRc('play');
+
 }
 
 async function playWallWithVLC2(videoAbsPath, cols = 3, rows = 1) {
-  if (!fs.existsSync(VLC_BIN)) throw new Error(`VLC not found at ${VLC_BIN}`);
-  if (!fs.existsSync(videoAbsPath)) throw new Error(`Video not found at ${videoAbsPath}`);
-
-  await killVLC();
-
-  const args = [
-    '--video-splitter=wall',
-    `--wall-cols=${cols}`,
-    `--wall-rows=${rows}`,
-    '--no-video-title-show',
-    '--loop',
-    '--fullscreen',
-    '--extraintf=rc',
-    `--rc-host=${RC_HOST}:${RC_PORT}`, // ✅ RC on 127.0.0.1:5050
-    videoAbsPath,
-  ];
-
-  console.log('[VLC] launching:', VLC_BIN, args.join(' '));
-  const child = spawn(VLC_BIN, ['-vvv', ...args], { stdio: ['ignore', 'pipe', 'pipe'] });
-   setTimeout(() => {
-    sendCmdO().catch(err => console.error('Failed to send CMD+O:', err));
-  }, 1000 ); // wait a bit so VLC has time to launch
-   setTimeout(() => {
-    sendCmdO().catch(err => console.error('Failed to send CMD+O:', err));
-  }, 2000 ); // wait a bit so VLC has time to launch
-   setTimeout(() => {
+ if (!fs.existsSync(videoAbsPath)) throw new Error(`Video not found at ${videoAbsPath}`);
+  await startVlcIfNeeded2(cols, rows);
+  const fileUrl = pathToFileURL(videoAbsPath).href;
+ setTimeout(() => {
     sendCmdO().catch(err => console.error('Failed to send CMD+O:', err));
   }, 3000 ); // wait a bit so VLC has time to launch
-   setTimeout(() => {
-    sendCmdO().catch(err => console.error('Failed to send CMD+O:', err));
-  }, 4000 ); // wait a bit so VLC has time to launch
-  child.stdout.on('data', d => console.log('[VLC]', d.toString()));
-  child.stderr.on('data', d => console.error('[VLC E]', d.toString()));
-  child.on('exit', code => console.log('[VLC] exited with code', code));
-  child.on('error', (e) => console.error('[VLC] spawn error:', e));
+  await vlcRc('stop').catch(() => {});
+  await vlcRc('clear').catch(() => {});
+  await vlcRc(`add ${fileUrl}`);
+  await vlcRc('repeat on');
+  await vlcRc('play');
 }
 
 // ---- server ----
@@ -175,9 +206,6 @@ server.on('error', (err) => {
   }
 });
 
-  server.listen(PORT, '0.0.0.0', () =>
-    console.log(`[HTTP] Control server listening on http://<mac-ip>:${PORT}`)
-  );
   const HOST = '0.0.0.0'; // listen on LAN
   server.listen(PORT, HOST, () => {
     console.log(`[HTTP] Control server listening on http://${HOST}:${PORT}`);
