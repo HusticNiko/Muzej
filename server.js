@@ -14,7 +14,6 @@ const RC_HOST = '127.0.0.1';      // VLC RC listens on localhost
 const RC_PORT = 5050;             // <-- RC control port (NOT your HTTP port)
 const PORT = Number(process.env.CONTROL_PORT || 3002); // HTTP server port
 
-
 let vlcChild = null;
 
 function isRcUp() {
@@ -26,6 +25,8 @@ function isRcUp() {
     sock.on('error', () => resolve(false));
   });
 }
+
+
 
 async function startVlcIfNeeded(cols = 3, rows = 1) {
   // If RC is reachable, VLC is already running in RC mode -> reuse it.
