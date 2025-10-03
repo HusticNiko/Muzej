@@ -76,56 +76,51 @@
     if(!res.ok){ throw new Error(`HTTP ${res.status}: ${await res.text()}`); }
     return res;
   }
+let lastTriggeredColumn = null;
+const LAYERS = [1,2,3]; // <-- change to match your setup
+
 
   async function triggerColumn(idx){
     await http(`/api/v1/composition/columns/${idx}/connect`);
+      lastTriggeredColumn = idx;
+
     log(`Stolpec ${idx} zagnan.`);
   }
 
-  // Robustna "Pavza": poskusi več možnih endpointov (prvi uspešni zmaga)
   async function pauseComposition(){
-    const attempts = [
-      {path:'/api/v1/composition/transport/pause', method:'POST'},
-      {path:'/api/v1/composition/transport/playmode', method:'POST', body:{value:'pause'}},
-      {path:'/api/v1/composition/clips/selected/transport/pause', method:'POST'}, // fallback – pausing selected
-      // nekateri buildi uporabljajo PUT z booleanom:
-      {path:'/api/v1/composition/layers/selected/clips/transport/controls/playdirection', method:'PUT', body:{clips: {
-        transport: {controls: {playdirection:{
-          value: "Option 2"
-        }}}
-      }}},
-    ];
-    for(const a of attempts){
-      try{
-        await http(a.path, a.method, a.body||null);
-        log(`Pavza: uspelo na ${a.method} ${a.path}`);
-        return;
-      }catch(e){
-        // nadaljuj na naslednji endpoint
-      }
-    }
-    throw new Error('Noben znan pavza-endpoint ni uspel 3ßß.');
+  if(lastTriggeredColumn != null){
+    // Pause all clips in the last triggered column across listed layers
+    await Promise.all(LAYERS.map(L =>
+      setPlayDirection(L, lastTriggeredColumn, 1)
+    ));
+    log(`Pavza: stolpec ${lastTriggeredColumn} čez vse sloje.`);
+  } else {
+    // Fallback: pause currently selected clip
+    await http(
+      `/api/v1/composition/selectedclip/transport/position/behaviour/playdirection`,
+      'PUT',
+      { value: 1 }
+    );
+    log(`Pavza: izbran posnetek.`);
   }
+}
 
   // Robustno "Nadaljuj":
   async function playComposition(){
-    const attempts = [
-      {path:'/api/v1/composition/transport/play', method:'POST'},
-      {path:'/api/v1/composition/transport/playmode', method:'POST', body:{value:'play'}},
-      {path:'/api/v1/composition/clips/selected/transport/play', method:'POST'},
-      {path:'/api/v1/composition/transport/playing', method:'PUT', body:{value:true}},
-    ];
-    for(const a of attempts){
-      try{
-        await http(a.path, a.method, a.body||null);
-        log(`Predvajaj: uspelo na ${a.method} ${a.path}`);
-        return;
-      }catch(e){
-        // nadaljuj
-      }
-    }
-    throw new Error('Noben znan play-endpoint ni uspel.');
+  if(lastTriggeredColumn != null){
+    await Promise.all(LAYERS.map(L =>
+      setPlayDirection(L, lastTriggeredColumn, 2)
+    ));
+    log(`Nadaljuj: stolpec ${lastTriggeredColumn} čez vse sloje.`);
+  } else {
+    await http(
+      `/api/v1/composition/selectedclip/transport/position/behaviour/playdirection`,
+      'PUT',
+      { value: 2 }
+    );
+    log(`Nadaljuj: izbran posnetek.`);
   }
+}
 
   // Gumbi
   document.getElementById('btnCol1').onclick = async () => {
