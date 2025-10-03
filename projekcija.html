@@ -61,7 +61,15 @@
   </div>
 
 <script>
+  // If this page is served by Resolume’s webserver, keep BASE = ''.
+  // Otherwise set: const BASE = 'http://192.168.1.12:8080';
+  const BASE = '';
+
+  // Adjust to match your actual layer indices (1-based)
+  const LAYERS = [1,2,3];
+
   const COL1 = 1, COL2 = 2;
+  let lastTriggeredColumn = null;
 
   function log(msg){
     const el = document.getElementById('log');
@@ -71,77 +79,79 @@
 
   async function http(path, method='POST', body=null){
     const opt = { method, headers:{} };
-    if(body){ opt.headers['Content-Type']='application/json'; opt.body=JSON.stringify(body); }
-    const res = await fetch(path, opt);
-    if(!res.ok){ throw new Error(`HTTP ${res.status}: ${await res.text()}`); }
-    return res;
+    if(body){ opt.headers['Content-Type']='application/json'; opt.body = JSON.stringify(body); }
+    const res = await fetch(BASE + path, opt);
+    if(!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+    return res; // some endpoints return no JSON
   }
-let lastTriggeredColumn = null;
-const LAYERS = [1,2,3]; // <-- change to match your setup
 
-
+  // Trigger a column (works for you already)
   async function triggerColumn(idx){
     await http(`/api/v1/composition/columns/${idx}/connect`);
-      lastTriggeredColumn = idx;
-
+    lastTriggeredColumn = idx;
     log(`Stolpec ${idx} zagnan.`);
   }
 
-  async function setPlayDirection(layer, clip, value){
-  return http(
-    `/api/v1/composition/layers/${layer}/clips/${clip}/transport/position/behaviour/playdirection`,
-    'PUT',
-    { value } // 0=backward, 1=pause, 2=forward
-  );
-}
+  // --- Helpers using SPEED (always present) -------------------------------
 
-  async function pauseComposition(){
-    await http(
-      `/api/v1/composition/clips/selected/transport/position/speed`,
-      'PUT',
-      { value: 0 }
-    );
-    log(`Pavza: izbran posnetek.`);
-  //}
-}
+  // Selected clip (use ONE of these: try selectedclip first; if it 404s, switch to clips/selected)
+  const SELECTED_SPEED_PATH = `/api/v1/composition/selectedclip/transport/position/speed`;
+  // If that returns 404 on your Swagger, change to:
+  // const SELECTED_SPEED_PATH = `/api/v1/composition/clips/selected/transport/position/speed`;
 
-  // Robustno "Nadaljuj":
-  async function playComposition(){
-  if(lastTriggeredColumn != null){
-    await Promise.all(LAYERS.map(L =>
-      setPlayDirection(L, lastTriggeredColumn, 2)
-    ));
-    log(`Nadaljuj: stolpec ${lastTriggeredColumn} čez vse sloje.`);
-  } else {
-    await http(
-      `/api/v1/composition/selectedclip/transport/position/behaviour/playdirection`,
-      'PUT',
-      { value: 2 }
-    );
-    log(`Nadaljuj: izbran posnetek.`);
+  // Per clip (layer + column)
+  function clipSpeedPath(layer, clip){
+    return `/api/v1/composition/layers/${layer}/clips/${clip}/transport/position/speed`;
   }
-}
 
-  // Gumbi
+  async function setSpeedSelected(value){
+    await http(SELECTED_SPEED_PATH, 'PUT', { value });
+  }
+
+  async function setSpeedClip(layer, clip, value){
+    await http(clipSpeedPath(layer, clip), 'PUT', { value });
+  }
+
+  // Pause: speed=0
+  async function pauseComposition(){
+    if(lastTriggeredColumn != null){
+      // Pause all clips in the last triggered column across known layers
+      await Promise.all(LAYERS.map(L => setSpeedClip(L, lastTriggeredColumn, 0)));
+      log(`Pavza (speed=0): stolpec ${lastTriggeredColumn} čez vse sloje.`);
+    } else {
+      await setSpeedSelected(0);
+      log(`Pavza (speed=0): izbran posnetek.`);
+    }
+  }
+
+  // Continue: speed=1
+  async function playComposition(){
+    if(lastTriggeredColumn != null){
+      await Promise.all(LAYERS.map(L => setSpeedClip(L, lastTriggeredColumn, 1)));
+      log(`Nadaljuj (speed=1): stolpec ${lastTriggeredColumn} čez vse sloje.`);
+    } else {
+      await setSpeedSelected(1);
+      log(`Nadaljuj (speed=1): izbran posnetek.`);
+    }
+  }
+
+  // --- Buttons ------------------------------------------------------------
   document.getElementById('btnCol1').onclick = async () => {
-    try { await triggerColumn(COL1); }
-    catch(e){ log('Napaka: ' + e.message); }
+    try { await triggerColumn(COL1); } catch(e){ log('Napaka: ' + e.message); }
   };
 
   document.getElementById('btnCol2').onclick = async () => {
-    try { await triggerColumn(COL2); }
-    catch(e){ log('Napaka: ' + e.message); }
+    try { await triggerColumn(COL2); } catch(e){ log('Napaka: ' + e.message); }
   };
 
   document.getElementById('btnPause').onclick = async () => {
-    try { await pauseComposition(); }
-    catch(e){ log('Napaka: ' + e.message); }
+    try { await pauseComposition(); } catch(e){ log('Napaka: ' + e.message); }
   };
 
   document.getElementById('btnResume').onclick = async () => {
-    try { await playComposition(); }
-    catch(e){ log('Napaka: ' + e.message); }
+    try { await playComposition(); } catch(e){ log('Napaka: ' + e.message); }
   };
 </script>
+
 </body>
 </html>
