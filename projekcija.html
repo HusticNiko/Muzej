@@ -69,13 +69,13 @@
     el.textContent = `[${t}] ${msg}\n` + el.textContent;
   }
 
-  async function http(path, method='POST', body=null){
-    const opt = { method, headers:{} };
-    if(body){ opt.headers['Content-Type']='application/json'; opt.body=JSON.stringify(body); }
-    const res = await fetch(path, opt);
-    if(!res.ok){ throw new Error(`HTTP ${res.status}: ${await res.text()}`); }
-    return res;
-  }
+  async function http(path, method='GET', body=null){
+  const opt = { method, headers:{} };
+  if(body !== null){ opt.headers['Content-Type']='application/json'; opt.body = JSON.stringify(body); }
+  const res = await fetch(BASE + path, opt);
+  if(!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+  try { return await res.json(); } catch { return {}; }
+}
 let lastTriggeredColumn = null;
 const LAYERS = [1,2,3]; // <-- change to match your setup
 
