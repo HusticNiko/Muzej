@@ -114,14 +114,14 @@
 
   // Pause: speed=0
   async function pauseComposition(){
-    if(lastTriggeredColumn != null){
+    /*if(lastTriggeredColumn != null){
       // Pause all clips in the last triggered column across known layers
       await Promise.all(LAYERS.map(L => setSpeedClip(L, lastTriggeredColumn, 0)));
       log(`Pavza (speed=0): stolpec ${lastTriggeredColumn} čez vse sloje.`);
-    } else {
+    } else {*/
       await setSpeedSelected(0);
       log(`Pavza (speed=0): izbran posnetek.`);
-    }
+   // }
   }
 
   // Continue: speed=1
