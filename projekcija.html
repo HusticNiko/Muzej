@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="sl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Projektor – Nadzor</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#3a1e1b; --panel:#4b2522; --gold:#d4af37; --gold-dark:#b38f24; --text:#f5e9cc;
+  }
+  html,body{height:100%;margin:0}
+  body{
+    background: radial-gradient(1200px 800px at 50% 20%, #532a26 0%, var(--bg) 70%);
+    color: var(--text);
+    font-family:'Cinzel','Times New Roman',Times,serif;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .wrap{
+    width:min(920px,96vw); padding:clamp(16px,3vw,28px);
+    background:linear-gradient(180deg,var(--panel),#3f201d);
+    border:2px solid var(--gold); border-radius:14px;
+    box-shadow:0 10px 40px rgba(0,0,0,.45), inset 0 0 20px rgba(212,175,55,.08);
+  }
+  .title{display:flex;justify-content:center;margin:4px 0 18px}
+  .title h1{margin:0;font-size:clamp(22px,4vw,34px);letter-spacing:.04em;text-transform:uppercase}
+  .grid{display:grid;gap:14px;grid-template-columns:1fr 1fr}
+  button{
+    appearance:none;border:none;cursor:pointer;border-radius:12px;
+    padding:clamp(16px,4.5vw,28px); font-size:clamp(18px,3.8vw,26px);
+    font-family:'Cinzel','Times New Roman',Times,serif; color:#2a1a0a;
+    background:
+      radial-gradient(140% 220% at 50% -20%, #fff5cc33 0%, transparent 60%),
+      linear-gradient(180deg,var(--gold),var(--gold-dark));
+    border:2px solid #a5821d; text-shadow:0 1px 0 #fff9;
+    box-shadow:0 8px 18px rgba(0,0,0,.35), inset 0 1px 0 #fff6cf66;
+    transition:transform .05s ease, filter .15s ease;
+  }
+  button:active{transform:translateY(1px) scale(.99)}
+  button:hover{filter:brightness(1.03)}
+  .wide{grid-column:span 2}
+  .log{
+    margin-top:12px; font-family:ui-monospace,Menlo,Consolas,monospace;
+    font-size:14px; color:#e9e1c9; background:#2f1714; border:1px solid #6a3a31;
+    padding:8px 10px; border-radius:8px; min-height:2.4em; max-height:35vh; overflow:auto;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title"><h1>Kontrola Projekcije</h1></div>
+
+    <div class="grid">
+      <button id="btnCol1" class="wide">Projekcija</button>
+      <button id="btnCol2" class="wide">Ambiental</button>
+      <button id="btnPause">Pavza</button>
+      <button id="btnResume">Nadaljuj</button>
+    </div>
+
+    <div id="log" class="log"></div>
+  </div>
+
+<script>
+  const COL1 = 1, COL2 = 2;
+
+  function log(msg){
+    const el = document.getElementById('log');
+    const t = new Date().toLocaleTimeString();
+    el.textContent = `[${t}] ${msg}\n` + el.textContent;
+  }
+
+  async function http(path, method='POST', body=null){
+    const opt = { method, headers:{} };
+    if(body){ opt.headers['Content-Type']='application/json'; opt.body=JSON.stringify(body); }
+    const res = await fetch(path, opt);
+    if(!res.ok){ throw new Error(`HTTP ${res.status}: ${await res.text()}`); }
+    return res;
+  }
+
+  async function triggerColumn(idx){
+    await http(`/api/v1/composition/columns/${idx}/connect`);
+    log(`Stolpec ${idx} zagnan.`);
+  }
+
+  // Robustna "Pavza": poskusi več možnih endpointov (prvi uspešni zmaga)
+  async function pauseComposition(){
+    const attempts = [
+      {path:'/api/v1/composition/transport/pause', method:'POST'},
+      {path:'/api/v1/composition/transport/playmode', method:'POST', body:{value:'pause'}},
+      {path:'/api/v1/composition/clips/selected/transport/pause', method:'POST'}, // fallback – pausing selected
+      // nekateri buildi uporabljajo PUT z booleanom:
+      {path:'/api/v1/composition/layers/selected/clips/transport/controls/playdirection', method:'PUT', body:{clips: {
+        transport: {controls: {playdirection:{
+          value: "Option 2"
+        }}}
+      }}},
+    ];
+    for(const a of attempts){
+      try{
+        await http(a.path, a.method, a.body||null);
+        log(`Pavza: uspelo na ${a.method} ${a.path}`);
+        return;
+      }catch(e){
+        // nadaljuj na naslednji endpoint
+      }
+    }
+    throw new Error('Noben znan pavza-endpoint ni uspel 3ßß.');
+  }
+
+  // Robustno "Nadaljuj":
+  async function playComposition(){
+    const attempts = [
+      {path:'/api/v1/composition/transport/play', method:'POST'},
+      {path:'/api/v1/composition/transport/playmode', method:'POST', body:{value:'play'}},
+      {path:'/api/v1/composition/clips/selected/transport/play', method:'POST'},
+      {path:'/api/v1/composition/transport/playing', method:'PUT', body:{value:true}},
+    ];
+    for(const a of attempts){
+      try{
+        await http(a.path, a.method, a.body||null);
+        log(`Predvajaj: uspelo na ${a.method} ${a.path}`);
+        return;
+      }catch(e){
+        // nadaljuj
+      }
+    }
+    throw new Error('Noben znan play-endpoint ni uspel.');
+  }
+
+  // Gumbi
+  document.getElementById('btnCol1').onclick = async () => {
+    try { await triggerColumn(COL1); }
+    catch(e){ log('Napaka: ' + e.message); }
+  };
+
+  document.getElementById('btnCol2').onclick = async () => {
+    try { await triggerColumn(COL2); }
+    catch(e){ log('Napaka: ' + e.message); }
+  };
+
+  document.getElementById('btnPause').onclick = async () => {
+    try { await pauseComposition(); }
+    catch(e){ log('Napaka: ' + e.message); }
+  };
+
+  document.getElementById('btnResume').onclick = async () => {
+    try { await playComposition(); }
+    catch(e){ log('Napaka: ' + e.message); }
+  };
+</script>
+</body>
+</html>
