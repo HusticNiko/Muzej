@@ -123,6 +123,7 @@
   // We auto-detect the first endpoint that works, then cache it.
   // Master (composition) candidates:
   const AUDIO_CANDIDATES_MASTER = [
+    `/api/v1/composition/layergroups/selected/audio/volume`,
     '/api/v1/composition/audio/volume',
     '/api/v1/composition/audio/gain',
     // If your Swagger shows nested nodes, add them here, e.g.:
@@ -130,6 +131,7 @@
   ];
   // Selected clip candidates:
   const AUDIO_CANDIDATES_SELECTED = [
+    `/api/v1/composition/layergroups/selected/audio/volume`,
     '/api/v1/composition/selectedclip/audio/volume',
     '/api/v1/composition/selectedclip/audio/gain',
     // '/api/v1/composition/clips/selected/audio/volume', // if your build uses this naming
@@ -138,6 +140,7 @@
   // Per-clip format:
   function audioClipCandidates(L,C){
     return [
+      `/api/v1/composition/layergroups/selected/audio/volume`,
       `/api/v1/composition/layers/${L}/clips/${C}/audio/volume`,
       `/api/v1/composition/layers/${L}/clips/${C}/audio/gain`,
       // `/api/v1/composition/layers/${L}/clips/${C}/audio/volume/gain`,
