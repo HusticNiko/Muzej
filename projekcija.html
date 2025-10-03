@@ -87,6 +87,14 @@ const LAYERS = [1,2,3]; // <-- change to match your setup
     log(`Stolpec ${idx} zagnan.`);
   }
 
+  async function setPlayDirection(layer, clip, value){
+  return http(
+    `/api/v1/composition/layers/${layer}/clips/${clip}/transport/position/behaviour/playdirection`,
+    'PUT',
+    { value } // 0=backward, 1=pause, 2=forward
+  );
+}
+
   async function pauseComposition(){
   if(lastTriggeredColumn != null){
     // Pause all clips in the last triggered column across listed layers
