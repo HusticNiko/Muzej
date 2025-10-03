@@ -53,22 +53,22 @@
     <div class="grid">
       <button id="btnCol1" class="wide">Projekcija</button>
       <button id="btnCol2" class="wide">Ambiental</button>
-      <button id="btnPause">Pavza</button>
-      <button id="btnResume">Nadaljuj</button>
     </div>
+    <label class="wide" style="display:flex;gap:12px;align-items:center; margin-top: 20px;">
+  <span style="min-width:120px">Glasnost</span>
+  <input id="audioSlider" type="range" min="0" max="1" step="0.01" value="1" style="flex:1">
+  <span id="audioPct" style="width:52px;text-align:right">100%</span>
+</label>
+
 
     <div id="log" class="log"></div>
   </div>
 
 <script>
-  // If this page is served by Resolume’s webserver, keep BASE = ''.
-  // Otherwise set: const BASE = 'http://192.168.1.12:8080';
-  const BASE = '';
-
-  // Adjust to match your actual layer indices (1-based)
-  const LAYERS = [1,2,3];
-
+  const BASE = ''; // '' if served from Resolume host:port; otherwise 'http://192.168.1.12:8080'
+  const LAYERS = [1,2,3]; // set your 1-based layer indices
   const COL1 = 1, COL2 = 2;
+
   let lastTriggeredColumn = null;
 
   function log(msg){
@@ -79,52 +79,36 @@
 
   async function http(path, method='POST', body=null){
     const opt = { method, headers:{} };
-    if(body){ opt.headers['Content-Type']='application/json'; opt.body = JSON.stringify(body); }
+    if(body !== null){ opt.headers['Content-Type']='application/json'; opt.body = JSON.stringify(body); }
     const res = await fetch(BASE + path, opt);
     if(!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
-    return res; // some endpoints return no JSON
+    try { return await res.json(); } catch { return {}; }
   }
 
-  // Trigger a column (works for you already)
+  // ---------- Column Trigger ----------
   async function triggerColumn(idx){
-    await http(`/api/v1/composition/columns/${idx}/connect`);
+    await http(`/api/v1/composition/columns/${idx}/connect`, 'POST');
     lastTriggeredColumn = idx;
     log(`Stolpec ${idx} zagnan.`);
   }
 
-  // --- Helpers using SPEED (always present) -------------------------------
-
-  // Selected clip (use ONE of these: try selectedclip first; if it 404s, switch to clips/selected)
+  // ---------- Pause/Resume via SPEED ----------
   const SELECTED_SPEED_PATH = `/api/v1/composition/selectedclip/transport/position/speed`;
-  // If that returns 404 on your Swagger, change to:
-  // const SELECTED_SPEED_PATH = `/api/v1/composition/clips/selected/transport/position/speed`;
+  function clipSpeedPath(L,C){ return `/api/v1/composition/layers/${L}/clips/${C}/transport/position/speed`; }
 
-  // Per clip (layer + column)
-  function clipSpeedPath(layer, clip){
-    return `/api/v1/composition/layers/${layer}/clips/${clip}/transport/position/speed`;
-  }
+  async function setSpeedSelected(v){ await http(SELECTED_SPEED_PATH, 'PUT', { value: v }); }
+  async function setSpeedClip(L,C,v){ await http(clipSpeedPath(L,C), 'PUT', { value: v }); }
 
-  async function setSpeedSelected(value){
-    await http(SELECTED_SPEED_PATH, 'PUT', { value });
-  }
-
-  async function setSpeedClip(layer, clip, value){
-    await http(clipSpeedPath(layer, clip), 'PUT', { value });
-  }
-
-  // Pause: speed=0
   async function pauseComposition(){
-    /*if(lastTriggeredColumn != null){
-      // Pause all clips in the last triggered column across known layers
+    if(lastTriggeredColumn != null){
       await Promise.all(LAYERS.map(L => setSpeedClip(L, lastTriggeredColumn, 0)));
       log(`Pavza (speed=0): stolpec ${lastTriggeredColumn} čez vse sloje.`);
-    } else {*/
+    } else {
       await setSpeedSelected(0);
       log(`Pavza (speed=0): izbran posnetek.`);
-   // }
+    }
   }
 
-  // Continue: speed=1
   async function playComposition(){
     if(lastTriggeredColumn != null){
       await Promise.all(LAYERS.map(L => setSpeedClip(L, lastTriggeredColumn, 1)));
@@ -135,23 +119,124 @@
     }
   }
 
-  // --- Buttons ------------------------------------------------------------
-  document.getElementById('btnCol1').onclick = async () => {
-    try { await triggerColumn(COL1); } catch(e){ log('Napaka: ' + e.message); }
-  };
+  // ---------- AUDIO VOLUME SLIDER ----------
+  // We auto-detect the first endpoint that works, then cache it.
+  // Master (composition) candidates:
+  const AUDIO_CANDIDATES_MASTER = [
+    '/api/v1/composition/audio/volume',
+    '/api/v1/composition/audio/gain',
+    // If your Swagger shows nested nodes, add them here, e.g.:
+    // '/api/v1/composition/audio/volume/gain'
+  ];
+  // Selected clip candidates:
+  const AUDIO_CANDIDATES_SELECTED = [
+    '/api/v1/composition/selectedclip/audio/volume',
+    '/api/v1/composition/selectedclip/audio/gain',
+    // '/api/v1/composition/clips/selected/audio/volume', // if your build uses this naming
+    // '/api/v1/composition/clips/selected/audio/gain'
+  ];
+  // Per-clip format:
+  function audioClipCandidates(L,C){
+    return [
+      `/api/v1/composition/layers/${L}/clips/${C}/audio/volume`,
+      `/api/v1/composition/layers/${L}/clips/${C}/audio/gain`,
+      // `/api/v1/composition/layers/${L}/clips/${C}/audio/volume/gain`,
+    ];
+  }
 
-  document.getElementById('btnCol2').onclick = async () => {
-    try { await triggerColumn(COL2); } catch(e){ log('Napaka: ' + e.message); }
-  };
+  let AUDIO_SETTER = null;  // fn: async (value) => void
+  let AUDIO_GETTER = null;  // fn: async () => number|undefined
 
-  document.getElementById('btnPause').onclick = async () => {
-    try { await pauseComposition(); } catch(e){ log('Napaka: ' + e.message); }
-  };
+  async function tryPut(path, value){
+    try { await http(path, 'PUT', { value }); return true; } catch { return false; }
+  }
+  async function tryGet(path){
+    try { const j = await http(path, 'GET'); return (typeof j?.value === 'number') ? j.value : undefined; } catch { return undefined; }
+  }
 
-  document.getElementById('btnResume').onclick = async () => {
-    try { await playComposition(); } catch(e){ log('Napaka: ' + e.message); }
-  };
+  async function detectAudioPath(){
+    if(AUDIO_SETTER) return; // already detected
+
+    // 1) Try composition master
+    for(const p of AUDIO_CANDIDATES_MASTER){
+      if(await tryPut(p, 1)) {
+        AUDIO_SETTER = (v) => http(p, 'PUT', { value: v });
+        AUDIO_GETTER = () => tryGet(p);
+        log(`Audio: master endpoint OK (${p})`);
+        return;
+      }
+    }
+
+    // 2) Try selected clip
+    for(const p of AUDIO_CANDIDATES_SELECTED){
+      if(await tryPut(p, 1)) {
+        AUDIO_SETTER = (v) => http(p, 'PUT', { value: v });
+        AUDIO_GETTER = () => tryGet(p);
+        log(`Audio: selected-clip endpoint OK (${p})`);
+        return;
+      }
+    }
+
+    // 3) Fall back to lastTriggeredColumn across layers
+    if(lastTriggeredColumn != null){
+      // detect the first clip path that works, then set all layers on change
+      for(const L of LAYERS){
+        const candidates = audioClipCandidates(L, lastTriggeredColumn);
+        for(const p of candidates){
+          if(await tryPut(p, 1)){
+            AUDIO_SETTER = async (v) => {
+              await Promise.all(LAYERS.map(Li => {
+                const pp = p.replace(`/layers/${L}/clips/${lastTriggeredColumn}/`, `/layers/${Li}/clips/${lastTriggeredColumn}/`);
+                return http(pp, 'PUT', { value: v });
+              }));
+            };
+            AUDIO_GETTER = () => tryGet(p);
+            log(`Audio: per-clip endpoint OK (${p}), will set all layers in column ${lastTriggeredColumn}`);
+            return;
+          }
+        }
+      }
+    }
+
+    throw new Error('Audio endpoint not found. Check Swagger for the exact audio volume/gain path and add it to the candidates.');
+  }
+
+  // Hook up the UI
+  const audioSlider = document.getElementById('audioSlider');
+  const audioPct    = document.getElementById('audioPct');
+
+  async function setAudioUIFromAPI(){
+    try{
+      await detectAudioPath();
+      const v = await (AUDIO_GETTER ? AUDIO_GETTER() : undefined);
+      if(typeof v === 'number'){
+        audioSlider.value = v.toFixed(2);
+        audioPct.textContent = Math.round(v*100) + '%';
+      }
+    }catch(e){ log('Audio detect: ' + e.message); }
+  }
+
+  audioSlider.addEventListener('input', async (e) => {
+    const v = parseFloat(e.target.value);
+    audioPct.textContent = Math.round(v*100) + '%';
+    try {
+      await detectAudioPath();
+      await AUDIO_SETTER(v);
+    } catch(err){
+      log('Audio set failed: ' + err.message);
+    }
+  });
+
+  // ---------- Buttons ----------
+  document.getElementById('btnCol1').onclick = async () => { try { await triggerColumn(COL1); await setAudioUIFromAPI(); } catch(e){ log('Napaka: '+e.message); } };
+  document.getElementById('btnCol2').onclick = async () => { try { await triggerColumn(COL2); await setAudioUIFromAPI(); } catch(e){ log('Napaka: '+e.message); } };
+  document.getElementById('btnPause').onclick = async () => { try { await pauseComposition(); } catch(e){ log('Napaka: '+e.message); } };
+  document.getElementById('btnResume').onclick = async () => { try { await playComposition(); } catch(e){ log('Napaka: '+e.message); } };
+
+  // Try to read current value on load (won't break if not available)
+  setAudioUIFromAPI();
 </script>
+
 
 </body>
 </html>
