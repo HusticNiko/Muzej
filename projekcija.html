@@ -61,52 +61,87 @@
   </div>
 
 <script>
-  const BASE = 'http://192.168.1.12:8080'; // '' if page is served from Resolume; else 'http://192.168.1.12:8080'
-const LAYERS = [1,2,3,4]; // set to your actual layers
+  const COL1 = 1, COL2 = 2;
+
+  function log(msg){
+    const el = document.getElementById('log');
+    const t = new Date().toLocaleTimeString();
+    el.textContent = `[${t}] ${msg}\n` + el.textContent;
+  }
+
+  async function http(path, method='POST', body=null){
+    const opt = { method, headers:{} };
+    if(body){ opt.headers['Content-Type']='application/json'; opt.body=JSON.stringify(body); }
+    const res = await fetch(path, opt);
+    if(!res.ok){ throw new Error(`HTTP ${res.status}: ${await res.text()}`); }
+    return res;
+  }
 let lastTriggeredColumn = null;
+const LAYERS = [1,2,3]; // <-- change to match your setup
 
-async function http(path, method='GET', body=null){
-  const opt = { method, headers:{} };
-  if(body !== null){ opt.headers['Content-Type']='application/json'; opt.body = JSON.stringify(body); }
-  const res = await fetch(BASE + path, opt);
-  if(!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
-  try { return await res.json(); } catch { return {}; }
+
+  async function triggerColumn(idx){
+    await http(`/api/v1/composition/columns/${idx}/connect`);
+      lastTriggeredColumn = idx;
+
+    log(`Stolpec ${idx} zagnan.`);
+  }
+
+  async function setPlayDirection(layer, clip, value){
+  return http(
+    `/api/v1/composition/layers/${layer}/clips/${clip}/transport/position/behaviour/playdirection`,
+    'PUT',
+    { value } // 0=backward, 1=pause, 2=forward
+  );
 }
 
-async function triggerColumn(idx){
-  await http(`/api/v1/composition/columns/${idx}/connect`, 'POST');
-  lastTriggeredColumn = idx;
-  log(`Stolpec ${idx} zagnan.`);
+  async function pauseComposition(){
+    await http(
+      `/api/v1/composition/clips/selected/transport/position/speed`,
+      'PUT',
+      { value: 0 }
+    );
+    log(`Pavza: izbran posnetek.`);
+  //}
 }
 
-async function setSpeedSelected(value){
-  await http(`/api/v1/composition/clips/selected/transport/position/speed`, 'PUT', { value });
-}
-
-async function setSpeedClip(layer, clip, value){
-  await http(`/api/v1/composition/layers/${layer}/clips/${clip}/transport/position/speed`, 'PUT', { value });
-}
-
-async function pauseComposition(){
+  // Robustno "Nadaljuj":
+  async function playComposition(){
   if(lastTriggeredColumn != null){
-    await Promise.all(LAYERS.map(L => setSpeedClip(L, lastTriggeredColumn, 0)));
-    log(`Pavza (speed=0): stolpec ${lastTriggeredColumn} čez vse sloje.`);
+    await Promise.all(LAYERS.map(L =>
+      setPlayDirection(L, lastTriggeredColumn, 2)
+    ));
+    log(`Nadaljuj: stolpec ${lastTriggeredColumn} čez vse sloje.`);
   } else {
-    await setSpeedSelected(0);
-    log(`Pavza (speed=0): izbran posnetek.`);
+    await http(
+      `/api/v1/composition/selectedclip/transport/position/behaviour/playdirection`,
+      'PUT',
+      { value: 2 }
+    );
+    log(`Nadaljuj: izbran posnetek.`);
   }
 }
 
-async function playComposition(){
-  if(lastTriggeredColumn != null){
-    await Promise.all(LAYERS.map(L => setSpeedClip(L, lastTriggeredColumn, 1)));
-    log(`Nadaljuj (speed=1): stolpec ${lastTriggeredColumn} čez vse sloje.`);
-  } else {
-    await setSpeedSelected(1);
-    log(`Nadaljuj (speed=1): izbran posnetek.`);
-  }
-}
+  // Gumbi
+  document.getElementById('btnCol1').onclick = async () => {
+    try { await triggerColumn(COL1); }
+    catch(e){ log('Napaka: ' + e.message); }
+  };
 
+  document.getElementById('btnCol2').onclick = async () => {
+    try { await triggerColumn(COL2); }
+    catch(e){ log('Napaka: ' + e.message); }
+  };
+
+  document.getElementById('btnPause').onclick = async () => {
+    try { await pauseComposition(); }
+    catch(e){ log('Napaka: ' + e.message); }
+  };
+
+  document.getElementById('btnResume').onclick = async () => {
+    try { await playComposition(); }
+    catch(e){ log('Napaka: ' + e.message); }
+  };
 </script>
 </body>
 </html>
