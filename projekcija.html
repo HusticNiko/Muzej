@@ -105,9 +105,9 @@ const LAYERS = [1,2,3]; // <-- change to match your setup
   } else {
     // Fallback: pause currently selected clip
     await http(
-      `/api/v1/composition/clips/selected/transport/position/behaviour/playdirection`,
+      `/api/v1/composition/clips/selected/transport/position/speed`,
       'PUT',
-      { value: 1 }
+      { value: 0 }
     );
     log(`Pavza: izbran posnetek.`);
   }
