@@ -205,8 +205,7 @@ app.use(express.static(path.join(process.cwd(), 'remote-ui')));
 app.get('/play', async (_req, res) => {
   try {
 
-    await playWallWithVLC(getVideoAbsPath(), 3, 1);
-    //await playWallWithVLCSingleScreen(getVideoAbsPath()); ZA PREDVAJANJE NA ENEM EKRANU FULLSCREEN
+    await playWallWithVLCSingleScreen(getVideoAbsPath());
 
     res.send('OK');
   } catch (err) {

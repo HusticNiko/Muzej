@@ -8,13 +8,15 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
     "i18next": "^25.5.2",
     "i18next-browser-languagedetector": "^8.2.0",
+    "node-fetch": "^3.3.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-i18next": "^15.7.3",
     "react-scripts": "5.0.1",
-    "express": "^4",
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
@@ -33,7 +35,7 @@
   },
   "eslintConfig": {
     "parserOptions": {
-    "ecmaVersion": 2022
+      "ecmaVersion": 2022
     },
     "extends": [
       "react-app",

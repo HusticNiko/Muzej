@@ -6,6 +6,7 @@ import rimljani from './assets/Rimljani.mp4'; // Adjust path if using public fol
 
 import QuizOfMithras from './QuizOfMithras';
 import StarrySkyMystery from './StarrySkyMystery';
+import ControllerPage from "./components/Controllerpage";
 import useInactivityTimer from "./useInactivityTimer"; // Adjust path
 import "./styles.css";
 import LanguageSwitcher from "./components/LanguageSwitcher";
@@ -202,19 +203,6 @@ const App = () => {
             msUserSelect: 'none'
           }}
         > 
-           <video
-          className="bg-video"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-        >
-          <source src={mitraizem} type="video/mp4" />
-          {/* Optional fallback text */}
-          Your browser does not support the video tag.
-        </video>
-          <div className="content">
 
           {showWarning && (
             <div className="warning-popup">
@@ -222,20 +210,8 @@ const App = () => {
             </div>
           )}
 
-          {currentGame === null && (
-            <div className="menu">
-              <h1>{t('welcome')}</h1>
-              {/*<button onClick={() => setCurrentGame("quiz2")} className="home_btn">{t('general_faith')}</button>*/}
-              <button onClick={() => setCurrentGame("quiz")} className="home_btn btn_float">{t('trial_of_mithras')}</button>
-              {/*<button onClick={() => setCurrentGame("stars")} className="btn">{t('mysteri_of_skyes')}</button> */}
-            </div>
-          )}
-          </div>
+          <ControllerPage />
 
-          {currentGame === "wheel" && <WheelOfFortuna onBack={() => setCurrentGame(null)} />}
-          {currentGame === "quiz" && <QuizOfMithras onBack={() => setCurrentGame(null)} />}
-          {currentGame === "quiz2" && <GeneralQuiz onBack={() => setCurrentGame(null)} />}
-          {currentGame === "stars" && <StarrySkyMystery onBack={() => setCurrentGame(null)} />}
           
           <LanguageSwitcher variant="" />
           
