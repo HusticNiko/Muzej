@@ -189,7 +189,72 @@ const App = () => {
           )}
         </div>
       );
-    } else {
+    } else if (user === 'projekcija') {
+      return (
+        <div
+          className="app"
+          {...longPressProps}
+          style={{ 
+            position: 'relative',
+            userSelect: 'none', // Prevent text selection during long press
+            WebkitUserSelect: 'none',
+            MozUserSelect: 'none',
+            msUserSelect: 'none'
+          }}
+        > 
+           <video
+          className="bg-video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+        >
+          <source src={mitraizem} type="video/mp4" />
+          {/* Optional fallback text */}
+          Your browser does not support the video tag.
+        </video>
+          <div className="content">
+
+          {showWarning && (
+            <div className="warning-popup">
+              <p>⚠️ You will return to the main menu in 1 minute due to inactivity.</p>
+            </div>
+          )}
+
+          {currentGame === null && (
+            <div className="menu">
+              <h1>{t('welcome')}</h1>
+              {/*<button onClick={() => setCurrentGame("quiz2")} className="home_btn">{t('general_faith')}</button>*/}
+              <button onClick={() => setCurrentGame("quiz")} className="home_btn btn_float">{t('trial_of_mithras')}</button>
+              {/*<button onClick={() => setCurrentGame("stars")} className="btn">{t('mysteri_of_skyes')}</button> */}
+            </div>
+          )}
+          </div>
+
+          {currentGame === "wheel" && <WheelOfFortuna onBack={() => setCurrentGame(null)} />}
+          {currentGame === "quiz" && <QuizOfMithras onBack={() => setCurrentGame(null)} />}
+          {currentGame === "quiz2" && <GeneralQuiz onBack={() => setCurrentGame(null)} />}
+          {currentGame === "stars" && <StarrySkyMystery onBack={() => setCurrentGame(null)} />}
+          
+          <LanguageSwitcher variant="" />
+          
+          {/* Hidden logout button that appears after 10s hold */}
+          {longPressProps.showButton && (
+            <button 
+              className="logout-btn customer-logout-btn" 
+              onClick={() => {
+                logout();
+                longPressProps.hideButton();
+              }}
+            >
+              <span className="logout-icon">🚪</span>
+              {t('logout')}
+            </button>
+          )}
+        </div>
+      );
+    }  else {
       return (
         <div
           className="app"

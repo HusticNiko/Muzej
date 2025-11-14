@@ -22,6 +22,10 @@ const UserSelection = () => {
       login('admin');
   };
 
+   const handleProjekcijaLogin = () => {
+      login('projekcija');
+  };
+
   return (
     <div className="user-selection-container">
       <div className="language-switcher-top">
@@ -51,6 +55,14 @@ const UserSelection = () => {
             <div className="user-icon">→</div>
             <h3>{t('admin')}</h3>
             <p>{t('admin_description')}</p>
+          </button>
+           <button 
+            className="user-option-btn admin-btn"
+            onClick={handleProjekcijaLogin}
+          >
+            <div className="user-icon">→</div>
+            <h3>{t('Projekcija')}</h3>
+            <p>{t('projekcija')}</p>
           </button>
         </div>
       </div>
