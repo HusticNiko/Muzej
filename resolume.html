@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Resolume Remote — Pulse Retrigger</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  :root{
+  --bg:#3a1e1b;
+  --panel:#4b2522;
+  --gold:#d4af37;
+  --gold-dark:#b38f24;
+  --text:#f5e9cc;
+  --muted:#e9d9b9;
+}
+
+body{
+  margin:0;
+  background: radial-gradient(1200px 800px at 50% 20%, #532a26 0%, var(--bg) 70%);
+  color:var(--text);
+  font-family:'Cinzel','Times New Roman',Times,serif;
+  display:grid;
+  place-items:center;
+  min-height:100vh;
+  padding:20px;
+}
+
+.wrap{
+  width:100%;
+  max-width:860px;
+  background:linear-gradient(180deg,var(--panel),#3f201d);
+  border:2px solid var(--gold);
+  border-radius:14px;
+  padding:20px;
+  box-shadow:0 10px 40px rgba(0,0,0,.45), inset 0 0 20px rgba(212,175,55,.08);
+}
+
+.card{
+  background:rgba(0,0,0,0.12);
+  border:1px solid var(--gold-dark);
+  border-radius:12px;
+  padding:18px;
+  margin-bottom:18px;
+  box-shadow:inset 0 0 12px rgba(0,0,0,.35);
+}
+
+h1{
+  margin:0 0 12px;
+  font-size:26px;
+  color:var(--gold);
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+
+.row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+  align-items:center;
+}
+
+.field{
+  display:grid;
+  gap:6px;
+  flex:1 1 160px;
+}
+
+.field label{
+  font-size:13px;
+  color:var(--muted);
+}
+
+.field input{
+  padding:12px 14px;
+  border-radius:10px;
+  border:1px solid #a5821d;
+  background:#2f1714;
+  color:var(--text);
+  font-family:inherit;
+}
+
+button{
+  appearance:none;
+  border:none;
+  cursor:pointer;
+  border-radius:12px;
+  padding:16px 20px;
+  font-size:18px;
+  font-family:'Cinzel','Times New Roman',Times,serif;
+  color:#2a1a0a;
+  background:
+    radial-gradient(140% 220% at 50% -20%, #fff5cc33 0%, transparent 60%),
+    linear-gradient(180deg,var(--gold),var(--gold-dark));
+  border:2px solid #a5821d;
+  text-shadow:0 1px 0 #fff9;
+  box-shadow:0 8px 18px rgba(0,0,0,.35), inset 0 1px 0 #fff6cf66;
+  transition:transform .05s ease, filter .15s ease;
+}
+button:hover{ filter:brightness(1.05); }
+button:active{ transform:translateY(1px) scale(.99); }
+
+.grid{
+  display:grid;
+  gap:14px;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+}
+
+.status{
+  font-size:13px;
+  color:var(--muted);
+  margin-top:6px;
+}
+
+.dot{
+  display:inline-block;
+  width:10px;
+  height:10px;
+  border-radius:999px;
+  background:#866a3d;
+  margin-right:8px;
+}
+.ok .dot{ background:#22c55e; }
+.warn .dot{ background:#f59e0b; }
+.bad .dot{ background:#ef4444; }
+
+.log{
+  margin-top:12px;
+  background:#2f1714;
+  border:1px solid #6a3a31;
+  padding:10px;
+  color:#e9e1c9;
+  font-family:ui-monospace,Menlo,Consolas,monospace;
+  font-size:14px;
+  max-height:260px;
+  overflow:auto;
+  border-radius:8px;
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>Resolume Remote — Pulse Retrigger (Avenue 7.23.x)</h1>
+    <div class="row">
+      <div class="field"><label>Host</label><input id="host" value="127.0.0.1"></div>
+      <div class="field"><label>Port</label><input id="port" value="8080"></div>
+      <div class="field"><label>Password (Web Server)</label><input id="password" type="password" placeholder="leave empty if none"></div>
+
+      <!-- NEW: durations (seconds) -->
+      <div class="field"><label>Duration C1 (s)</label><input id="durC1" value="30"></div>
+      <div class="field"><label>Duration C2 (s)</label><input id="durC2" value="60"></div>
+      <div class="field"><label>Duration C3 (s)</label><input id="durC3" value="20"></div>
+      <div class="field"><label>Duration C4 (s)</label><input id="durC4" value="60"></div>
+
+      <!-- If you still use layer fallback, keep these -->
+      <div class="field"><label>Layer for Projection 1</label><input id="layerP1" value="1"></div>
+      <div class="field"><label>Layer for Projection 2</label><input id="layerP2" value="1"></div>
+
+      <button id="btnTest">Test</button>
+    </div>
+    <div id="status" class="status"><span class="dot"></span><span id="statusText">Not tested</span></div>
+    <div class="sub">Behavior: C1 plays once ➜ auto C4 (loop). C2 loops. C3 plays once ➜ auto C2 (loop). Adjust durations above.</div>
+  </div>
+
+  <div class="card">
+    <div class="grid">
+      <button onclick="playProjection(1)">▶︎ Projekcija (Column 1)</button>
+      <button onclick="playProjection(2)">▶︎ Ambiental (Column 2)</button>
+      <button onclick="playProjection(3)">▶︎ Napovednik (Column 3)</button>
+      <button onclick="playProjection(4)">⏸ Pause</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="row" style="justify-content:space-between;align-items:center">
+      <div class="sub" style="margin:0">Debug Log</div>
+      <button onclick="clearLog()">Clear</button>
+    </div>
+    <div id="log" class="log" aria-live="polite"></div>
+  </div>
+</div>
+
+<script>
+  // ----- helpers -----
+  const statusEl = document.getElementById('status');
+  const statusTextEl = document.getElementById('statusText');
+  const logEl = document.getElementById('log');
+  function log(m){ const t=new Date().toLocaleTimeString(); logEl.textContent+=`[${t}] ${m}\n`; logEl.scrollTop=logEl.scrollHeight; }
+  function clearLog(){ logEl.textContent=""; }
+  function setStatus(kind,text){ statusEl.classList.remove('ok','warn','bad'); if(kind) statusEl.classList.add(kind); statusTextEl.textContent=text; }
+
+  function baseUrl(){
+    const host=document.getElementById('host').value.trim()||'127.0.0.1';
+    const port=document.getElementById('port').value.trim()||'8080';
+    return `http://${host}:${port}`;
+  }
+  function authHeaders(){
+    const pwd=document.getElementById('password').value;
+    if(!pwd) return {};
+    const token=btoa(`:${pwd}`); // empty username + password
+    return { 'Authorization': `Basic ${token}` };
+  }
+  async function get(u){ return fetch(u,{headers:{...authHeaders()}}); }
+  async function sendBool(u,val,methods=['POST','PUT','PATCH']){
+    const bodies=[
+      {ct:'application/json', body:JSON.stringify(val)},
+      {ct:'text/plain', body: val?'true':'false'},
+      {ct:'application/json', body:JSON.stringify(val?1:0)},
+      {ct:'text/plain', body: val?'1':'0'},
+    ];
+    const tries=[];
+    for(const m of methods){
+      for(const b of bodies){
+        try{
+          const r=await fetch(u,{method:m,headers:{'Content-Type':b.ct,...authHeaders()},body:b.body});
+          tries.push(`${m} ${b.ct} ${u} → ${r.status}`);
+          if(r.ok) return {ok:true, attempt:tries.at(-1)};
+        }catch{ tries.push(`${m} ${b.ct} ${u} → ERROR`); }
+      }
+    }
+    return {ok:false, tries};
+  }
+  function sleep(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+  // ----- test -----
+  document.getElementById('btnTest').addEventListener('click', async ()=>{
+    setStatus('warn','Testing…');
+    try{
+      const u=`${baseUrl()}/api/v1/composition`;
+      const r=await get(u);
+      log(`GET ${u} → ${r.status}`);
+      setStatus(r.ok?'ok':'bad', r.ok?'Connected to REST API':`HTTP ${r.status}`);
+    }catch(e){ setStatus('bad','Cannot reach server'); log('ERR test: '+e); }
+  });
+
+  // ----- PULSE column connect (true → short delay → false) -----
+  async function pulseColumnConnect(col){
+    const url=`${baseUrl()}/api/v1/composition/columns/${col}/connect`;
+    let res = await sendBool(url, true);
+    if(res.ok){ log(res.attempt); } else if(res.tries){ res.tries.forEach(t=>log(t)); }
+    await sleep(120);
+    res = await sendBool(url, false);
+    if(res.ok){ log(res.attempt); } else if(res.tries){ res.tries.forEach(t=>log(t)); }
+    return true;
+  }
+
+  // ----- Direct clip trigger fallback (Layer X + Column Y) with pulse -----
+  async function pulseClipConnect(layer, col){
+    const url=`${baseUrl()}/api/v1/composition/layers/${layer}/clips/${col}/connect`;
+    let res = await sendBool(url, true);
+    if(res.ok){ log(res.attempt); } else if(res.tries){ res.tries.forEach(t=>log(t)); }
+    await sleep(120);
+    res = await sendBool(url, false);
+    if(res.ok){ log(res.attempt); } else if(res.tries){ res.tries.forEach(t=>log(t)); }
+    return true;
+  }
+
+  // ====== SIMPLE SEQUENCER / LOOPING (client-side timers) ======
+  let loopTimer = null;      // for looping columns (2 and 4)
+  let followTimer = null;    // for 1→4 and 3→2 transitions
+
+  function clearAllTimers(){
+    if(loopTimer){ clearTimeout(loopTimer); loopTimer = null; }
+    if(followTimer){ clearTimeout(followTimer); followTimer = null; }
+  }
+
+  function seconds(id){
+    const el = document.getElementById(id);
+    const v = parseFloat(el?.value || '0');
+    return isFinite(v) && v>0 ? v : 0;
+    }
+
+  async function playProjection(n){
+    // cancel any pending transitions/loops before switching
+    clearAllTimers();
+
+    const layer = parseInt((n===1?document.getElementById('layerP1'):document.getElementById('layerP2')).value||'1',10);
+    setStatus('warn',`Play Projection ${n}…`);
+    try{
+      await pulseColumnConnect(n);
+      setStatus('ok',`Projection ${n} triggered (column ${n})`);
+    }catch(e){
+      log(`Column ${n} pulse error: ${e}`);
+      try{
+        await pulseClipConnect(layer, n);
+        setStatus('ok',`Projection ${n} triggered (layer ${layer}, col ${n})`);
+      }catch(e2){
+        setStatus('bad',`Projection ${n} failed`); log(`Fallback error: ${e2}`);
+        return;
+      }
+    }
+
+    // sequencing rules:
+    // C1 plays once → auto C4 (loop)
+    // C2 loops
+    // C3 plays once → auto C2 (loop)
+    // C4 loops (for the C1→C4 path)
+    if (n === 1) {
+      const dur = seconds('durC1');
+      if (dur > 0) {
+        followTimer = setTimeout(() => {
+          log('C1 finished → auto start C4 (loop)');
+          playLoopingColumn(4, seconds('durC4'));
+        }, dur * 1000);
+      }
+    } else if (n === 2) {
+      playLoopingColumn(2, seconds('durC2'));
+    } else if (n === 3) {
+      const dur = seconds('durC3');
+      if (dur > 0) {
+        followTimer = setTimeout(() => {
+          log('C3 finished → auto start C2 (loop)');
+          playLoopingColumn(2, seconds('durC2'));
+        }, dur * 1000);
+      }
+    } else if (n === 4) {
+      // If you ever call playProjection(4) directly, ensure loop behavior
+      playLoopingColumn(4, seconds('durC4'));
+    }
+  }
+
+  async function playLoopingColumn(col, durSeconds){
+    clearAllTimers();
+    // trigger column now
+    await pulseColumnConnect(col);
+    setStatus('ok',`Column ${col} (looping)`);
+
+    if (durSeconds > 0) {
+      // retrigger near the end to simulate loop; if the clip itself loops in Resolume,
+      // this retrigger is harmless and keeps the state lively.
+      const loopOnce = async () => {
+        await pulseColumnConnect(col);
+        loopTimer = setTimeout(loopOnce, durSeconds * 1000);
+      };
+      loopTimer = setTimeout(loopOnce, durSeconds * 1000);
+    } else {
+      log(`No duration set for C${col}; loop timer not scheduled.`);
+    }
+  }
+
+  async function pause(){
+    // stop timers so nothing auto-triggers while paused
+    clearAllTimers();
+    setStatus('warn','Pause…');
+    const url=`${baseUrl()}/api/v1/transport/pause`; // leaf route; you had transport working earlier
+    try{
+      const r = await fetch(url, { method:'POST', headers:{ ...authHeaders() } });
+      log(`POST ${url} → ${r.status}`);
+      setStatus(r.ok ? 'ok' : 'bad', r.ok ? 'Paused' : `Pause failed (${r.status})`);
+    }catch(e){
+      setStatus('bad','Pause error'); log('ERR pause: '+e);
+    }
+  }
+
+  // auto quick test on load
+  window.addEventListener('load', ()=> setTimeout(()=>document.getElementById('btnTest').click(), 300));
+</script>
+</body>
+</html>
