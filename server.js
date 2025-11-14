@@ -68,6 +68,8 @@ async function startVlcIfNeeded3() {
     '--no-video-title-show',
     '--fullscreen',
     '--extraintf=rc',
+    '--no-loop',
+    '--no-repeat',
     `--rc-host=${RC_HOST}:${RC_PORT}`,
     // NOTE: no initial media here; we add via RC
   ];
@@ -84,19 +86,15 @@ async function startVlcIfNeeded3() {
 }
 
 
-async function startVlcIfNeeded2(cols = 3, rows = 1) {
+async function startVlcIfNeeded2() {
   // If RC is reachable, VLC is already running in RC mode -> reuse it.
   if (await isRcUp()) return;
 
   if (!fs.existsSync(VLC_BIN)) throw new Error(`VLC not found at ${VLC_BIN}`);
 
   const args = [
-    '--video-splitter=wall',
-    `--wall-cols=${cols}`,
-    `--wall-rows=${rows}`,
-    '--no-video-title-show',
+     '--no-video-title-show',
     '--fullscreen',
-    '--input-repeat=-1',        // loop each item forever
     '--extraintf=rc',
     `--rc-host=${RC_HOST}:${RC_PORT}`,
     // NOTE: no initial media here; we add via RC
@@ -117,10 +115,10 @@ async function startVlcIfNeeded2(cols = 3, rows = 1) {
 
 // ---- paths ----
 function getVideoAbsPath() {
-  return path.join(process.cwd(), 'assets', 'video.mp4');
+  return path.join(process.cwd(), 'assets', 'Klet.mp4');
 }
 function getVideoAbsPath2() {
-  return path.join(process.cwd(), 'assets', 'video2.mp4');
+  return path.join(process.cwd(), 'assets', 'Ambintal.mp4');
 }
 
 function sendCmdO() {
@@ -179,9 +177,9 @@ async function playWallWithVLCSingleScreen(videoAbsPath) {
 
 }
 
-async function playWallWithVLC2(videoAbsPath, cols = 3, rows = 1) {
+async function playWallWithVLC2(videoAbsPath) {
  if (!fs.existsSync(videoAbsPath)) throw new Error(`Video not found at ${videoAbsPath}`);
-  await startVlcIfNeeded2(cols, rows);
+  await startVlcIfNeeded2();
   const fileUrl = pathToFileURL(videoAbsPath).href;
  setTimeout(() => {
     sendCmdO().catch(err => console.error('Failed to send CMD+O:', err));
@@ -216,7 +214,7 @@ app.get('/play', async (_req, res) => {
 
 app.get('/play2', async (_req, res) => {
   try {
-    await playWallWithVLC2(getVideoAbsPath2(), 3, 1);
+    await playWallWithVLC2(getVideoAbsPath2());
     res.send('OK');
   } catch (err) {
     console.error('[HTTP] /play2', err);

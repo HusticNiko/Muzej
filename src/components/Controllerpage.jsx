@@ -1,11 +1,16 @@
 // ControllerPage.jsx
 import React, { useState } from 'react';
+import { useTranslation } from "react-i18next";
+import "../../src/styles.css";
+
 
 // IMPORTANT: use your Mac's LAN IP, not 127.0.0.1
 // e.g. http://192.168.1.23:3002
-const PROJECTOR_SERVER = 'http://172.20.10.2:3002';
+const PROJECTOR_SERVER = 'http://192.168.1.19:3002';
 
-export default function ControllerPage() {
+export default function ControllerPage({ onBack }) {
+    const { t } = useTranslation();
+  
   const [status, setStatus] = useState('Idle');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -91,6 +96,9 @@ export default function ControllerPage() {
         >
           ✕ Prekini
         </button>
+           <button onClick={onBack} className="back_to_menu_btn">
+              {t("back_to_menu")}
+            </button>
       </div>
 
       <div style={{ marginTop: 16, fontSize: 14, opacity: 0.85 }}>

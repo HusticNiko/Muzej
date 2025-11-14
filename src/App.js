@@ -210,7 +210,7 @@ const App = () => {
             </div>
           )}
 
-          <ControllerPage />
+          <ControllerPage onBack={() => setCurrentGame(null)} />
 
           
           <LanguageSwitcher variant="" />
