@@ -144,11 +144,20 @@ button:active{ transform:translateY(1px) scale(.99); }
     <div class="grid">
       <button onclick="playProjection(1)">▶︎ Projekcija</button>
       <button onclick="playProjection(2)">▶︎ Ambiental</button>
-      <button onclick="playProjection(3)">▶︎ Napovednik</button>
       <button onclick="playProjection(4)">⏸ Pause</button>
+      <button onclick="goBack()"> Nazaj</button>
 
     </div>
   </div>
+
+  <div class="card">
+    <div class="row" style="justify-content:space-between;align-items:center">
+      <div class="sub" style="margin:0">Debug Log</div>
+      <button onclick="clearLog()">Clear</button>
+    </div>
+    <div id="log" class="log" aria-live="polite"></div>
+  </div>
+</div>
 
 <script>
   // ----- helpers -----
@@ -160,7 +169,7 @@ button:active{ transform:translateY(1px) scale(.99); }
   function setStatus(kind,text){ statusEl.classList.remove('ok','warn','bad'); if(kind) statusEl.classList.add(kind); statusTextEl.textContent=text; }
 
   function baseUrl(){
-    const host=document.getElementById('host').value.trim()||'127.0.0.1';
+    const host=document.getElementById('host').value.trim()||'192.168.1.129';
     const port=document.getElementById('port').value.trim()||'8080';
     return `http://${host}:${port}`;
   }
@@ -232,13 +241,20 @@ button:active{ transform:translateY(1px) scale(.99); }
   function clearAllTimers(){
     if(loopTimer){ clearTimeout(loopTimer); loopTimer = null; }
     if(followTimer){ clearTimeout(followTimer); followTimer = null; }
+  }
+
+  function goBack() {
+  window.location.href = "http://localhost:3000"; 
+  // OR your LAN React app:
+  // window.location.href = "http://192.168.1.129:3000";
+}
 
   function seconds(id){
     const el = document.getElementById(id);
     const v = parseFloat(el?.value || '0');
     return isFinite(v) && v>0 ? v : 0;
     }
-  }
+
   async function playProjection(n){
     // cancel any pending transitions/loops before switching
     clearAllTimers();

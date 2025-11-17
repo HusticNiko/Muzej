@@ -6,7 +6,7 @@ import rimljani from './assets/Rimljani.mp4'; // Adjust path if using public fol
 
 import QuizOfMithras from './QuizOfMithras';
 import StarrySkyMystery from './StarrySkyMystery';
-import ControllerPage from "./components/Controllerpage";
+//import ControllerPage from "../../Muzej/";
 import useInactivityTimer from "./useInactivityTimer"; // Adjust path
 import "./styles.css";
 import LanguageSwitcher from "./components/LanguageSwitcher";
@@ -93,7 +93,7 @@ const App = () => {
 
   useInactivityTimer(
     () => {
-      if (isGameActive) setShowWarning(false); // show warning only if inside a game
+      if (isGameActive) setShowWarning(true); // show warning only if inside a game
     },
     () => {
       if (isGameActive) {
@@ -101,8 +101,8 @@ const App = () => {
         setShowWarning(false);    // hide warning
       }
     },
-    50000, // 4 min for warning
-    100000  // 5 min for timeout
+    100000, // 4 min for warning
+    300000  // 5 min for timeout
   );
 
   const AppContent = () => {
@@ -152,11 +152,6 @@ const App = () => {
         </video>
           <div className="content">
 
-          {showWarning && (
-            <div className="warning-popup">
-              <p>⚠️ You will return to the main menu in 1 minute due to inactivity.</p>
-            </div>
-          )}
 
           {currentGame === null && (
             <div className="menu">
@@ -167,7 +162,24 @@ const App = () => {
             </div>
           )}
           </div>
-
+ {/* Hidden logout button that appears after 10s hold */}
+          {longPressProps.showButton && (
+            <button 
+              className="logout-btn customer-logout-btn" 
+              onClick={() => {
+                logout();
+                longPressProps.hideButton();
+              }}
+            >
+              <span className="logout-icon">🚪</span>
+              {t('logout')}
+            </button>
+          )}
+            {showWarning && (
+            <div className="warning-popup">
+              <p>⚠️ You will return to the main menu in 1 minute due to inactivity.</p>
+            </div>
+          )}
           {currentGame === "wheel" && <WheelOfFortuna onBack={() => setCurrentGame(null)} />}
           {currentGame === "quiz" && <QuizOfMithras onBack={() => setCurrentGame(null)} />}
           {currentGame === "quiz2" && <GeneralQuiz onBack={() => setCurrentGame(null)} />}
@@ -175,61 +187,16 @@ const App = () => {
           
           <LanguageSwitcher variant="" />
           
-          {/* Hidden logout button that appears after 10s hold */}
-          {longPressProps.showButton && (
-            <button 
-              className="logout-btn customer-logout-btn" 
-              onClick={() => {
-                logout();
-                longPressProps.hideButton();
-              }}
-            >
-              <span className="logout-icon">🚪</span>
-              {t('logout')}
-            </button>
-          )}
+
         </div>
       );
     } else if (user === 'projekcija') {
-      return (
-        <div
-          className="app"
-          {...longPressProps}
-          style={{ 
-            position: 'relative',
-            userSelect: 'none', // Prevent text selection during long press
-            WebkitUserSelect: 'none',
-            MozUserSelect: 'none',
-            msUserSelect: 'none'
-          }}
-        > 
-
-          {showWarning && (
-            <div className="warning-popup">
-              <p>⚠️ You will return to the main menu in 1 minute due to inactivity.</p>
-            </div>
-          )}
-
-          <ControllerPage onBack={() => setCurrentGame(null)} />
-
-          
-          <LanguageSwitcher variant="" />
-          
-          {/* Hidden logout button that appears after 10s hold */}
-          {longPressProps.showButton && (
-            <button 
-              className="logout-btn customer-logout-btn" 
-              onClick={() => {
-                logout();
-                longPressProps.hideButton();
-              }}
-            >
-              <span className="logout-icon">🚪</span>
-              {t('logout')}
-            </button>
-          )}
-        </div>
-      );
+      
+     
+            window.location.href = "http://192.168.1.129:8080"; // <-- replace with your actual IP
+        
+                  
+        
     }  else {
       return (
         <div

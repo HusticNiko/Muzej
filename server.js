@@ -10,9 +10,9 @@ const { pathToFileURL } = require('url');
 
 // ---- constants ----
 const VLC_BIN = '/Applications/VLC.app/Contents/MacOS/VLC';
-const RC_HOST = '127.0.0.1';      // VLC RC listens on localhost
+const RC_HOST = '192.168.1.13329';      // VLC RC listens on localhost
 const RC_PORT = 5050;             // <-- RC control port (NOT your HTTP port)
-const PORT = Number(process.env.CONTROL_PORT || 3002); // HTTP server port
+const PORT = Number(process.env.CONTROL_PORT || 3030); // HTTP server port
 
 let vlcChild = null;
 
@@ -67,7 +67,7 @@ async function startVlcIfNeeded3() {
   const args = [
     '--no-video-title-show',
     '--fullscreen',
-    '--extraintf=rc',
+    '--extraintPf=rc',
     '--no-loop',
     '--no-repeat',
     `--rc-host=${RC_HOST}:${RC_PORT}`,
@@ -154,9 +154,7 @@ async function playWallWithVLC(videoAbsPath, cols = 3, rows = 1) {
 
   const fileUrl = pathToFileURL(videoAbsPath).href; // e.g., file:///Users/you/Videos/My%20Clip.mp4
   console.log(fileUrl);
-  setTimeout(() => {
-    sendCmdO().catch(err => console.error('Failed to send CMD+O:', err));
-  }, 3000 ); // wait a bit so VLC has time to launch
+  
   await vlcRc('stop').catch(() => {});
   await vlcRc('clear').catch(() => {});
   // Use 'add' (plays current item) or 'enqueue' + 'play'
@@ -181,9 +179,6 @@ async function playWallWithVLC2(videoAbsPath) {
  if (!fs.existsSync(videoAbsPath)) throw new Error(`Video not found at ${videoAbsPath}`);
   await startVlcIfNeeded2();
   const fileUrl = pathToFileURL(videoAbsPath).href;
- setTimeout(() => {
-    sendCmdO().catch(err => console.error('Failed to send CMD+O:', err));
-  }, 3000 ); // wait a bit so VLC has time to launch
   await vlcRc('stop').catch(() => {});
   await vlcRc('clear').catch(() => {});
   await vlcRc(`add ${fileUrl}`);
