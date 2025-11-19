@@ -193,7 +193,7 @@ const App = () => {
     } else if (user === 'projekcija') {
       
      
-            window.location.href = "http://192.168.1.129:8080"; // <-- replace with your actual IP
+            window.location.href = "http://192.168.4.237:8080"; // <-- replace with your actual IP
         
                   
         
