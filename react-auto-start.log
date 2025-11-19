@@ -1,0 +1,257 @@
+
+> fortuna-app@0.1.0 start
+> concurrently "NODE_NO_WARNINGS=1 node server.js" "react-scripts start"
+
+[0] [HTTP] Control server listening on http://0.0.0.0:3030
+[0] [HTTP] If accessing from tablet, use Mac mini IP, e.g. http://192.168.x.x:3001
+[1] (node:4969) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+[1] (Use `node --trace-deprecation ...` to show where the warning was created)
+[1] (node:4969) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+[1] Starting the development server...
+[1] 
+[1] Compiled successfully!
+[1] 
+[1] You can now view fortuna-app in the browser.
+[1] 
+[1]   Local:            http://localhost:3000
+[1]   On Your Network:  http://192.168.1.19:3000
+[1] 
+[1] Note that the development build is not optimized.
+[1] To create a production build, use npm run build.
+[1] 
+[1] webpack compiled successfully
+[0] NODE_NO_WARNINGS=1 node server.js exited with code SIGINT
+[1] react-scripts start exited with code SIGINT
+
+> fortuna-app@0.1.0 start
+> concurrently "NODE_NO_WARNINGS=1 node server.js" "react-scripts start"
+
+[0] [HTTP] Control server listening on http://0.0.0.0:3030
+[0] [HTTP] If accessing from tablet, use Mac mini IP, e.g. http://192.168.x.x:3001
+[1] (node:863) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+[1] (Use `node --trace-deprecation ...` to show where the warning was created)
+[1] (node:863) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+[1] Starting the development server...
+[1] 
+[1] Compiled successfully!
+[1] 
+[1] You can now view fortuna-app in the browser.
+[1] 
+[1]   Local:            http://localhost:3000
+[1]   On Your Network:  http://192.168.1.19:3000
+[1] 
+[1] Note that the development build is not optimized.
+[1] To create a production build, use npm run build.
+[1] 
+[1] webpack compiled successfully
+[0] NODE_NO_WARNINGS=1 node server.js exited with code SIGTERM
+[1] react-scripts start exited with code SIGTERM
+
+> fortuna-app@0.1.0 start
+> concurrently "NODE_NO_WARNINGS=1 node server.js" "react-scripts start"
+
+[0] [HTTP] Control server listening on http://0.0.0.0:3030
+[0] [HTTP] If accessing from tablet, use Mac mini IP, e.g. http://192.168.x.x:3001
+[1] (node:576) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+[1] (Use `node --trace-deprecation ...` to show where the warning was created)
+[1] (node:576) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+[1] Starting the development server...
+[1] 
+[1] Compiled successfully!
+[1] 
+[1] You can now view fortuna-app in the browser.
+[1] 
+[1]   Local:            http://localhost:3000
+[1]   On Your Network:  http://192.168.1.19:3000
+[1] 
+[1] Note that the development build is not optimized.
+[1] To create a production build, use npm run build.
+[1] 
+[1] webpack compiled successfully
+[0] NODE_NO_WARNINGS=1 node server.js exited with code SIGTERM
+[1] react-scripts start exited with code SIGTERM
+
+> fortuna-app@0.1.0 start
+> concurrently "NODE_NO_WARNINGS=1 node server.js" "react-scripts start"
+
+[0] [HTTP] Control server listening on http://0.0.0.0:3030
+[0] [HTTP] If accessing from tablet, use Mac mini IP, e.g. http://192.168.x.x:3001
+[1] (node:565) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+[1] (Use `node --trace-deprecation ...` to show where the warning was created)
+[1] (node:565) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+[1] Starting the development server...
+[1] 
+[1] Compiled successfully!
+[1] 
+[1] You can now view fortuna-app in the browser.
+[1] 
+[1]   Local:            http://localhost:3000
+[1]   On Your Network:  http://192.168.1.19:3000
+[1] 
+[1] Note that the development build is not optimized.
+[1] To create a production build, use npm run build.
+[1] 
+[1] webpack compiled successfully
+[1] Compiling...
+[1] Compiled with warnings.
+[1] 
+[1] [eslint] 
+[1] src/i18n/index.js
+[1]   Line 25:7:   Duplicate key 'home'              no-dupe-keys
+[1]   Line 26:7:   Duplicate key 'about'             no-dupe-keys
+[1]   Line 27:7:   Duplicate key 'contact'           no-dupe-keys
+[1]   Line 28:7:   Duplicate key 'language'          no-dupe-keys
+[1]   Line 29:7:   Duplicate key 'english'           no-dupe-keys
+[1]   Line 30:7:   Duplicate key 'slovenian'         no-dupe-keys
+[1]   Line 31:7:   Duplicate key 'change_language'   no-dupe-keys
+[1]   Line 33:7:   Duplicate key 'back'              no-dupe-keys
+[1]   Line 63:7:   Duplicate key 'trial_of_mithras'  no-dupe-keys
+[1]   Line 242:7:  Duplicate key 'trial_of_mithras'  no-dupe-keys
+[1]   Line 350:3:  Duplicate key 'vprasanje_1'       no-dupe-keys
+[1]   Line 351:3:  Duplicate key 'odgovor_1_1'       no-dupe-keys
+[1]   Line 352:3:  Duplicate key 'odgovor_1_2'       no-dupe-keys
+[1]   Line 353:3:  Duplicate key 'odgovor_1_3'       no-dupe-keys
+[1]   Line 354:3:  Duplicate key 'odgovor_1_4'       no-dupe-keys
+[1]   Line 356:3:  Duplicate key 'vprasanje_2'       no-dupe-keys
+[1]   Line 357:3:  Duplicate key 'odgovor_2_1'       no-dupe-keys
+[1]   Line 358:3:  Duplicate key 'odgovor_2_2'       no-dupe-keys
+[1]   Line 359:3:  Duplicate key 'odgovor_2_3'       no-dupe-keys
+[1]   Line 360:3:  Duplicate key 'odgovor_2_4'       no-dupe-keys
+[1]   Line 362:3:  Duplicate key 'vprasanje_3'       no-dupe-keys
+[1]   Line 363:3:  Duplicate key 'odgovor_3_1'       no-dupe-keys
+[1]   Line 364:3:  Duplicate key 'odgovor_3_2'       no-dupe-keys
+[1]   Line 365:3:  Duplicate key 'odgovor_3_3'       no-dupe-keys
+[1]   Line 366:3:  Duplicate key 'odgovor_3_4'       no-dupe-keys
+[1]   Line 368:3:  Duplicate key 'vprasanje_4'       no-dupe-keys
+[1]   Line 369:3:  Duplicate key 'odgovor_4_1'       no-dupe-keys
+[1]   Line 370:3:  Duplicate key 'odgovor_4_2'       no-dupe-keys
+[1]   Line 371:3:  Duplicate key 'odgovor_4_3'       no-dupe-keys
+[1]   Line 372:3:  Duplicate key 'odgovor_4_4'       no-dupe-keys
+[1]   Line 374:3:  Duplicate key 'vprasanje_5'       no-dupe-keys
+[1]   Line 375:3:  Duplicate key 'odgovor_5_1'       no-dupe-keys
+[1]   Line 376:3:  Duplicate key 'odgovor_5_2'       no-dupe-keys
+[1]   Line 377:3:  Duplicate key 'odgovor_5_3'       no-dupe-keys
+[1]   Line 378:3:  Duplicate key 'odgovor_5_4'       no-dupe-keys
+[1]   Line 380:3:  Duplicate key 'vprasanje_6'       no-dupe-keys
+[1]   Line 381:3:  Duplicate key 'odgovor_6_1'       no-dupe-keys
+[1]   Line 382:3:  Duplicate key 'odgovor_6_2'       no-dupe-keys
+[1]   Line 383:3:  Duplicate key 'odgovor_6_3'       no-dupe-keys
+[1]   Line 384:3:  Duplicate key 'odgovor_6_4'       no-dupe-keys
+[1]   Line 386:3:  Duplicate key 'vprasanje_7'       no-dupe-keys
+[1]   Line 387:3:  Duplicate key 'odgovor_7_1'       no-dupe-keys
+[1]   Line 388:3:  Duplicate key 'odgovor_7_2'       no-dupe-keys
+[1]   Line 389:3:  Duplicate key 'odgovor_7_3'       no-dupe-keys
+[1]   Line 390:3:  Duplicate key 'odgovor_7_4'       no-dupe-keys
+[1]   Line 392:3:  Duplicate key 'vprasanje_8'       no-dupe-keys
+[1]   Line 393:3:  Duplicate key 'odgovor_8_1'       no-dupe-keys
+[1]   Line 394:3:  Duplicate key 'odgovor_8_2'       no-dupe-keys
+[1]   Line 395:3:  Duplicate key 'odgovor_8_3'       no-dupe-keys
+[1]   Line 396:3:  Duplicate key 'odgovor_8_4'       no-dupe-keys
+[1]   Line 398:3:  Duplicate key 'vprasanje_9'       no-dupe-keys
+[1]   Line 399:3:  Duplicate key 'odgovor_9_1'       no-dupe-keys
+[1]   Line 400:3:  Duplicate key 'odgovor_9_2'       no-dupe-keys
+[1]   Line 401:3:  Duplicate key 'odgovor_9_3'       no-dupe-keys
+[1]   Line 402:3:  Duplicate key 'odgovor_9_4'       no-dupe-keys
+[1]   Line 404:3:  Duplicate key 'vprasanje_10'      no-dupe-keys
+[1]   Line 405:3:  Duplicate key 'odgovor_10_1'      no-dupe-keys
+[1]   Line 406:3:  Duplicate key 'odgovor_10_2'      no-dupe-keys
+[1]   Line 407:3:  Duplicate key 'odgovor_10_3'      no-dupe-keys
+[1]   Line 408:3:  Duplicate key 'odgovor_10_4'      no-dupe-keys
+[1]   Line 410:3:  Duplicate key 'vprasanje_11'      no-dupe-keys
+[1]   Line 411:3:  Duplicate key 'odgovor_11_1'      no-dupe-keys
+[1]   Line 412:3:  Duplicate key 'odgovor_11_2'      no-dupe-keys
+[1]   Line 413:3:  Duplicate key 'odgovor_11_3'      no-dupe-keys
+[1]   Line 414:3:  Duplicate key 'odgovor_11_4'      no-dupe-keys
+[1]   Line 416:3:  Duplicate key 'vprasanje_12'      no-dupe-keys
+[1]   Line 417:3:  Duplicate key 'odgovor_12_1'      no-dupe-keys
+[1]   Line 418:3:  Duplicate key 'odgovor_12_2'      no-dupe-keys
+[1]   Line 419:3:  Duplicate key 'odgovor_12_3'      no-dupe-keys
+[1]   Line 420:3:  Duplicate key 'odgovor_12_4'      no-dupe-keys
+[1]   Line 422:3:  Duplicate key 'vprasanje_13'      no-dupe-keys
+[1]   Line 423:3:  Duplicate key 'odgovor_13_1'      no-dupe-keys
+[1]   Line 424:3:  Duplicate key 'odgovor_13_2'      no-dupe-keys
+[1]   Line 425:3:  Duplicate key 'odgovor_13_3'      no-dupe-keys
+[1]   Line 426:3:  Duplicate key 'odgovor_13_4'      no-dupe-keys
+[1] 
+[1] Search for the keywords to learn more about each warning.
+[1] To ignore, add // eslint-disable-next-line to the line before.
+[1] 
+[1] WARNING in [eslint] 
+[1] src/i18n/index.js
+[1]   Line 25:7:   Duplicate key 'home'              no-dupe-keys
+[1]   Line 26:7:   Duplicate key 'about'             no-dupe-keys
+[1]   Line 27:7:   Duplicate key 'contact'           no-dupe-keys
+[1]   Line 28:7:   Duplicate key 'language'          no-dupe-keys
+[1]   Line 29:7:   Duplicate key 'english'           no-dupe-keys
+[1]   Line 30:7:   Duplicate key 'slovenian'         no-dupe-keys
+[1]   Line 31:7:   Duplicate key 'change_language'   no-dupe-keys
+[1]   Line 33:7:   Duplicate key 'back'              no-dupe-keys
+[1]   Line 63:7:   Duplicate key 'trial_of_mithras'  no-dupe-keys
+[1]   Line 242:7:  Duplicate key 'trial_of_mithras'  no-dupe-keys
+[1]   Line 350:3:  Duplicate key 'vprasanje_1'       no-dupe-keys
+[1]   Line 351:3:  Duplicate key 'odgovor_1_1'       no-dupe-keys
+[1]   Line 352:3:  Duplicate key 'odgovor_1_2'       no-dupe-keys
+[1]   Line 353:3:  Duplicate key 'odgovor_1_3'       no-dupe-keys
+[1]   Line 354:3:  Duplicate key 'odgovor_1_4'       no-dupe-keys
+[1]   Line 356:3:  Duplicate key 'vprasanje_2'       no-dupe-keys
+[1]   Line 357:3:  Duplicate key 'odgovor_2_1'       no-dupe-keys
+[1]   Line 358:3:  Duplicate key 'odgovor_2_2'       no-dupe-keys
+[1]   Line 359:3:  Duplicate key 'odgovor_2_3'       no-dupe-keys
+[1]   Line 360:3:  Duplicate key 'odgovor_2_4'       no-dupe-keys
+[1]   Line 362:3:  Duplicate key 'vprasanje_3'       no-dupe-keys
+[1]   Line 363:3:  Duplicate key 'odgovor_3_1'       no-dupe-keys
+[1]   Line 364:3:  Duplicate key 'odgovor_3_2'       no-dupe-keys
+[1]   Line 365:3:  Duplicate key 'odgovor_3_3'       no-dupe-keys
+[1]   Line 366:3:  Duplicate key 'odgovor_3_4'       no-dupe-keys
+[1]   Line 368:3:  Duplicate key 'vprasanje_4'       no-dupe-keys
+[1]   Line 369:3:  Duplicate key 'odgovor_4_1'       no-dupe-keys
+[1]   Line 370:3:  Duplicate key 'odgovor_4_2'       no-dupe-keys
+[1]   Line 371:3:  Duplicate key 'odgovor_4_3'       no-dupe-keys
+[1]   Line 372:3:  Duplicate key 'odgovor_4_4'       no-dupe-keys
+[1]   Line 374:3:  Duplicate key 'vprasanje_5'       no-dupe-keys
+[1]   Line 375:3:  Duplicate key 'odgovor_5_1'       no-dupe-keys
+[1]   Line 376:3:  Duplicate key 'odgovor_5_2'       no-dupe-keys
+[1]   Line 377:3:  Duplicate key 'odgovor_5_3'       no-dupe-keys
+[1]   Line 378:3:  Duplicate key 'odgovor_5_4'       no-dupe-keys
+[1]   Line 380:3:  Duplicate key 'vprasanje_6'       no-dupe-keys
+[1]   Line 381:3:  Duplicate key 'odgovor_6_1'       no-dupe-keys
+[1]   Line 382:3:  Duplicate key 'odgovor_6_2'       no-dupe-keys
+[1]   Line 383:3:  Duplicate key 'odgovor_6_3'       no-dupe-keys
+[1]   Line 384:3:  Duplicate key 'odgovor_6_4'       no-dupe-keys
+[1]   Line 386:3:  Duplicate key 'vprasanje_7'       no-dupe-keys
+[1]   Line 387:3:  Duplicate key 'odgovor_7_1'       no-dupe-keys
+[1]   Line 388:3:  Duplicate key 'odgovor_7_2'       no-dupe-keys
+[1]   Line 389:3:  Duplicate key 'odgovor_7_3'       no-dupe-keys
+[1]   Line 390:3:  Duplicate key 'odgovor_7_4'       no-dupe-keys
+[1]   Line 392:3:  Duplicate key 'vprasanje_8'       no-dupe-keys
+[1]   Line 393:3:  Duplicate key 'odgovor_8_1'       no-dupe-keys
+[1]   Line 394:3:  Duplicate key 'odgovor_8_2'       no-dupe-keys
+[1]   Line 395:3:  Duplicate key 'odgovor_8_3'       no-dupe-keys
+[1]   Line 396:3:  Duplicate key 'odgovor_8_4'       no-dupe-keys
+[1]   Line 398:3:  Duplicate key 'vprasanje_9'       no-dupe-keys
+[1]   Line 399:3:  Duplicate key 'odgovor_9_1'       no-dupe-keys
+[1]   Line 400:3:  Duplicate key 'odgovor_9_2'       no-dupe-keys
+[1]   Line 401:3:  Duplicate key 'odgovor_9_3'       no-dupe-keys
+[1]   Line 402:3:  Duplicate key 'odgovor_9_4'       no-dupe-keys
+[1]   Line 404:3:  Duplicate key 'vprasanje_10'      no-dupe-keys
+[1]   Line 405:3:  Duplicate key 'odgovor_10_1'      no-dupe-keys
+[1]   Line 406:3:  Duplicate key 'odgovor_10_2'      no-dupe-keys
+[1]   Line 407:3:  Duplicate key 'odgovor_10_3'      no-dupe-keys
+[1]   Line 408:3:  Duplicate key 'odgovor_10_4'      no-dupe-keys
+[1]   Line 410:3:  Duplicate key 'vprasanje_11'      no-dupe-keys
+[1]   Line 411:3:  Duplicate key 'odgovor_11_1'      no-dupe-keys
+[1]   Line 412:3:  Duplicate key 'odgovor_11_2'      no-dupe-keys
+[1]   Line 413:3:  Duplicate key 'odgovor_11_3'      no-dupe-keys
+[1]   Line 414:3:  Duplicate key 'odgovor_11_4'      no-dupe-keys
+[1]   Line 416:3:  Duplicate key 'vprasanje_12'      no-dupe-keys
+[1]   Line 417:3:  Duplicate key 'odgovor_12_1'      no-dupe-keys
+[1]   Line 418:3:  Duplicate key 'odgovor_12_2'      no-dupe-keys
+[1]   Line 419:3:  Duplicate key 'odgovor_12_3'      no-dupe-keys
+[1]   Line 420:3:  Duplicate key 'odgovor_12_4'      no-dupe-keys
+[1]   Line 422:3:  Duplicate key 'vprasanje_13'      no-dupe-keys
+[1]   Line 423:3:  Duplicate key 'odgovor_13_1'      no-dupe-keys
+[1]   Line 424:3:  Duplicate key 'odgovor_13_2'      no-dupe-keys
+[1]   Line 425:3:  Duplicate key 'odgovor_13_3'      no-dupe-keys
+[1]   Line 426:3:  Duplicate key 'odgovor_13_4'      no-dupe-keys
+[1] 
+[1] webpack compiled with 1 warning

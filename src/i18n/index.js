@@ -425,7 +425,7 @@ const resources = {
   "odgovor_13_3": "Because it had more temples",
   "odgovor_13_4": "Because it was supported by Mars",
   "completed_text": "You are now a PATER of the Mysteries",
-  "completed_text2": "congratulations! Gods are in your favour.",
+  "completed_text2": "Congratulations! Gods are in your favour.",
   "completed_subtext": "The torch is passed. The stars align. You wear the golden cloak of wisdom.",
   "back_to_menu": "Back to menu",
   "pause": "Pause",
