@@ -108,6 +108,7 @@ body {
 .intro-content {
   width: min(520px, 90%);
   text-align: center;
+  z-index: 4;
   color: #fff;
 }
 
@@ -162,13 +163,10 @@ body {
   height: 360px;
   /* placeholder look (remove later) */
   opacity: 0.12;
-  border: 2px dashed #ffffff;
-  border-radius: 18px;
 }
 .intro-character {
   position: absolute;
-  right: 32px;
-  bottom: 0;
+  right: -30px;
   width: 220px;
   height: auto;
 }

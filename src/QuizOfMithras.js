@@ -14,6 +14,7 @@ import temple from "./icons/temple1.svg";
 import legion from "./icons/legion1.svg";
 import helmet from "./icons/helmet1.svg";
 import napacen from "./assets/pravilen_v_prvo_mitraizem/napacen.webm";
+import srecka from "./assets/srecka.png"
 import pravilen_v_drugo from "./assets/pravilen_v_prvo_mitraizem/pravilen_v_drugo.webm";
 import pravilen_Viki_1 from "./assets/pravilen_v_prvo_mitraizem/Pravilen_Viki_1.webm";
 import pravilen_Viki_2 from "./assets/pravilen_v_prvo_mitraizem/Pravilen_Viki_2.webm";
@@ -173,6 +174,12 @@ if (!started) {
 
         {/* Character placeholder (you'll add later) */}
         <div className="intro-character-slot" aria-hidden="true" />
+          <img
+        src={srecka}
+        alt=""
+        className="intro-character"
+        draggable="false"
+      />
       </div>
     </div>
   );
