@@ -102,13 +102,13 @@ const App = () => {
       }
     },
     100000, // 4 min for warning
-    300000  // 5 min for timeout
+    200000  // 5 min for timeout
   );
 
   const AppContent = () => {
   const { user, isAuthenticated, logout } = useUser();
 
-    const longPressProps = useSilentLongPress(() => {}, 10000);
+    const longPressProps = useSilentLongPress(() => {}, 5000);
 
     // Auto-hide logout button after 5 seconds of inactivity
     useEffect(() => {
