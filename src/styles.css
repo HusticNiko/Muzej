@@ -2,13 +2,44 @@ body {
     margin: 0;
     padding: 0;
     background: #f5f1e3;
-    font-family: 'Georgia', serif;
+    font-family: 'Cinzel', serif;
     color: white;
     height: 100vh;
     width: 100vw;
     overflow: hidden;
     font-size: 32px; /* Base font size doubled */
   }
+
+  .result-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  pointer-events: all; /* IMPORTANT: blocks clicking the quiz underneath */
+}
+
+.result-overlay.correct {
+  background: rgba(0, 0, 0, 0.55); /* dim everything underneath */
+}
+
+/* If you want the video to fill most of the screen */
+.result-video {
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;   /* covers entire screen, may crop edges */
+}
+
+/* If instead you want it centered but not cropped, use this instead:
+.result-video {
+  width: min(90vw, 700px);
+  height: auto;
+}
+*/
+
   
   .app {
     display: flex;
@@ -49,8 +80,99 @@ body {
     font-size: 3rem;    /* 1.5rem × 2 */
     box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
     cursor: pointer;
+    font-family: 'Cinzel', serif;
     transition: all 0.3s ease;
   }
+
+  /* Full page center */
+.intro-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Brown panel */
+.intro-card {
+  position: relative;
+  width: min(820px, 92vw);
+  min-height: 420px;
+  background: #9b846f; /* tweak if you want */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 32px;
+}
+
+/* Text block centered */
+.intro-content {
+  width: min(520px, 90%);
+  text-align: center;
+  color: #fff;
+}
+
+/* Title */
+.intro-title {
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin: 0 0 18px 0;
+  text-transform: uppercase;
+}
+
+/* Body lines */
+.intro-line {
+  margin: 10px 0;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+.intro-spaced {
+  margin-top: 22px;
+}
+
+/* Start button */
+.intro-btn {
+  margin-top: 26px;
+  padding: 12px 22px;
+  background: #f4f0ea;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  font-family: 'Cinzel', serif;
+  text-transform: uppercase;
+}
+.score-box {
+  margin-top: 18px;
+  text-align: center;
+}
+
+.score-line {
+  margin: 6px 0;
+  letter-spacing: 0.04em;
+}
+
+/* Character placeholder on the right */
+.intro-character-slot {
+  position: absolute;
+  right: 32px;
+  bottom: 0;
+  width: 220px;
+  height: 360px;
+  /* placeholder look (remove later) */
+  opacity: 0.12;
+  border: 2px dashed #ffffff;
+  border-radius: 18px;
+}
+.intro-character {
+  position: absolute;
+  right: 32px;
+  bottom: 0;
+  width: 220px;
+  height: auto;
+}
+
 
 
    .home_btn {
@@ -64,6 +186,7 @@ body {
     box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
     cursor: pointer;
     transition: all 0.3s ease;
+    font-family: 'Cinzel', serif;
     font-size: 1.7rem;
     width: 500px;
   }
@@ -84,6 +207,7 @@ body {
     padding: 2rem 4rem; /* 2x bigger */
     font-size: 1.7rem;    /* 1.5rem × 2 */
     font-weight: 800;
+    font-family: 'Cinzel', serif;
     width: 500px;
   }
 
@@ -116,6 +240,7 @@ body {
     0 0 24px rgba(246,195,106,.35);       /* torch glow */
   text-shadow: 0 1px 0 rgba(255,255,255,.4);
   transform: translateZ(0);
+  font-family: 'Cinzel', serif;
   transition: transform .15s ease, filter .2s ease, box-shadow .2s ease;
 }
 
@@ -151,7 +276,8 @@ body {
     height: 200px;
     font-weight: bold;
     transform: scale(0.7);
-    white-space: normal;   
+    white-space: normal;  
+    font-family: 'Cinzel', serif; 
     overflow-wrap: break-word;
     }
 
@@ -183,6 +309,7 @@ body {
       display: flex;
       flex-direction: row;
       margin: 10px;
+      font-family: 'Cinzel', serif;
     }
     
   
@@ -222,6 +349,7 @@ body {
     transition: all 0.3s ease;
     font-size: 1.7rem;
     width: 300px;
+    font-family: 'Cinzel', serif;
     font-weight: 800;
     color: #3a260d; /* dark bronze text on gold */
   background: linear-gradient(180deg, var(--gold-hi) 0%, var(--gold) 45%, var(--bronze) 100%);
@@ -973,7 +1101,7 @@ color: #3a260d; /* dark bronze text on gold */
   display: flex;
   flex-direction: column;
   position: relative;
-  font-family: 'Georgia', serif;
+  font-family: 'Cinzel', serif;
 
 }
 
@@ -1031,7 +1159,7 @@ color: #3a260d; /* dark bronze text on gold */
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 2px 2px 6px rgba(0,0,0,0.2); /* Museum shadow */
-  font-family: 'Georgia', serif;
+  font-family: 'Cinzel', serif;
 }
 
 .user-option-btn:hover {
@@ -1093,7 +1221,7 @@ color: #3a260d; /* dark bronze text on gold */
   max-width: 500px;
   box-shadow: 0 0 15px rgba(0,0,0,0.5); /* Museum shadow */
   animation: slideIn 0.3s ease;
-  font-family: 'Georgia', serif;
+  font-family: 'Cinzel', serif;
 }
 
 @keyframes slideIn {
@@ -1160,7 +1288,7 @@ color: #3a260d; /* dark bronze text on gold */
   box-sizing: border-box;
   background: #f5f1e3;
   color: #5a3e1b;
-  font-family: 'Georgia', serif;
+  font-family: 'Cinzel', serif;
 }
 
 .form-group input:focus {
@@ -1194,7 +1322,7 @@ color: #3a260d; /* dark bronze text on gold */
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 600;
-  font-family: 'Georgia', serif;
+  font-family: 'Cinzel', serif;
 }
 
 .cancel-btn {
@@ -1228,7 +1356,7 @@ color: #3a260d; /* dark bronze text on gold */
   min-height: 100vh;
   background: #f5f1e3; /* Museum background */
   padding: 2rem;
-  font-family: 'Georgia', serif;
+  font-family: 'Cinzel', serif;
 }
 
 .menu-header {
@@ -1275,7 +1403,7 @@ color: #3a260d; /* dark bronze text on gold */
   font-weight: 600;
   transition: all 0.3s ease;
   font-size: 1.6rem;
-  font-family: 'Georgia', serif;
+  font-family: 'Cinzel', serif;
 }
 
 .logout-btn:hover {
@@ -1310,7 +1438,7 @@ color: #3a260d; /* dark bronze text on gold */
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
-  font-family: 'Georgia', serif;
+  font-family: 'Cinzel', serif;
 }
 
 .menu-item:hover {
@@ -1352,7 +1480,7 @@ color: #3a260d; /* dark bronze text on gold */
   align-items: center;
   gap: 2rem;
   text-align: left;
-  font-family: 'Georgia', serif;
+  font-family: 'Cinzel', serif;
 }
 
 .admin_menu_pause {
@@ -1368,7 +1496,7 @@ color: #3a260d; /* dark bronze text on gold */
   align-items: center;
   gap: 2rem;
   text-align: left;
-  font-family: 'Georgia', serif;
+  font-family: 'Cinzel', serif;
   transform: scale(0.5);
 }
 
@@ -1425,7 +1553,7 @@ color: #3a260d; /* dark bronze text on gold */
   font-weight: 500;
   transition: all 0.2s ease;
   color: #5a3e1b;
-  font-family: 'Georgia', serif;
+  font-family: 'Cinzel', serif;
 }
 
 .language-btn:hover {
@@ -1451,7 +1579,7 @@ color: #3a260d; /* dark bronze text on gold */
   cursor: pointer;
   font-size: 1.4rem;
   color: #5a3e1b;
-  font-family: 'Georgia', serif;
+  font-family: 'Cinzel', serif;
 }
 
 .language-switcher-toggle {
@@ -1469,7 +1597,7 @@ color: #3a260d; /* dark bronze text on gold */
   font-weight: 500;
   transition: all 0.2s ease;
   color: #5a3e1b;
-  font-family: 'Georgia', serif;
+  font-family: 'Cinzel', serif;
 }
 
 .language-toggle-btn:hover {
@@ -1766,7 +1894,7 @@ color: #3a260d; /* dark bronze text on gold */
 .user-selection-container *,
 .menu-container *,
 .admin-dialog * {
-  font-family: 'Georgia', serif;
+  font-family: 'Cinzel', serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

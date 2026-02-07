@@ -15,6 +15,20 @@ import legion from "./icons/legion1.svg";
 import helmet from "./icons/helmet1.svg";
 import correct from "./icons/correct.svg";
 import wrong from "./icons/wrong.svg";
+import pravilen from "./assets/pravilen.webm";
+import napacen from "./assets/napacen.webm";
+import pravilen2 from "./assets/pravilen2.webm";
+import pravilen3 from "./assets/pravilen3.webm";
+import pravilen4 from "./assets/pravilen4.webm";
+import pravilen5 from "./assets/pravilen5.webm";
+import pravilen6 from "./assets/pravilen6.webm";
+import pravilen7 from "./assets/pravilen7.webm";
+import pravilen8 from "./assets/pravilen8.webm";
+import pravilen9 from "./assets/pravilen9.webm";
+import pravilen10 from "./assets/pravilen10.webm";
+import pravilen11 from "./assets/pravilen11.webm";
+import pravilen12 from "./assets/pravilen12.webm";
+import pravilen13 from "./assets/pravilen13.webm";
 
 import { useTranslation } from "react-i18next";
 
@@ -30,26 +44,47 @@ function sample(array, k) {
 
 // Keep only KEYS here. We'll translate on render with `t`.
 const BASE_STAGES = [
-  { name: "Corax", symbol: "🐦", icon: obelisk, qKey: "mitra1", opt: ["odgovor_1_1","odgovor_1_2","odgovor_1_3","odgovor_1_4"], ans: "odgovor_1_2" },
-  { name: "Nymphus", symbol: "💍", icon: emperor, qKey: "mitra2", opt: ["odgovor_2_1","odgovor_2_2","odgovor_2_3","odgovor_2_4"], ans: "odgovor_2_2" },
-  { name: "Miles", symbol: "⚔️", icon: helmet, qKey: "mitra3", opt: ["odgovor_3_1","odgovor_3_2","odgovor_3_3","odgovor_3_4"], ans: "odgovor_3_3" },
-  { name: "Leo", symbol: "🦁", icon: columns, qKey: "mitra4", opt: ["odgovor_4_1","odgovor_4_2","odgovor_4_3","odgovor_4_4"], ans: "odgovor_4_4" },
-  { name: "Perses", symbol: "🌑", qKey: "mitra5", icon: coloseum, opt: ["odgovor_5_1","odgovor_5_2","odgovor_5_3","odgovor_5_4"], ans: "odgovor_5_4" }, // eagle is NOT part
-  { name: "Heliodromus", symbol: "☀️", icon: ship, qKey: "mitra6", opt: ["odgovor_6_1","odgovor_6_2","odgovor_6_3","odgovor_6_4"], ans: "odgovor_6_2" },
-  { name: "Pater", symbol: "🧙", qKey: "mitra7", icon: circus, opt: ["odgovor_7_1","odgovor_7_2","odgovor_7_3","odgovor_7_4"], ans: "odgovor_7_1" },
-  { name: "Miles", symbol: "⚔️", qKey: "mitra8", icon: crown, opt: ["odgovor_8_1","odgovor_8_2","odgovor_8_3","odgovor_8_4"], ans: "odgovor_8_2" },
-  { name: "Leo", symbol: "🦁", qKey: "mitra9", icon: legion, opt: ["odgovor_9_1","odgovor_9_2","odgovor_9_3","odgovor_9_4"], ans: "odgovor_9_2" },
-  { name: "Corax", symbol: "🐦", qKey: "mitra10", icon: sword, opt: ["odgovor_10_1","odgovor_10_2","odgovor_10_3","odgovor_10_4"], ans: "odgovor_10_1" },
-  { name: "Nymphus", symbol: "💍", qKey: "mitra11", icon: shield, opt: ["odgovor_11_1","odgovor_11_2","odgovor_11_3","odgovor_11_4"], ans: "odgovor_11_2" },
-  { name: "Heliodromus", symbol: "☀️", qKey: "mitra12", icon: eagle, opt: ["odgovor_12_1","odgovor_12_2","odgovor_12_3","odgovor_12_4"], ans: "odgovor_12_2" },
-  { name: "Pater", symbol: "🧙", qKey: "mitra13", icon: temple, opt: ["odgovor_13_1","odgovor_13_2","odgovor_13_3","odgovor_13_4"], ans: "odgovor_13_2" },
+  { id: 1, name: "Corax", symbol: "🐦", icon: obelisk, qKey: "mitra1", opt: ["odgovor_1_1","odgovor_1_2","odgovor_1_3","odgovor_1_4"], ans: "odgovor_1_2" },
+  { id: 2, name: "Nymphus", symbol: "💍", icon: emperor, qKey: "mitra2", opt: ["odgovor_2_1","odgovor_2_2","odgovor_2_3","odgovor_2_4"], ans: "odgovor_2_2" },
+  { id: 3, name: "Miles", symbol: "⚔️", icon: helmet, qKey: "mitra3", opt: ["odgovor_3_1","odgovor_3_2","odgovor_3_3","odgovor_3_4"], ans: "odgovor_3_3" },
+  { id: 4, name: "Leo", symbol: "🦁", icon: columns, qKey: "mitra4", opt: ["odgovor_4_1","odgovor_4_2","odgovor_4_3","odgovor_4_4"], ans: "odgovor_4_4" },
+  { id: 5, name: "Perses", symbol: "🌑", qKey: "mitra5", icon: coloseum, opt: ["odgovor_5_1","odgovor_5_2","odgovor_5_3","odgovor_5_4"], ans: "odgovor_5_4" }, // eagle is NOT part
+  { id: 6, name: "Heliodromus", symbol: "☀️", icon: ship, qKey: "mitra6", opt: ["odgovor_6_1","odgovor_6_2","odgovor_6_3","odgovor_6_4"], ans: "odgovor_6_2" },
+  { id: 7, name: "Pater", symbol: "🧙", qKey: "mitra7", icon: circus, opt: ["odgovor_7_1","odgovor_7_2","odgovor_7_3","odgovor_7_4"], ans: "odgovor_7_1" },
+  { id: 8, name: "Miles", symbol: "⚔️", qKey: "mitra8", icon: crown, opt: ["odgovor_8_1","odgovor_8_2","odgovor_8_3","odgovor_8_4"], ans: "odgovor_8_2" },
+  { id: 9, name: "Leo", symbol: "🦁", qKey: "mitra9", icon: legion, opt: ["odgovor_9_1","odgovor_9_2","odgovor_9_3","odgovor_9_4"], ans: "odgovor_9_2" },
+  { id: 10, name: "Corax", symbol: "🐦", qKey: "mitra10", icon: sword, opt: ["odgovor_10_1","odgovor_10_2","odgovor_10_3","odgovor_10_4"], ans: "odgovor_10_1" },
+  { id: 11, name: "Nymphus", symbol: "💍", qKey: "mitra11", icon: shield, opt: ["odgovor_11_1","odgovor_11_2","odgovor_11_3","odgovor_11_4"], ans: "odgovor_11_2" },
+  { id: 12, name: "Heliodromus", symbol: "☀️", qKey: "mitra12", icon: eagle, opt: ["odgovor_12_1","odgovor_12_2","odgovor_12_3","odgovor_12_4"], ans: "odgovor_12_2" },
+  { id: 13, name: "Pater", symbol: "🧙", qKey: "mitra13", icon: temple, opt: ["odgovor_13_1","odgovor_13_2","odgovor_13_3","odgovor_13_4"], ans: "odgovor_13_2" },
 ];
+
+const correctFirstTryById = {
+  1: pravilen,
+  2: pravilen,
+  3: pravilen,
+  4: pravilen,
+  5: pravilen,
+  6: pravilen,
+  7: pravilen,
+  8: pravilen,
+  10: pravilen,
+  11: pravilen,
+  12: pravilen,
+  13: pravilen,
+  14: pravilen,
+};
 
 const QuizOfMithras = ({ onBack }) => {
   const { t } = useTranslation();
   const [stageIndex, setStageIndex] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(null);
+  const [attemptCounts, setAttemptCounts] = useState(() => ({})); // { [stageIndex]: number }
+  const [started, setStarted] = useState(false);
+  const [resultAttemptNumber, setResultAttemptNumber] = useState(1);
+  const [generalScore, setGeneralScore] = useState(0);
+  const [firstTryScore, setFirstTryScore] = useState(0);
 
   // Always pick 6 random unique stages on mount (or remount).
   const stages = useMemo(() => sample(BASE_STAGES, 7), []);
@@ -60,15 +95,90 @@ const QuizOfMithras = ({ onBack }) => {
 
   const current = stages[stageIndex];
 
-  const handleAnswer = (optionKey) => {
-    const correct = optionKey === current.ans; // compare KEYS, not translated strings
-    setIsCorrect(correct);
-    setShowResult(true);
-    setTimeout(() => {
-      if (correct) setStageIndex((prev) => prev + 1);
-      setShowResult(false);
-    }, 800);
-  };
+  useEffect(() => {
+  if (showResult && isCorrect) {
+    document.body.style.overflow = "hidden";
+    return () => (document.body.style.overflow = "");
+  }
+}, [showResult, isCorrect]);
+
+  const handleCorrectAnimationEnd = () => {
+  setShowResult(false);
+  setStageIndex((prev) => prev + 1);
+};
+
+const handleWrongAnimationEnd = () => {
+  setShowResult(false);
+
+  // If user has used both attempts (2 tries) and still wrong -> move on
+  if (!isCorrect && resultAttemptNumber >= 2) {
+    setStageIndex((prev) => prev + 1);
+  }
+};
+
+
+ const handleAnswer = (optionKey) => {
+  const correctAnswer = optionKey === current.ans;
+
+  setAttemptCounts((prev) => {
+    const next = { ...prev };
+    const newCount = (next[stageIndex] || 0) + 1; // attempt number for THIS click
+    next[stageIndex] = newCount;
+
+    // lock attempt number for deciding which animation to play
+    setResultAttemptNumber(newCount);
+
+    // If correct, update scores
+    if (correctAnswer) {
+      setGeneralScore((s) => s + 1);
+      if (newCount === 1) setFirstTryScore((s) => s + 1);
+    }
+
+    return next;
+  });
+
+  setIsCorrect(correctAnswer);
+  setShowResult(true);
+};
+
+
+const attemptsThisQuestion = attemptCounts[stageIndex] || 0;
+
+
+// If they are correct AND this wasn't the first attempt
+const useThirdOnCorrect = isCorrect && resultAttemptNumber > 1;
+
+const questionId = current?.id;
+
+const useLaterCorrect = isCorrect && resultAttemptNumber > 1;
+
+  const resultVideoSrc =
+  current && isCorrect
+    ? (useLaterCorrect ? pravilen2 : correctFirstTryById[questionId])
+    : napacen;
+
+if (!started) {
+  return (
+    <div className="quiz intro-page">
+      <div className="intro-card">
+        <div className="intro-content">
+          <p className="intro-title">{t("intro_title")}</p>
+
+          <p className="intro-line">{t("intro_line_1")}</p>
+          <p className="intro-line">{t("intro_line_2")}</p>
+          <p className="intro-line intro-spaced">{t("intro_line_3")}</p>
+
+          <button className="intro-btn" onClick={() => setStarted(true)}>
+            {t("start_quiz")}
+          </button>
+        </div>
+
+        {/* Character placeholder (you'll add later) */}
+        <div className="intro-character-slot" aria-hidden="true" />
+      </div>
+    </div>
+  );
+}
 
   return (
     <div className="quiz">
@@ -112,24 +222,46 @@ const QuizOfMithras = ({ onBack }) => {
             ))}
           </div>
           {showResult && (
-            <div className={`result ${isCorrect ? "correct" : "wrong"}`}>
-              {isCorrect ? <img src={correct} className="step-icon" /> : <img src={wrong} className="step-icon" />}
-            </div>
-          )}
+  <div className="result-overlay">
+    <video
+      className="result-video"
+      src={resultVideoSrc}
+      key={`${questionId}-${isCorrect ? (useLaterCorrect ? "c2" : "c1") : "w"}-${resultAttemptNumber}`}
+      autoPlay
+      muted
+      playsInline
+      onEnded={isCorrect ? handleCorrectAnimationEnd : handleWrongAnimationEnd}
+    />
+  </div>
+)
+}
           </div>
         </>
       ) : (
         <div>
-        <div className="final-stage">
-          <h2 className="pater-title">{t("completed_text")}</h2>
-          <p className="fade-animation">
-           {t("completed_subtext")}
-          </p>
-        </div>
-         <button onClick={onBack} className="back_to_menu_btn">
-            {t("back_to_menu")}
-          </button>
-          </div>
+  <div className="final-stage">
+    <h2 className="pater-title">
+      {firstTryScore === stages.length ? t("completed_text2") : t("completed_text")}
+    </h2>
+
+    <p className="fade-animation">
+      {firstTryScore === stages.length ? t("completed_subtext2") : t("completed_subtext")}
+    </p>
+
+    <div className="score-box">
+      <p className="score-line">
+        {t("score_total")}: <strong>{generalScore} / {stages.length}</strong>
+      </p>
+      <p className="score-line">
+        {t("score_first_try")}: <strong>{firstTryScore} / {stages.length}</strong>
+      </p>
+    </div>
+  </div>
+
+  <button onClick={onBack} className="back_to_menu_btn">
+    {t("back_to_menu")}
+  </button>
+</div>
       )}
     </div>
   );

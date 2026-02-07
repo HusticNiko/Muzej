@@ -27,6 +27,13 @@
 .App-link {
   color: #61dafb;
 }
+.button {
+  font-family: "Cinzel", serif;
+}
+
+* {
+  font-family: "Cinzel", serif;
+}
 
 @keyframes App-logo-spin {
   from {

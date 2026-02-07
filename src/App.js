@@ -197,7 +197,7 @@ const App = () => {
         
                   
         
-    }  else {
+    }  else if (user === 'admin'){
       return (
         <div
           className="app"

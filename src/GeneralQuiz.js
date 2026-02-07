@@ -15,6 +15,10 @@ import temple from "./icons/temple1.svg";
 import legion from "./icons/legion1.svg";
 import helmet from "./icons/helmet1.svg";
 import correct from "./icons/correct.svg";
+import pravilen from "./assets/pravilen.webm";
+import napacen from "./assets/napacen.webm";
+import pravilen2 from "./assets/pravilen2.webm";
+
 import wrong from "./icons/wrong.svg";
 import { useTranslation } from "react-i18next";
 
@@ -49,6 +53,11 @@ const GeneralQuiz = ({ onBack }) => {
   const [stageIndex, setStageIndex] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(null);
+  const [attemptCounts, setAttemptCounts] = useState(() => ({})); // { [stageIndex]: number }
+  const [resultAttemptNumber, setResultAttemptNumber] = useState(1);
+  const [started, setStarted] = useState(false);
+
+
 
   // Always pick 6 random unique stages on mount (or remount).
   const stages = useMemo(() => sample(BASE_STAGES, 7), []);
@@ -59,15 +68,72 @@ const GeneralQuiz = ({ onBack }) => {
 
   const current = stages[stageIndex];
 
-  const handleAnswer = (optionKey) => {
-    const correct = optionKey === current.ans; // compare KEYS, not translated strings
-    setIsCorrect(correct);
-    setShowResult(true);
-    setTimeout(() => {
-      if (correct) setStageIndex((prev) => prev + 1);
-      setShowResult(false);
-    }, 800);
-  };
+useEffect(() => {
+  if (showResult && isCorrect) {
+    document.body.style.overflow = "hidden";
+    return () => (document.body.style.overflow = "");
+  }
+}, [showResult, isCorrect]);
+
+  const handleCorrectAnimationEnd = () => {
+  setShowResult(false);
+  setStageIndex((prev) => prev + 1);
+};
+
+const handleWrongAnimationEnd = () => {
+  setShowResult(false); // do NOT advance
+};
+
+
+ const handleAnswer = (optionKey) => {
+  const correctAnswer = optionKey === current.ans;
+
+  // increment attempts for THIS question
+  setAttemptCounts((prev) => {
+     const next = { ...prev };
+  const newCount = (next[stageIndex] || 0) + 1;
+  next[stageIndex] = newCount;
+  setResultAttemptNumber(newCount); // <-- lock attempt number for this result
+  return next;
+  });
+
+  setIsCorrect(correctAnswer);
+  setShowResult(true);
+};
+
+const attemptsThisQuestion = attemptCounts[stageIndex] || 0;
+
+
+// If they are correct AND this wasn't the first attempt
+const useThirdOnCorrect = isCorrect && resultAttemptNumber > 1;
+
+const resultVideoSrc = isCorrect
+  ? (useThirdOnCorrect ? pravilen2 : pravilen)
+  : napacen;
+
+if (!started) {
+  return (
+    <div className="quiz intro-page">
+      <div className="intro-card">
+        <div className="intro-content">
+          <p className="intro-title">{t("intro_title")}</p>
+
+          <p className="intro-line">{t("intro_line_1")}</p>
+          <p className="intro-line">{t("intro_line_2")}</p>
+          <p className="intro-line intro-spaced">{t("intro_line_3")}</p>
+
+          <button className="intro-btn" onClick={() => setStarted(true)}>
+            {t("start_quiz")}
+          </button>
+        </div>
+
+        {/* Character placeholder (you'll add later) */}
+        <div className="intro-character-slot" aria-hidden="true" />
+      </div>
+    </div>
+  );
+}
+
 
    return (
       <div className="quiz">
@@ -111,10 +177,19 @@ const GeneralQuiz = ({ onBack }) => {
               ))}
             </div>
             {showResult && (
-              <div className={`result ${isCorrect ? "correct" : "wrong"}`}>
-                {isCorrect ? <img src={correct} className="step-icon" /> : <img src={wrong} className="step-icon" />}
-              </div>
-            )}
+  <div className="result-overlay">
+    <video
+      className="result-video"
+      src={resultVideoSrc}
+      key={`${stageIndex}-${isCorrect ? (useThirdOnCorrect ? "c2" : "c1") : "w"}`}
+      autoPlay
+      muted
+      playsInline
+      onEnded={isCorrect ? handleCorrectAnimationEnd : handleWrongAnimationEnd}
+    />
+  </div>
+)
+}
             </div>
           </>
         ) : (
