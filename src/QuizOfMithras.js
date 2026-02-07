@@ -13,22 +13,21 @@ import shield from "./icons/shield1.svg";
 import temple from "./icons/temple1.svg";
 import legion from "./icons/legion1.svg";
 import helmet from "./icons/helmet1.svg";
-import correct from "./icons/correct.svg";
-import wrong from "./icons/wrong.svg";
-import pravilen from "./assets/pravilen.webm";
-import napacen from "./assets/napacen.webm";
-import pravilen2 from "./assets/pravilen2.webm";
-import pravilen3 from "./assets/pravilen3.webm";
-import pravilen4 from "./assets/pravilen4.webm";
-import pravilen5 from "./assets/pravilen5.webm";
-import pravilen6 from "./assets/pravilen6.webm";
-import pravilen7 from "./assets/pravilen7.webm";
-import pravilen8 from "./assets/pravilen8.webm";
-import pravilen9 from "./assets/pravilen9.webm";
-import pravilen10 from "./assets/pravilen10.webm";
-import pravilen11 from "./assets/pravilen11.webm";
-import pravilen12 from "./assets/pravilen12.webm";
-import pravilen13 from "./assets/pravilen13.webm";
+import napacen from "./assets/pravilen_v_prvo_mitraizem/napacen.webm";
+import pravilen_v_drugo from "./assets/pravilen_v_prvo_mitraizem/pravilen_v_drugo.webm";
+import pravilen_Viki_1 from "./assets/pravilen_v_prvo_mitraizem/Pravilen_Viki_1.webm";
+import pravilen_Viki_2 from "./assets/pravilen_v_prvo_mitraizem/Pravilen_Viki_2.webm";
+import pravilen_Viki_3 from "./assets/pravilen_v_prvo_mitraizem/Pravilen_Viki_3.webm";
+import pravilen_Viki_4 from "./assets/pravilen_v_prvo_mitraizem/Pravilen_Viki_4.webm";
+import pravilen_Viki_5 from "./assets/pravilen_v_prvo_mitraizem/Pravilen_Viki_5.webm";
+import pravilen_Viki_6 from "./assets/pravilen_v_prvo_mitraizem/Pravilen_Viki_6.webm";
+import pravilen_Viki_7 from "./assets/pravilen_v_prvo_mitraizem/Pravilen_Viki_7.webm";
+import pravilen_Viki_8 from "./assets/pravilen_v_prvo_mitraizem/Pravilen_Viki_8.webm";
+import pravilen_Viki_9 from "./assets/pravilen_v_prvo_mitraizem/Pravilen_Viki_9.webm";
+import pravilen_Viki_10 from "./assets/pravilen_v_prvo_mitraizem/Pravilen_Viki_10.webm";
+import pravilen_Viki_11 from "./assets/pravilen_v_prvo_mitraizem/Pravilen_Viki_11.webm";
+import pravilen_Viki_12 from "./assets/pravilen_v_prvo_mitraizem/Pravilen_Viki_12.webm";
+
 
 import { useTranslation } from "react-i18next";
 
@@ -60,19 +59,18 @@ const BASE_STAGES = [
 ];
 
 const correctFirstTryById = {
-  1: pravilen,
-  2: pravilen,
-  3: pravilen,
-  4: pravilen,
-  5: pravilen,
-  6: pravilen,
-  7: pravilen,
-  8: pravilen,
-  10: pravilen,
-  11: pravilen,
-  12: pravilen,
-  13: pravilen,
-  14: pravilen,
+  1: pravilen_Viki_1,
+  2: pravilen_Viki_2,
+  3: pravilen_Viki_3,
+  4: pravilen_Viki_4,
+  5: pravilen_Viki_5,
+  6: pravilen_Viki_6,
+  7: pravilen_Viki_7,
+  8: pravilen_Viki_8,
+  9: pravilen_Viki_9,
+  10: pravilen_Viki_10,
+  11: pravilen_Viki_11,
+  12: pravilen_Viki_12,
 };
 
 const QuizOfMithras = ({ onBack }) => {
@@ -154,7 +152,7 @@ const useLaterCorrect = isCorrect && resultAttemptNumber > 1;
 
   const resultVideoSrc =
   current && isCorrect
-    ? (useLaterCorrect ? pravilen2 : correctFirstTryById[questionId])
+    ? (useLaterCorrect ? pravilen_v_drugo : correctFirstTryById[questionId])
     : napacen;
 
 if (!started) {
@@ -241,11 +239,11 @@ if (!started) {
         <div>
   <div className="final-stage">
     <h2 className="pater-title">
-      {firstTryScore === stages.length ? t("completed_text2") : t("completed_text")}
+      {firstTryScore === stages.length ? t("completed_text") : t("completed_text2")}
     </h2>
 
     <p className="fade-animation">
-      {firstTryScore === stages.length ? t("completed_subtext2") : t("completed_subtext")}
+      {firstTryScore === stages.length ? t("completed_subtext") : t("completed_subtext2")}
     </p>
 
     <div className="score-box">

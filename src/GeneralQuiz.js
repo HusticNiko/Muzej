@@ -14,12 +14,20 @@ import shield from "./icons/shield1.svg";
 import temple from "./icons/temple1.svg";
 import legion from "./icons/legion1.svg";
 import helmet from "./icons/helmet1.svg";
-import correct from "./icons/correct.svg";
-import pravilen from "./assets/pravilen.webm";
-import napacen from "./assets/napacen.webm";
-import pravilen2 from "./assets/pravilen2.webm";
-
-import wrong from "./icons/wrong.svg";
+import napacen from "./assets/pravilen_v_prvo_splosno/napacen.webm";
+import pravilen_v_drugo from "./assets/pravilen_v_prvo_splosno/pravilen_v_drugo.webm";
+import pravilen_srecka_1 from "./assets/pravilen_v_prvo_splosno/Pravilen_srecka_1.webm";
+import pravilen_srecka_2 from "./assets/pravilen_v_prvo_splosno/Pravilen_srecka_2.webm";
+import pravilen_srecka_3 from "./assets/pravilen_v_prvo_splosno/Pravilen_srecka_3.webm";
+import pravilen_srecka_4 from "./assets/pravilen_v_prvo_splosno/Pravilen_srecka_4.webm";
+import pravilen_srecka_5 from "./assets/pravilen_v_prvo_splosno/Pravilen_srecka_5.webm";
+import pravilen_srecka_6 from "./assets/pravilen_v_prvo_splosno/Pravilen_srecka_6.webm";
+import pravilen_srecka_7 from "./assets/pravilen_v_prvo_splosno/Pravilen_srecka_7.webm";
+import pravilen_srecka_8 from "./assets/pravilen_v_prvo_splosno/Pravilen_srecka_8.webm";
+import pravilen_srecka_9 from "./assets/pravilen_v_prvo_splosno/Pravilen_srecka_9.webm";
+import pravilen_srecka_10 from "./assets/pravilen_v_prvo_splosno/Pravilen_srecka_10.webm";
+import pravilen_srecka_11 from "./assets/pravilen_v_prvo_splosno/Pravilen_srecka_11.webm";
+import pravilen_srecka_12 from "./assets/pravilen_v_prvo_splosno/Pravilen_srecka_12.webm";
 import { useTranslation } from "react-i18next";
 
 // Helper: sample k unique items without mutating original
@@ -34,19 +42,35 @@ function sample(array, k) {
 
 // Keep only KEYS here. We'll translate on render with `t`.
 const BASE_STAGES = [
-  { name: "Nymphus", symbol: "💍", icon: emperor, qKey: "vprasanje_14", opt: ["odgovor_14_1","odgovor_14_2","odgovor_14_3","odgovor_14_4"], ans: "odgovor_14_2" },
-  { name: "Miles", symbol: "⚔️", icon: helmet, qKey: "vprasanje_15", opt: ["odgovor_15_1","odgovor_15_2","odgovor_15_3","odgovor_15_4"], ans: "odgovor_15_3" },
-  { name: "Leo", symbol: "🦁", icon: columns, qKey: "vprasanje_16", opt: ["odgovor_16_1","odgovor_16_2","odgovor_16_3","odgovor_16_4"], ans: "odgovor_16_1" },
-  { name: "Perses", symbol: "🌑", qKey: "vprasanje_17", icon: coloseum, opt: ["odgovor_17_1","odgovor_17_2","odgovor_17_3","odgovor_17_4"], ans: "odgovor_17_1" }, // eagle is NOT part
-  { name: "Heliodromus", symbol: "☀️", icon: ship, qKey: "vprasanje_18", opt: ["odgovor_18_1","odgovor_18_2","odgovor_18_3","odgovor_18_4"], ans: "odgovor_18_1" },
-  { name: "Pater", symbol: "🧙", qKey: "vprasanje_19", icon: circus, opt: ["odgovor_19_1","odgovor_19_2","odgovor_19_3","odgovor_19_4"], ans: "odgovor_19_2" },
-  { name: "Miles", symbol: "⚔️", qKey: "vprasanje_20", icon: crown, opt: ["odgovor_20_1","odgovor_20_2","odgovor_20_3","odgovor_20_4"], ans: "odgovor_20_2" },
-  { name: "Leo", symbol: "🦁", qKey: "vprasanje_21", icon: legion, opt: ["odgovor_21_1","odgovor_21_2","odgovor_21_3","odgovor_21_4"], ans: "odgovor_21_2" },
-  { name: "Corax", symbol: "🐦", qKey: "vprasanje_22", icon: sword, opt: ["odgovor_22_1","odgovor_22_2","odgovor_22_3","odgovor_22_4"], ans: "odgovor_22_4" },
-  { name: "Nymphus", symbol: "💍", qKey: "vprasanje_23", icon: shield, opt: ["odgovor_23_1","odgovor_23_2","odgovor_23_3","odgovor_23_4"], ans: "odgovor_23_3" },
-  { name: "Heliodromus", symbol: "☀️", qKey: "vprasanje_24", icon: eagle, opt: ["odgovor_24_1","odgovor_24_2","odgovor_24_3","odgovor_24_4"], ans: "odgovor_24_1" },
-  { name: "Pater", symbol: "🧙", qKey: "vprasanje_25", icon: temple, opt: ["odgovor_25_1","odgovor_25_2","odgovor_25_3","odgovor_25_4"], ans: "odgovor_25_2" },
+  { id: 1, name: "Nymphus", symbol: "💍", icon: emperor, qKey: "vprasanje_14", opt: ["odgovor_14_1","odgovor_14_2","odgovor_14_3","odgovor_14_4"], ans: "odgovor_14_2" },
+  { id: 2, name: "Miles", symbol: "⚔️", icon: helmet, qKey: "vprasanje_15", opt: ["odgovor_15_1","odgovor_15_2","odgovor_15_3","odgovor_15_4"], ans: "odgovor_15_3" },
+  { id: 3, name: "Leo", symbol: "🦁", icon: columns, qKey: "vprasanje_16", opt: ["odgovor_16_1","odgovor_16_2","odgovor_16_3","odgovor_16_4"], ans: "odgovor_16_1" },
+  { id: 4, name: "Perses", symbol: "🌑", qKey: "vprasanje_17", icon: coloseum, opt: ["odgovor_17_1","odgovor_17_2","odgovor_17_3","odgovor_17_4"], ans: "odgovor_17_1" }, // eagle is NOT part
+  { id: 5, name: "Heliodromus", symbol: "☀️", icon: ship, qKey: "vprasanje_18", opt: ["odgovor_18_1","odgovor_18_2","odgovor_18_3","odgovor_18_4"], ans: "odgovor_18_1" },
+  { id: 6, name: "Pater", symbol: "🧙", qKey: "vprasanje_19", icon: circus, opt: ["odgovor_19_1","odgovor_19_2","odgovor_19_3","odgovor_19_4"], ans: "odgovor_19_2" },
+  { id: 7, name: "Miles", symbol: "⚔️", qKey: "vprasanje_20", icon: crown, opt: ["odgovor_20_1","odgovor_20_2","odgovor_20_3","odgovor_20_4"], ans: "odgovor_20_2" },
+  { id: 8, name: "Leo", symbol: "🦁", qKey: "vprasanje_21", icon: legion, opt: ["odgovor_21_1","odgovor_21_2","odgovor_21_3","odgovor_21_4"], ans: "odgovor_21_2" },
+  { id: 9, name: "Corax", symbol: "🐦", qKey: "vprasanje_22", icon: sword, opt: ["odgovor_22_1","odgovor_22_2","odgovor_22_3","odgovor_22_4"], ans: "odgovor_22_4" },
+  { id: 10, name: "Nymphus", symbol: "💍", qKey: "vprasanje_23", icon: shield, opt: ["odgovor_23_1","odgovor_23_2","odgovor_23_3","odgovor_23_4"], ans: "odgovor_23_3" },
+  { id: 11, name: "Heliodromus", symbol: "☀️", qKey: "vprasanje_24", icon: eagle, opt: ["odgovor_24_1","odgovor_24_2","odgovor_24_3","odgovor_24_4"], ans: "odgovor_24_1" },
+  { id: 12, name: "Pater", symbol: "🧙", qKey: "vprasanje_25", icon: temple, opt: ["odgovor_25_1","odgovor_25_2","odgovor_25_3","odgovor_25_4"], ans: "odgovor_25_2" },
 ];
+
+const correctFirstTryById = {
+  1: pravilen_srecka_1,
+  2: pravilen_srecka_2,
+  3: pravilen_srecka_3,
+  4: pravilen_srecka_4,
+  5: pravilen_srecka_5,
+  6: pravilen_srecka_6,
+  7: pravilen_srecka_7,
+  8: pravilen_srecka_8,
+  9: pravilen_srecka_9,
+  10: pravilen_srecka_10,
+  11: pravilen_srecka_11,
+  12: pravilen_srecka_12,
+};
+
 
 const GeneralQuiz = ({ onBack }) => {
   const { t } = useTranslation();
@@ -56,8 +80,8 @@ const GeneralQuiz = ({ onBack }) => {
   const [attemptCounts, setAttemptCounts] = useState(() => ({})); // { [stageIndex]: number }
   const [resultAttemptNumber, setResultAttemptNumber] = useState(1);
   const [started, setStarted] = useState(false);
-
-
+ const [generalScore, setGeneralScore] = useState(0);
+  const [firstTryScore, setFirstTryScore] = useState(0);
 
   // Always pick 6 random unique stages on mount (or remount).
   const stages = useMemo(() => sample(BASE_STAGES, 7), []);
@@ -68,7 +92,7 @@ const GeneralQuiz = ({ onBack }) => {
 
   const current = stages[stageIndex];
 
-useEffect(() => {
+  useEffect(() => {
   if (showResult && isCorrect) {
     document.body.style.overflow = "hidden";
     return () => (document.body.style.overflow = "");
@@ -81,25 +105,39 @@ useEffect(() => {
 };
 
 const handleWrongAnimationEnd = () => {
-  setShowResult(false); // do NOT advance
+  setShowResult(false);
+
+  // If user has used both attempts (2 tries) and still wrong -> move on
+  if (!isCorrect && resultAttemptNumber >= 2) {
+    setStageIndex((prev) => prev + 1);
+  }
 };
 
 
  const handleAnswer = (optionKey) => {
   const correctAnswer = optionKey === current.ans;
 
-  // increment attempts for THIS question
   setAttemptCounts((prev) => {
-     const next = { ...prev };
-  const newCount = (next[stageIndex] || 0) + 1;
-  next[stageIndex] = newCount;
-  setResultAttemptNumber(newCount); // <-- lock attempt number for this result
-  return next;
+    const next = { ...prev };
+    const newCount = (next[stageIndex] || 0) + 1; // attempt number for THIS click
+    next[stageIndex] = newCount;
+
+    // lock attempt number for deciding which animation to play
+    setResultAttemptNumber(newCount);
+
+    // If correct, update scores
+    if (correctAnswer) {
+      setGeneralScore((s) => s + 1);
+      if (newCount === 1) setFirstTryScore((s) => s + 1);
+    }
+
+    return next;
   });
 
   setIsCorrect(correctAnswer);
   setShowResult(true);
 };
+
 
 const attemptsThisQuestion = attemptCounts[stageIndex] || 0;
 
@@ -107,9 +145,14 @@ const attemptsThisQuestion = attemptCounts[stageIndex] || 0;
 // If they are correct AND this wasn't the first attempt
 const useThirdOnCorrect = isCorrect && resultAttemptNumber > 1;
 
-const resultVideoSrc = isCorrect
-  ? (useThirdOnCorrect ? pravilen2 : pravilen)
-  : napacen;
+const questionId = current?.id;
+
+const useLaterCorrect = isCorrect && resultAttemptNumber > 1;
+
+  const resultVideoSrc =
+  current && isCorrect
+    ? (useLaterCorrect ? pravilen_v_drugo : correctFirstTryById[questionId])
+    : napacen;
 
 if (!started) {
   return (
@@ -181,7 +224,7 @@ if (!started) {
     <video
       className="result-video"
       src={resultVideoSrc}
-      key={`${stageIndex}-${isCorrect ? (useThirdOnCorrect ? "c2" : "c1") : "w"}`}
+      key={`${questionId}-${isCorrect ? (useLaterCorrect ? "c2" : "c1") : "w"}-${resultAttemptNumber}`}
       autoPlay
       muted
       playsInline
@@ -193,17 +236,33 @@ if (!started) {
             </div>
           </>
         ) : (
-          <div className="final-stage-stage">
-          <div className="final-stage">
-            <h2 className="pater-title">{t("completed_text2")}</h2>
-          </div>
-           <button onClick={onBack} className="back_to_menu_btn">
-              {t("back_to_menu")}
-            </button>
-            </div>
-        )}
-      </div>
-    );
+        <div>
+  <div className="final-stage">
+    <h2 className="pater-title">
+      {firstTryScore === stages.length ? t("completed_text3") : t("completed_text4")}
+    </h2>
+
+    <p className="fade-animation">
+      {firstTryScore === stages.length ? t("completed_subtext") : t("completed_subtext2")}
+    </p>
+
+    <div className="score-box">
+      <p className="score-line">
+        {t("score_total")}: <strong>{generalScore} / {stages.length}</strong>
+      </p>
+      <p className="score-line">
+        {t("score_first_try")}: <strong>{firstTryScore} / {stages.length}</strong>
+      </p>
+    </div>
+  </div>
+
+  <button onClick={onBack} className="back_to_menu_btn">
+    {t("back_to_menu")}
+  </button>
+</div>
+      )}
+    </div>
+  );
   };
 
 export default GeneralQuiz;
