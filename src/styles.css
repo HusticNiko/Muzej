@@ -9,22 +9,28 @@ body {
     overflow: hidden;
     font-size: 32px; /* Base font size doubled */
   }
-
-  .result-overlay {
+.result-overlay {
   position: fixed;
   inset: 0;
-  z-index: 9999;
-
-  display: flex;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 120ms linear;
+  will-change: opacity;
+  transform: translateZ(0); /* helps iOS */
   align-items: center;
   justify-content: center;
-
+  touch-action: none;
+  overscroll-behavior: contain;
   pointer-events: all; /* IMPORTANT: blocks clicking the quiz underneath */
 }
 
-.result-overlay.correct {
-  background: rgba(0, 0, 0, 0.55); /* dim everything underneath */
+.result-overlay.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
+
 
 /* If you want the video to fill most of the screen */
 .result-video {
@@ -340,7 +346,7 @@ body {
     align-items: center;
     margin-bottom: 50px;
     margin-left: 200px;
-    margin-top: 150px;
+    margin-top: 100px;
     padding: 1rem 2rem; /* 2x bigger */
     font-size: 3rem;    /* 1.5rem × 2 */
     cursor: pointer;
@@ -2094,7 +2100,7 @@ screen and (orientation: landscape)
 .user-options {
   gap: clamp(1rem, 3vw, 4rem);
   justify-content: center;
-  transform: scale(0.7) 
+  transform: scale(0.5) 
 }
 
 /* Ensure dialogs also fit if opened on this page */

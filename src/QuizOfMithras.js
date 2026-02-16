@@ -94,13 +94,6 @@ const QuizOfMithras = ({ onBack }) => {
 
   const current = stages[stageIndex];
 
-  useEffect(() => {
-  if (showResult && isCorrect) {
-    document.body.style.overflow = "hidden";
-    return () => (document.body.style.overflow = "");
-  }
-}, [showResult, isCorrect]);
-
   const handleCorrectAnimationEnd = () => {
   setShowResult(false);
   setStageIndex((prev) => prev + 1);
@@ -151,10 +144,27 @@ const questionId = current?.id;
 
 const useLaterCorrect = isCorrect && resultAttemptNumber > 1;
 
-  const resultVideoSrc =
+ const resultVideoSrc =
   current && isCorrect
     ? (useLaterCorrect ? pravilen_v_drugo : correctFirstTryById[questionId])
     : napacen;
+
+
+    const videoRef = React.useRef(null);
+
+useEffect(() => {
+  if (!showResult) return;
+  const v = videoRef.current;
+  if (!v) return;
+
+  // restart cleanly on mobile
+  v.pause();
+  v.currentTime = 0;
+
+  const p = v.play();
+  if (p && typeof p.catch === "function") p.catch(() => {});
+}, [showResult, resultVideoSrc]);
+
 
 if (!started) {
   return (
@@ -227,17 +237,19 @@ if (!started) {
             ))}
           </div>
           {showResult && (
-  <div className="result-overlay">
-    <video
-      className="result-video"
-      src={resultVideoSrc}
-      key={`${questionId}-${isCorrect ? (useLaterCorrect ? "c2" : "c1") : "w"}-${resultAttemptNumber}`}
-      autoPlay
-      muted
-      playsInline
-      onEnded={isCorrect ? handleCorrectAnimationEnd : handleWrongAnimationEnd}
-    />
-  </div>
+  <div className={`result-overlay ${showResult ? "show" : ""}`}>
+  <video
+    ref={videoRef}
+    className="result-video"
+    src={resultVideoSrc}
+    autoPlay
+    muted
+    playsInline
+    preload="auto"
+    onEnded={isCorrect ? handleCorrectAnimationEnd : handleWrongAnimationEnd}
+  />
+</div>
+
 )
 }
           </div>
