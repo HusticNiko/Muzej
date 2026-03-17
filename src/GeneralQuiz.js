@@ -79,26 +79,20 @@ const GeneralQuiz = ({ onBack }) => {
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(null);
   const [attemptCounts, setAttemptCounts] = useState(() => ({})); // { [stageIndex]: number }
-  const [resultAttemptNumber, setResultAttemptNumber] = useState(1);
   const [started, setStarted] = useState(false);
- const [generalScore, setGeneralScore] = useState(0);
+  const [resultAttemptNumber, setResultAttemptNumber] = useState(1);
+  const [generalScore, setGeneralScore] = useState(0);
   const [firstTryScore, setFirstTryScore] = useState(0);
+  const [result, setResult] = useState(null);
 
-  // Always pick 6 random unique stages on mount (or remount).
-  const stages = useMemo(() => sample(BASE_STAGES, 7), []);
+  const K = 7;
+  const stages = useMemo(() => sample(BASE_STAGES, Math.min(K, BASE_STAGES.length)), []);
 
   // If language changes, UI re-renders with updated `t()`. We keep the same 6 stages.
   // Optional: reset progress if you want when language switches:
   // useEffect(() => setStageIndex(0), [i18n.language]);
 
   const current = stages[stageIndex];
-
-  useEffect(() => {
-  if (showResult && isCorrect) {
-    document.body.style.overflow = "hidden";
-    return () => (document.body.style.overflow = "");
-  }
-}, [showResult, isCorrect]);
 
   const handleCorrectAnimationEnd = () => {
   setShowResult(false);
@@ -108,52 +102,93 @@ const GeneralQuiz = ({ onBack }) => {
 const handleWrongAnimationEnd = () => {
   setShowResult(false);
 
-  // If user has used both attempts (2 tries) and still wrong -> move on
-  if (!isCorrect && resultAttemptNumber >= 2) {
+  const qid = current?.id;
+  const attempts = attemptCounts[qid] || 0;
+
+  if (attempts >= 2) {
     setStageIndex((prev) => prev + 1);
   }
 };
 
 
+ const finishResult = () => {
+  setShowResult(false);
+
+  if (!result) return;
+
+  if (result.correct) {
+    setStageIndex((prev) => prev + 1);
+  } else if (result.attempt >= 2) {
+    setStageIndex((prev) => prev + 1);
+  }
+};
+
+useEffect(() => {
+  if (!showResult) return;
+
+  const t = setTimeout(() => {
+    finishResult();
+  }, 4500); // adjust to your clip length (e.g. 3–6s)
+
+  return () => clearTimeout(t);
+}, [showResult, result]); 
+
  const handleAnswer = (optionKey) => {
+  if (showResult) return;
+
   const correctAnswer = optionKey === current.ans;
+  const qid = current.id;
 
-  setAttemptCounts((prev) => {
-    const next = { ...prev };
-    const newCount = (next[stageIndex] || 0) + 1; // attempt number for THIS click
-    next[stageIndex] = newCount;
+  const prevCount = attemptCounts[qid] || 0;
+  const attempt = prevCount + 1;
 
-    // lock attempt number for deciding which animation to play
-    setResultAttemptNumber(newCount);
+  setAttemptCounts((prev) => ({ ...prev, [qid]: attempt }));
+  setResultAttemptNumber(attempt);
 
-    // If correct, update scores
-    if (correctAnswer) {
-      setGeneralScore((s) => s + 1);
-      if (newCount === 1) setFirstTryScore((s) => s + 1);
-    }
+  if (correctAnswer) {
+    setGeneralScore((s) => s + 1);
+    if (attempt === 1) setFirstTryScore((s) => s + 1);
+  }
 
-    return next;
-  });
+  const useLaterCorrect = correctAnswer && attempt > 1;
+  const firstTryVideo = correctFirstTryById[qid] ?? pravilen_v_drugo;
+
+  const src = correctAnswer
+    ? (useLaterCorrect ? pravilen_v_drugo : firstTryVideo)
+    : napacen;
 
   setIsCorrect(correctAnswer);
   setShowResult(true);
+  setResult({ qid, correct: correctAnswer, attempt, src });
 };
-
-
-const attemptsThisQuestion = attemptCounts[stageIndex] || 0;
-
-
-// If they are correct AND this wasn't the first attempt
-const useThirdOnCorrect = isCorrect && resultAttemptNumber > 1;
 
 const questionId = current?.id;
 
 const useLaterCorrect = isCorrect && resultAttemptNumber > 1;
 
-  const resultVideoSrc =
+ const firstTryVideo = correctFirstTryById[questionId] ?? pravilen_v_drugo;
+
+const resultVideoSrc =
   current && isCorrect
-    ? (useLaterCorrect ? pravilen_v_drugo : correctFirstTryById[questionId])
+    ? (useLaterCorrect ? pravilen_v_drugo : firstTryVideo)
     : napacen;
+
+
+    const videoRef = React.useRef(null);
+
+useEffect(() => {
+  if (!showResult) return;
+  const v = videoRef.current;
+  if (!v) return;
+
+  // restart cleanly on mobile
+  v.pause();
+  v.currentTime = 0;
+
+  const p = v.play();
+  if (p && typeof p.catch === "function") p.catch(() => {});
+}, [showResult, resultVideoSrc]);
+
 
 if (!started) {
   return (
@@ -205,16 +240,6 @@ if (!started) {
                   )}
                 </div>
               ))}
-              {Array.from({ length: 10 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="sparkle"
-                  style={{
-                    top: `${Math.random() * 100}%`,
-                    left: `${Math.random() * 100}%`,
-                  }}
-                />
-              ))}
             </div>
   
             <div className="options">
@@ -226,19 +251,22 @@ if (!started) {
                 </button>
               ))}
             </div>
-            {showResult && (
-  <div className="result-overlay">
-    <video
-      className="result-video"
-      src={resultVideoSrc}
-      key={`${questionId}-${isCorrect ? (useLaterCorrect ? "c2" : "c1") : "w"}-${resultAttemptNumber}`}
-      autoPlay
-      muted
-      playsInline
-      onEnded={isCorrect ? handleCorrectAnimationEnd : handleWrongAnimationEnd}
-    />
-  </div>
-)
+           {showResult && (
+  <div className={`result-overlay ${showResult ? "show" : ""}`}>
+  <video
+    ref={videoRef}
+    key={`${result.qid}-${result.attempt}-${result.correct ? "c" : "w"}`}
+    className="result-video"
+    src={result.src}
+    autoPlay
+    muted
+    playsInline
+    preload="auto"
+    onEnded={finishResult}
+    onError={finishResult}
+  />
+</div>
+           )
 }
             </div>
           </>

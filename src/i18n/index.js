@@ -10,6 +10,7 @@ const resources = {
       "welcome": "Dobrodošli v Vicus Fortunae",
       "trial_of_mithras": "Sojenje Mitri",
       "intro_title": "NO, PA PREVERIMO KAJ SI ZAPOMNIL/A!",
+      "warning": "⚠️ Vrnjeni boste na glavni meni v 1 minuti zaradi ne aktivnosti.",
       "intro_line_1": "KVIZ JE SESTAVLJEN IZ 7 VPRAŠANJ.",
       "intro_line_2": "ZA VSAKO VPRAŠANJE IMAŠ 2 POSKUSA.",
       "intro_line_3": "VENDAR PREMISLI PREDEN ODGOVORIŠ! SAJ SAMO TISTI KI VSA VPRAŠANJA ODGOVORIJO V PRVO DOBIJO VSE TOČKE!",
@@ -248,6 +249,7 @@ const resources = {
     translation: {
       // Common UI elements
       "change_language": "Change language",
+      "warning": "⚠️ You will return to the main menu in 1 minute due to inactivity.",
       "general_faith": "Start Quiz",
       "trial_of_mithras": "Mithraism ",
       "welcome": "Welcome to Vicus Fortunae",

@@ -56,7 +56,7 @@ const BASE_STAGES = [
   { id: 10, name: "Corax", symbol: "🐦", qKey: "mitra10", icon: sword, opt: ["odgovor_10_1","odgovor_10_2","odgovor_10_3","odgovor_10_4"], ans: "odgovor_10_1" },
   { id: 11, name: "Nymphus", symbol: "💍", qKey: "mitra11", icon: shield, opt: ["odgovor_11_1","odgovor_11_2","odgovor_11_3","odgovor_11_4"], ans: "odgovor_11_2" },
   { id: 12, name: "Heliodromus", symbol: "☀️", qKey: "mitra12", icon: eagle, opt: ["odgovor_12_1","odgovor_12_2","odgovor_12_3","odgovor_12_4"], ans: "odgovor_12_2" },
-  { id: 13, name: "Pater", symbol: "🧙", qKey: "mitra13", icon: temple, opt: ["odgovor_13_1","odgovor_13_2","odgovor_13_3","odgovor_13_4"], ans: "odgovor_13_2" },
+  //{ id: 13, name: "Pater", symbol: "🧙", qKey: "mitra13", icon: temple, opt: ["odgovor_13_1","odgovor_13_2","odgovor_13_3","odgovor_13_4"], ans: "odgovor_13_2" },
 ];
 
 const correctFirstTryById = {
@@ -74,19 +74,20 @@ const correctFirstTryById = {
   12: pravilen_Viki_12,
 };
 
-const QuizOfMithras = ({ onBack }) => {
+const QuizOfMithras = ({ onBack, alreadyStarted }) => {
   const { t } = useTranslation();
   const [stageIndex, setStageIndex] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(null);
   const [attemptCounts, setAttemptCounts] = useState(() => ({})); // { [stageIndex]: number }
-  const [started, setStarted] = useState(false);
+  const [started, setStarted] = useState(alreadyStarted ? alreadyStarted : false);
   const [resultAttemptNumber, setResultAttemptNumber] = useState(1);
   const [generalScore, setGeneralScore] = useState(0);
   const [firstTryScore, setFirstTryScore] = useState(0);
+  const [result, setResult] = useState(null);
 
-  // Always pick 6 random unique stages on mount (or remount).
-  const stages = useMemo(() => sample(BASE_STAGES, 7), []);
+  const K = 7;
+  const stages = useMemo(() => sample(BASE_STAGES, Math.min(K, BASE_STAGES.length)), []); 
 
   // If language changes, UI re-renders with updated `t()`. We keep the same 6 stages.
   // Optional: reset progress if you want when language switches:
@@ -102,51 +103,75 @@ const QuizOfMithras = ({ onBack }) => {
 const handleWrongAnimationEnd = () => {
   setShowResult(false);
 
-  // If user has used both attempts (2 tries) and still wrong -> move on
-  if (!isCorrect && resultAttemptNumber >= 2) {
+  const qid = current?.id;
+  const attempts = attemptCounts[qid] || 0;
+
+  if (attempts >= 2) {
     setStageIndex((prev) => prev + 1);
   }
 };
 
+const finishResult = () => {
+  setShowResult(false);
+
+  if (!result) return;
+
+  if (result.correct) {
+    setStageIndex((prev) => prev + 1);
+  } else if (result.attempt >= 2) {
+    setStageIndex((prev) => prev + 1);
+  }
+};
+
+useEffect(() => {
+  if (!showResult) return;
+
+  const t = setTimeout(() => {
+    finishResult();
+  }, 4500); // adjust to your clip length (e.g. 3–6s)
+
+  return () => clearTimeout(t);
+}, [showResult, result]); 
 
  const handleAnswer = (optionKey) => {
+  if (showResult) return;
+
   const correctAnswer = optionKey === current.ans;
+  const qid = current.id;
 
-  setAttemptCounts((prev) => {
-    const next = { ...prev };
-    const newCount = (next[stageIndex] || 0) + 1; // attempt number for THIS click
-    next[stageIndex] = newCount;
+  const prevCount = attemptCounts[qid] || 0;
+  const attempt = prevCount + 1;
 
-    // lock attempt number for deciding which animation to play
-    setResultAttemptNumber(newCount);
+  setAttemptCounts((prev) => ({ ...prev, [qid]: attempt }));
+  setResultAttemptNumber(attempt);
 
-    // If correct, update scores
-    if (correctAnswer) {
-      setGeneralScore((s) => s + 1);
-      if (newCount === 1) setFirstTryScore((s) => s + 1);
-    }
+  if (correctAnswer) {
+    setGeneralScore((s) => s + 1);
+    if (attempt === 1) setFirstTryScore((s) => s + 1);
+  }
 
-    return next;
-  });
+  const useLaterCorrect = correctAnswer && attempt > 1;
+  const firstTryVideo = correctFirstTryById[qid] ?? pravilen_v_drugo;
+
+  const src = correctAnswer
+    ? (useLaterCorrect ? pravilen_v_drugo : firstTryVideo)
+    : napacen;
 
   setIsCorrect(correctAnswer);
   setShowResult(true);
+  setResult({ qid, correct: correctAnswer, attempt, src });
 };
-
-
-const attemptsThisQuestion = attemptCounts[stageIndex] || 0;
-
-
-// If they are correct AND this wasn't the first attempt
-const useThirdOnCorrect = isCorrect && resultAttemptNumber > 1;
 
 const questionId = current?.id;
 
 const useLaterCorrect = isCorrect && resultAttemptNumber > 1;
 
- const resultVideoSrc =
+ const firstTryVideo = correctFirstTryById[questionId] ?? pravilen_v_drugo;
+
+
+const resultVideoSrc =
   current && isCorrect
-    ? (useLaterCorrect ? pravilen_v_drugo : correctFirstTryById[questionId])
+    ? (useLaterCorrect ? pravilen_v_drugo : firstTryVideo)
     : napacen;
 
 
@@ -164,7 +189,6 @@ useEffect(() => {
   const p = v.play();
   if (p && typeof p.catch === "function") p.catch(() => {});
 }, [showResult, resultVideoSrc]);
-
 
 if (!started) {
   return (
@@ -215,16 +239,7 @@ if (!started) {
                 )}
               </div>
             ))}
-            {Array.from({ length: 10 }).map((_, i) => (
-              <div
-                key={i}
-                className="sparkle"
-                style={{
-                  top: `${Math.random() * 100}%`,
-                  left: `${Math.random() * 100}%`,
-                }}
-              />
-            ))}
+             
           </div>
 
           <div className="options">
@@ -241,12 +256,14 @@ if (!started) {
   <video
     ref={videoRef}
     className="result-video"
+    key={`${questionId}-${resultAttemptNumber}-${isCorrect ? "c" : "w"}`}
     src={resultVideoSrc}
     autoPlay
     muted
     playsInline
     preload="auto"
-    onEnded={isCorrect ? handleCorrectAnimationEnd : handleWrongAnimationEnd}
+    onEnded={finishResult}
+    onError={finishResult}
   />
 </div>
 
@@ -256,30 +273,33 @@ if (!started) {
         </>
       ) : (
         <div>
-  <div className="final-stage">
-    <h2 className="pater-title">
-      {firstTryScore === stages.length ? t("completed_text") : t("completed_text2")}
-    </h2>
+            <div className="final-stage">
+              <h2 className="pater-title">
+                {firstTryScore === stages.length ? t("completed_text") : t("completed_text2")}
+              </h2>
 
-    <p className="fade-animation">
-      {firstTryScore === stages.length ? t("completed_subtext") : t("completed_subtext2")}
-    </p>
+              <p className="fade-animation">
+                {firstTryScore === stages.length ? t("completed_subtext") : t("completed_subtext2")}
+              </p>
 
-    <div className="score-box">
-      <p className="score-line">
-        {t("score_total")}: <strong>{generalScore} / {stages.length}</strong>
-      </p>
-      <p className="score-line">
-        {t("score_first_try")}: <strong>{firstTryScore} / {stages.length}</strong>
-      </p>
-    </div>
-  </div>
+              <div className="score-box">
+                <p className="score-line">
+                  {t("score_total")}: <strong>{generalScore} / {stages.length}</strong>
+                </p>
+                <p className="score-line">
+                  {t("score_first_try")}: <strong>{firstTryScore} / {stages.length}</strong>
+                </p>
+              </div>
+          </div>
+ <button onClick={onBack} className="back_to_menu_btn">
+            {t("back_to_menu")}
+          </button>
+            </div>
+  
+  
 
-  <button onClick={onBack} className="back_to_menu_btn">
-    {t("back_to_menu")}
-  </button>
-</div>
       )}
+         
     </div>
   );
 };

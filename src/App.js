@@ -13,7 +13,7 @@ import LanguageSwitcher from "./components/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 import AdminMenu from "./components/AdminMenu";
 import UserSelection from "./components/UserSelection";
-import { UserProvider, useUser } from './context/UserContext';
+import { UserProvider, useUser  } from './context/UserContext';
 import GeneralQuiz from "./GeneralQuiz";
 
   // Silent Long Press Hook (no visual feedback)
@@ -66,56 +66,18 @@ const useSilentLongPress = (onLongPress, delay = 10000) => {
   };
 };
 
-const App = () => {
+const AppContent = ({ currentGame = null, setCurrentGame, showWarning, setShowWarning }) => {
   const { t } = useTranslation();
-  const [currentGame, setCurrentGame] = useState(null);
-  const [showWarning, setShowWarning] = useState(false);
-  const isGameActive = currentGame !== null;
+  const { user, isAuthenticated, logout, login } = useUser();
 
-  useEffect(() => {
-    const events = ["mousemove", "mousedown", "keypress", "touchstart", "scroll"];
-  
-    const clearWarningOnActivity = () => {
-      if (showWarning) {
-        setShowWarning(false); // hide warning if player becomes active again
-      }
-    };
-  
-    if (currentGame !== null) {
-      events.forEach(event => window.addEventListener(event, clearWarningOnActivity));
-    }
-  
-    return () => {
-      events.forEach(event => window.removeEventListener(event, clearWarningOnActivity));
-    };
-  }, [showWarning, currentGame]);
-  
-
-  useInactivityTimer(
-    () => {
-      if (isGameActive) setShowWarning(true); // show warning only if inside a game
-    },
-    () => {
-      if (isGameActive) {
-        setCurrentGame(null);     // timeout back to menu
-        setShowWarning(false);    // hide warning
-      }
-    },
-    100000, // 4 min for warning
-    200000  // 5 min for timeout
-  );
-
-  const AppContent = () => {
-  const { user, isAuthenticated, logout } = useUser();
-
-    const longPressProps = useSilentLongPress(() => {}, 5000);
+    const longPressProps = useSilentLongPress(() => {}, 3000);
 
     // Auto-hide logout button after 5 seconds of inactivity
     useEffect(() => {
       if (longPressProps.showButton) {
         const hideTimer = setTimeout(() => {
           longPressProps.hideButton();
-        }, 5000); // Hide after 5 seconds
+        }, 2000000); // Hide after 5 seconds
 
         return () => clearTimeout(hideTimer);
       }
@@ -137,6 +99,9 @@ const App = () => {
             MozUserSelect: 'none',
             msUserSelect: 'none'
           }}
+             onClick={() => {
+                longPressProps.hideButton();
+              }}
         > 
            <video
           className="bg-video"
@@ -171,17 +136,16 @@ const App = () => {
                 longPressProps.hideButton();
               }}
             >
-              <span className="logout-icon">🚪</span>
               {t('logout')}
             </button>
           )}
             {showWarning && (
-            <div className="warning-popup">
-              <p>⚠️ You will return to the main menu in 1 minute due to inactivity.</p>
+          <div className="warning-popup" onClick={() => setShowWarning(false)}>              
+          {t('warning')}
             </div>
           )}
           {currentGame === "wheel" && <WheelOfFortuna onBack={() => setCurrentGame(null)} />}
-          {currentGame === "quiz" && <QuizOfMithras onBack={() => setCurrentGame(null)} />}
+          {currentGame === "quiz" && <QuizOfMithras alreadyStarted={showWarning} onBack={() => setCurrentGame(null)} />}
           {currentGame === "quiz2" && <GeneralQuiz onBack={() => setCurrentGame(null)} />}
           {currentGame === "stars" && <StarrySkyMystery onBack={() => setCurrentGame(null)} />}
           
@@ -209,6 +173,10 @@ const App = () => {
             MozUserSelect: 'none',
             msUserSelect: 'none'
           }}
+         onClick={() => {
+                longPressProps.hideButton();
+                
+              }}
         >
             <video
           className="bg-video"
@@ -222,13 +190,9 @@ const App = () => {
           {/* Optional fallback text */}
           Your browser does not support the video tag.
         </video>
-          <div className="content">
-          {showWarning && (
-            <div className="warning-popup">
-              <p>⚠️ You will return to the main menu in 1 minute due to inactivity.</p>
-            </div>
-          )}
-
+          <div className="content"   onClick={() => {
+                longPressProps.hideButton();
+              }}>
           {currentGame === null && (
             <div className="menu">
               <h1>{t('welcome')}</h1>
@@ -238,12 +202,17 @@ const App = () => {
             </div>
           )}
           </div>
+          {showWarning && (
+          <div className="warning-popup" onClick={() => setShowWarning(false)}>              
+          {t('warning')}
+            </div>
+          )}
           {currentGame === "wheel" && <WheelOfFortuna onBack={() => setCurrentGame(null)} />}
           {currentGame === "quiz" && <QuizOfMithras onBack={() => setCurrentGame(null)} />}
           {currentGame === "quiz2" && <GeneralQuiz onBack={() => setCurrentGame(null)} />}
           {currentGame === "stars" && <StarrySkyMystery onBack={() => setCurrentGame(null)} />}
           
-          <LanguageSwitcher variant="" />
+          <LanguageSwitcher className="language-switcher" variant="" />
           
           {/* Hidden logout button that appears after 10s hold */}
           {longPressProps.showButton && (
@@ -251,10 +220,9 @@ const App = () => {
               className="logout-btn customer-logout-btn" 
               onClick={() => {
                 logout();
-                longPressProps.hideButton();
+                longPressProps.hideButton();             
               }}
             >
-              <span className="logout-icon">🚪</span>
               {t('logout')}
             </button>
           )}
@@ -267,10 +235,37 @@ const App = () => {
     return <UserSelection />;
   };
 
+const App = () => {
+  const { t } = useTranslation();
+  const [currentGame, setCurrentGame] = useState(null);
+  const [showWarning, setShowWarning] = useState(false);
+  const isGameActive = currentGame !== null;
+
+  useInactivityTimer(
+    () => {
+      if (isGameActive) setShowWarning(true); // show warning only if inside a game
+    },
+    () => {
+      if (isGameActive) {
+        setShowWarning(false);
+        setCurrentGame(null); // ✅ go back to main menu
+    // hide warning
+      }
+    },
+    100000, // 4 min for warning
+    150000  // 5 min for timeout
+  );
+
+
   return (
     <UserProvider>
       <div className="App">
-        <AppContent />
+       <AppContent
+          currentGame={currentGame}
+          setCurrentGame={setCurrentGame}
+          showWarning={showWarning}
+          setShowWarning={setShowWarning}
+        />
       </div>
     </UserProvider>
   );
