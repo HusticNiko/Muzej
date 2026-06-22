@@ -3,36 +3,31 @@ import { useTranslation } from 'react-i18next';
 import { useUser } from '../context/UserContext';
 import AdminLoginDialog from './AdminLoginDialog';
 import LanguageSwitcher from './LanguageSwitcher';
+import viki from '../assets/Viki_Mitra1.png';
+import srecka from '../assets/Srecka_Fortuna.png';
 import "../styles.css";
 
 const UserSelection = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { login } = useUser();
   const [showAdminDialog, setShowAdminDialog] = useState(false);
 
-  const handleCustomerSelect = () => {
-    login('customer');
-  };
-
-  const handleAdminSelect = () => {
-    setShowAdminDialog(false);
-  };
-
-  const handleAdminLogin = () => {
-      login('admin');
-  };
-
-   const handleProjekcijaLogin = () => {
-      login('projekcija');
-  };
-
   return (
     <div className="user-selection-container">
-      <div className="language-switcher-top">
-        <LanguageSwitcher variant="toggle" />
-      </div>
       
-      <div className="user-selection-content">
+      {/* --- LIKA OB STRANEH --- */}
+      <img src={viki} alt="Viki" className="menu-character left-character" draggable="false" />
+      <img src={srecka} alt="Srečka" className="menu-character right-character" draggable="false" />
+
+      {/* GUMB PROJEKCIJA */}
+      <button 
+        className="user-option-btn admin-btn projekcija-btn"
+        onClick={() => setShowAdminDialog('projekcija')}
+      >
+        {t('Projekcija')}
+      </button>
+      {/* SREDINSKI MENI */}
+      <div className="user-selection-content lang-fade" key={i18n.language}>
         <div className="welcome-section">
           <h1 className="welcome-title">{t('welcome_to_museum')}</h1>
           <p className="welcome-subtitle">{t('select_user_type')}</p>
@@ -41,36 +36,31 @@ const UserSelection = () => {
         <div className="user-options">
           <button 
             className="user-option-btn customer-btn"
-            onClick={handleCustomerSelect}
+            onClick={() => login('kviz_mitraizem')}
           >
             <div className="user-icon">←</div>
-            <h3>{t('customer')}</h3>
-            <p>{t('customer_description')}</p>
+            <h3>{t('btn_mitra')}</h3>
           </button>
 
           <button 
-            className="user-option-btn admin-btn"
-            onClick={handleAdminLogin}
+            className="user-option-btn customer-btn light-menu-btn"
+            onClick={() => login('kviz_ostala_bozanstva')}
           >
             <div className="user-icon">→</div>
-            <h3>{t('admin')}</h3>
-            <p>{t('admin_description')}</p>
-          </button>
-           <button 
-            className="user-option-btn admin-btn"
-            onClick={handleProjekcijaLogin}
-          >
-            <div className="user-icon">→</div>
-            <h3>{t('Projekcija')}</h3>
-            <p>{t('projekcija')}</p>
+            <h3>{t('btn_splosni')}</h3>
           </button>
         </div>
       </div>
 
+      {/* POJAVNO OKNO ZA GESLO */}
       {showAdminDialog && (
         <AdminLoginDialog 
           onClose={() => setShowAdminDialog(false)}
-          onLogin={handleAdminLogin}
+          onLogin={() => {
+            if (showAdminDialog === 'projekcija') {
+                login('projekcija');
+            }
+          }}
         />
       )}
     </div>

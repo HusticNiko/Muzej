@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef  } from "react";
 import wheelImage from './assets/wheel3.png'; // or use public path directly in src
 import frameImage from './assets/fortuna.png'; // Adjust path if using public folder
-import mitraizem from './assets/Mitraizem.mp4'; // Adjust path if using public folder
-import rimljani from './assets/Rimljani.mp4'; // Adjust path if using public folder
+import mitraizem from './assets/Mitraizem.webm'; // Adjust path if using public folder
+import rimljani from './assets/Splošno.webm'; // Adjust path if using public folder
 
 import QuizOfMithras from './QuizOfMithras';
 import StarrySkyMystery from './StarrySkyMystery';
@@ -15,7 +15,7 @@ import AdminMenu from "./components/AdminMenu";
 import UserSelection from "./components/UserSelection";
 import { UserProvider, useUser  } from './context/UserContext';
 import GeneralQuiz from "./GeneralQuiz";
-
+import naslovnica from "./assets/Ostala_naslovnica.png"; // Zamenjaj s pravim imenom in končnico
   // Silent Long Press Hook (no visual feedback)
 const useSilentLongPress = (onLongPress, delay = 10000) => {
   const [isPressed, setIsPressed] = useState(false);
@@ -67,7 +67,7 @@ const useSilentLongPress = (onLongPress, delay = 10000) => {
 };
 
 const AppContent = ({ currentGame = null, setCurrentGame, showWarning, setShowWarning }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { user, isAuthenticated, logout, login } = useUser();
 
     const longPressProps = useSilentLongPress(() => {}, 3000);
@@ -87,14 +87,15 @@ const AppContent = ({ currentGame = null, setCurrentGame, showWarning, setShowWa
       return <UserSelection />;
     }
 
-    if (user === 'customer') {
+    // TUKAJ SPREMENI 'customer' v 'kviz_mitraizem'
+    if (user === 'kviz_mitraizem') {
       return (
         <div
           className="app"
           {...longPressProps}
           style={{ 
             position: 'relative',
-            userSelect: 'none', // Prevent text selection during long press
+            userSelect: 'none',
             WebkitUserSelect: 'none',
             MozUserSelect: 'none',
             msUserSelect: 'none'
@@ -149,7 +150,7 @@ const AppContent = ({ currentGame = null, setCurrentGame, showWarning, setShowWa
           {currentGame === "quiz2" && <GeneralQuiz onBack={() => setCurrentGame(null)} />}
           {currentGame === "stars" && <StarrySkyMystery onBack={() => setCurrentGame(null)} />}
           
-          <LanguageSwitcher variant="" />
+        
           
 
         </div>
@@ -161,7 +162,7 @@ const AppContent = ({ currentGame = null, setCurrentGame, showWarning, setShowWa
         
                   
         
-    }  else if (user === 'admin'){
+    }  else if (user === 'kviz_ostala_bozanstva'){
       return (
         <div
           className="app"
@@ -194,9 +195,9 @@ const AppContent = ({ currentGame = null, setCurrentGame, showWarning, setShowWa
                 longPressProps.hideButton();
               }}>
           {currentGame === null && (
-            <div className="menu">
-              <h1>{t('welcome')}</h1>
-              <button onClick={() => setCurrentGame("quiz2")} className="home_btn2">{t('general_faith')}</button>
+            <div className="menu ">
+              <img src={naslovnica} alt="Naslovnica" className="intro-title-image" draggable="false" />
+              <button onClick={() => setCurrentGame("quiz2")} className="home_btn2 lang-fade" key={i18n.language}>{t('general_faith')}</button>
               {/*<button onClick={() => setCurrentGame("quiz")} className="home_btn">{t('trial_of_mithras')}</button>*/}
               {/*<button onClick={() => setCurrentGame("stars")} className="btn">{t('mysteri_of_skyes')}</button> */}
             </div>
@@ -212,14 +213,13 @@ const AppContent = ({ currentGame = null, setCurrentGame, showWarning, setShowWa
           {currentGame === "quiz2" && <GeneralQuiz onBack={() => setCurrentGame(null)} />}
           {currentGame === "stars" && <StarrySkyMystery onBack={() => setCurrentGame(null)} />}
           
-          <LanguageSwitcher className="language-switcher" variant="" />
-          
           {/* Hidden logout button that appears after 10s hold */}
           {longPressProps.showButton && (
             <button 
               className="logout-btn customer-logout-btn" 
               onClick={() => {
                 logout();
+                setCurrentGame(null); // To popolnoma pobriše spomin na prejšnji kviz!
                 longPressProps.hideButton();             
               }}
             >
@@ -260,6 +260,9 @@ const App = () => {
   return (
     <UserProvider>
       <div className="App">
+        <div style={{ position: 'fixed', top: '20px', right: '20px', zIndex: 9999 }}>
+          <LanguageSwitcher />
+        </div>
        <AppContent
           currentGame={currentGame}
           setCurrentGame={setCurrentGame}

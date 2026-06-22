@@ -1,59 +1,37 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import './LanguageSwitcher.css';
 
-const LanguageSwitcher = ({ variant = 'button' }) => {
-  const { i18n, t } = useTranslation();
+const LanguageSwitcher = () => {
+  const { i18n} = useTranslation();
 
-  const changeLanguage = (lng) => {
-    i18n.changeLanguage(lng);
+  const changeLanguage = (e) => {
+    i18n.changeLanguage(e.target.value);
   };
 
-  const currentLanguage = i18n.language;
-
-  if (variant === 'dropdown') {
-    return (
-      <div className="language-switcher-dropdown">
-        <select 
-          value={currentLanguage} 
-          onChange={(e) => changeLanguage(e.target.value)}
-          className="language-select"
-        >
-          <option value="en">{t('english')}</option>
-          <option value="sl">{t('slovenian')}</option>
-        </select>
-      </div>
-    );
-  }
-
-  if (variant === 'toggle') {
-    return (
-      <div className="language-switcher-toggle">
-        <button
-          onClick={() => changeLanguage(currentLanguage === 'en' ? 'sl' : 'en')}
-          className="language-toggle-btn"
-        >
-          {currentLanguage === 'en' ? '🇸🇮 SL' : '🇬🇧 EN'}
-        </button>
-      </div>
-    );
-  }
-
-  // Default button variant
   return (
-    <div className="language-switcher-buttons">
-      <button
-        onClick={() => changeLanguage('en')}
-        className={`language-btn ${currentLanguage === 'en' ? 'active' : ''}`}
+    <div className="language-switcher-dropdown">
+      <select 
+        value={i18n.language} 
+        onChange={changeLanguage}
+        style={{
+          background: 'rgba(20, 12, 8, 0.9)',
+          color: '#f3e7cc',
+          border: '1px solid rgba(214, 179, 106, 0.3)',
+          borderRadius: '10px',
+          padding: '8px 12px',
+          fontFamily: '"Cinzel", Georgia, serif',
+          fontSize: '1rem',
+          outline: 'none',
+          cursor: 'pointer'
+        }}
       >
-         🇸🇮 SL
-      </button>
-      <button
-        onClick={() => changeLanguage('sl')}
-        className={`language-btn ${currentLanguage === 'sl' ? 'active' : ''}`}
-      >
-        🇬🇧 EN
-      </button>
+        <option value="sl">{('Slovenščina')}</option>
+<option value="en">{('English')}</option>
+<option value="de">{('Deutsch')}</option>
+<option value="it">{('Italiano')}</option>
+<option value="hr">{('Hrvatski')}</option>
+<option value="fr">{('Français')}</option>
+      </select>
     </div>
   );
 };

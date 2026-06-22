@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useRef } from "react";
 import "./styles.css";
 import obelisk from "./icons/obelisk1.svg";
 import emperor from "./icons/emperor1.svg";
@@ -28,11 +28,8 @@ import pravilen_Viki_9 from "./assets/pravilen_v_prvo_mitraizem/Pravilen_Viki_9.
 import pravilen_Viki_10 from "./assets/pravilen_v_prvo_mitraizem/Pravilen_Viki_10.webm";
 import pravilen_Viki_11 from "./assets/pravilen_v_prvo_mitraizem/Pravilen_Viki_11.webm";
 import pravilen_Viki_12 from "./assets/pravilen_v_prvo_mitraizem/Pravilen_Viki_12.webm";
-
-
 import { useTranslation } from "react-i18next";
 
-// Helper: sample k unique items without mutating original
 function sample(array, k) {
   const arr = array.slice();
   for (let i = arr.length - 1; i > 0; i--) {
@@ -42,36 +39,25 @@ function sample(array, k) {
   return arr.slice(0, k);
 }
 
-// Keep only KEYS here. We'll translate on render with `t`.
 const BASE_STAGES = [
-  { id: 1, name: "Corax", symbol: "🐦", icon: obelisk, qKey: "mitra1", opt: ["odgovor_1_1","odgovor_1_2","odgovor_1_3","odgovor_1_4"], ans: "odgovor_1_2" },
-  { id: 2, name: "Nymphus", symbol: "💍", icon: emperor, qKey: "mitra2", opt: ["odgovor_2_1","odgovor_2_2","odgovor_2_3","odgovor_2_4"], ans: "odgovor_2_2" },
-  { id: 3, name: "Miles", symbol: "⚔️", icon: helmet, qKey: "mitra3", opt: ["odgovor_3_1","odgovor_3_2","odgovor_3_3","odgovor_3_4"], ans: "odgovor_3_3" },
-  { id: 4, name: "Leo", symbol: "🦁", icon: columns, qKey: "mitra4", opt: ["odgovor_4_1","odgovor_4_2","odgovor_4_3","odgovor_4_4"], ans: "odgovor_4_4" },
-  { id: 5, name: "Perses", symbol: "🌑", qKey: "mitra5", icon: coloseum, opt: ["odgovor_5_1","odgovor_5_2","odgovor_5_3","odgovor_5_4"], ans: "odgovor_5_4" }, // eagle is NOT part
-  { id: 6, name: "Heliodromus", symbol: "☀️", icon: ship, qKey: "mitra6", opt: ["odgovor_6_1","odgovor_6_2","odgovor_6_3","odgovor_6_4"], ans: "odgovor_6_2" },
-  { id: 7, name: "Pater", symbol: "🧙", qKey: "mitra7", icon: circus, opt: ["odgovor_7_1","odgovor_7_2","odgovor_7_3","odgovor_7_4"], ans: "odgovor_7_1" },
-  { id: 8, name: "Miles", symbol: "⚔️", qKey: "mitra8", icon: crown, opt: ["odgovor_8_1","odgovor_8_2","odgovor_8_3","odgovor_8_4"], ans: "odgovor_8_2" },
-  { id: 9, name: "Leo", symbol: "🦁", qKey: "mitra9", icon: legion, opt: ["odgovor_9_1","odgovor_9_2","odgovor_9_3","odgovor_9_4"], ans: "odgovor_9_2" },
-  { id: 10, name: "Corax", symbol: "🐦", qKey: "mitra10", icon: sword, opt: ["odgovor_10_1","odgovor_10_2","odgovor_10_3","odgovor_10_4"], ans: "odgovor_10_1" },
-  { id: 11, name: "Nymphus", symbol: "💍", qKey: "mitra11", icon: shield, opt: ["odgovor_11_1","odgovor_11_2","odgovor_11_3","odgovor_11_4"], ans: "odgovor_11_2" },
-  { id: 12, name: "Heliodromus", symbol: "☀️", qKey: "mitra12", icon: eagle, opt: ["odgovor_12_1","odgovor_12_2","odgovor_12_3","odgovor_12_4"], ans: "odgovor_12_2" },
-  //{ id: 13, name: "Pater", symbol: "🧙", qKey: "mitra13", icon: temple, opt: ["odgovor_13_1","odgovor_13_2","odgovor_13_3","odgovor_13_4"], ans: "odgovor_13_2" },
+  { id: 1, name: "Corax", symbol: "🐦", icon: obelisk, qKey: "vprasanje_1", opt: ["odgovor_1_1","odgovor_1_2","odgovor_1_3","odgovor_1_4"], ans: "odgovor_1_2" },
+  { id: 2, name: "Nymphus", symbol: "💍", icon: emperor, qKey: "vprasanje_2", opt: ["odgovor_2_1","odgovor_2_2","odgovor_2_3","odgovor_2_4"], ans: "odgovor_2_2" },
+  { id: 3, name: "Miles", symbol: "⚔️", icon: helmet, qKey: "vprasanje_3", opt: ["odgovor_3_1","odgovor_3_2","odgovor_3_3","odgovor_3_4"], ans: "odgovor_3_3" },
+  { id: 4, name: "Leo", symbol: "🦁", icon: columns, qKey: "vprasanje_4", opt: ["odgovor_4_1","odgovor_4_2","odgovor_4_3","odgovor_4_4"], ans: "odgovor_4_4" },
+  { id: 5, name: "Perses", symbol: "🌑", qKey: "vprasanje_5", icon: coloseum, opt: ["odgovor_5_1","odgovor_5_2","odgovor_5_3","odgovor_5_4"], ans: "odgovor_5_4" }, 
+  { id: 6, name: "Heliodromus", symbol: "☀️", icon: ship, qKey: "vprasanje_6", opt: ["odgovor_6_1","odgovor_6_2","odgovor_6_3","odgovor_6_4"], ans: "odgovor_6_2" },
+  { id: 7, name: "Pater", symbol: "🧙", qKey: "vprasanje_7", icon: circus, opt: ["odgovor_7_1","odgovor_7_2","odgovor_7_3","odgovor_7_4"], ans: "odgovor_7_1" },
+  { id: 8, name: "Miles", symbol: "⚔️", qKey: "vprasanje_8", icon: crown, opt: ["odgovor_8_1","odgovor_8_2","odgovor_8_3","odgovor_8_4"], ans: "odgovor_8_2" },
+  { id: 9, name: "Leo", symbol: "🦁", qKey: "vprasanje_9", icon: legion, opt: ["odgovor_9_1","odgovor_9_2","odgovor_9_3","odgovor_9_4"], ans: "odgovor_9_2" },
+  { id: 10, name: "Corax", symbol: "🐦", qKey: "vprasanje_10", icon: sword, opt: ["odgovor_10_1","odgovor_10_2","odgovor_10_3","odgovor_10_4"], ans: "odgovor_10_1" },
+  { id: 11, name: "Nymphus", symbol: "💍", qKey: "vprasanje_11", icon: shield, opt: ["odgovor_11_1","odgovor_11_2","odgovor_11_3","odgovor_11_4"], ans: "odgovor_11_2" },
+  { id: 12, name: "Heliodromus", symbol: "☀️", qKey: "vprasanje_12", icon: eagle, opt: ["odgovor_12_1","odgovor_12_2","odgovor_12_3","odgovor_12_4"], ans: "odgovor_12_2" },
 ];
 
 const correctFirstTryById = {
-  1: pravilen_Viki_1,
-  2: pravilen_Viki_2,
-  3: pravilen_Viki_3,
-  4: pravilen_Viki_4,
-  5: pravilen_Viki_5,
-  6: pravilen_Viki_6,
-  7: pravilen_Viki_7,
-  8: pravilen_Viki_8,
-  9: pravilen_Viki_9,
-  10: pravilen_Viki_10,
-  11: pravilen_Viki_11,
-  12: pravilen_Viki_12,
+  1: pravilen_Viki_1, 2: pravilen_Viki_2, 3: pravilen_Viki_3, 4: pravilen_Viki_4,
+  5: pravilen_Viki_5, 6: pravilen_Viki_6, 7: pravilen_Viki_7, 8: pravilen_Viki_8,
+  9: pravilen_Viki_9, 10: pravilen_Viki_10, 11: pravilen_Viki_11, 12: pravilen_Viki_12,
 };
 
 const QuizOfMithras = ({ onBack, alreadyStarted }) => {
@@ -79,7 +65,7 @@ const QuizOfMithras = ({ onBack, alreadyStarted }) => {
   const [stageIndex, setStageIndex] = useState(0);
   const [showResult, setShowResult] = useState(false);
   const [isCorrect, setIsCorrect] = useState(null);
-  const [attemptCounts, setAttemptCounts] = useState(() => ({})); // { [stageIndex]: number }
+  const [attemptCounts, setAttemptCounts] = useState(() => ({})); 
   const [started, setStarted] = useState(alreadyStarted ? alreadyStarted : false);
   const [resultAttemptNumber, setResultAttemptNumber] = useState(1);
   const [generalScore, setGeneralScore] = useState(0);
@@ -88,158 +74,157 @@ const QuizOfMithras = ({ onBack, alreadyStarted }) => {
 
   const K = 7;
   const stages = useMemo(() => sample(BASE_STAGES, Math.min(K, BASE_STAGES.length)), []); 
-
-  // If language changes, UI re-renders with updated `t()`. We keep the same 6 stages.
-  // Optional: reset progress if you want when language switches:
-  // useEffect(() => setStageIndex(0), [i18n.language]);
-
   const current = stages[stageIndex];
+  const videoRef = useRef(null);
 
-  const handleCorrectAnimationEnd = () => {
-  setShowResult(false);
-  setStageIndex((prev) => prev + 1);
-};
+  // Audio setup
+  const audioRefs = useRef({
+    bg: new Audio('bg_loop.mp3'),
+    btn: new Audio('button.mp3'),
+    celeb: new Audio('celebration2.mp3')
+  });
 
-const handleWrongAnimationEnd = () => {
-  setShowResult(false);
+  // RESETIRAJ NEAKTIVNOST OB VSTOPU V KVIZ
+  useEffect(() => {
+    window.dispatchEvent(new Event('mousemove'));
+    window.dispatchEvent(new Event('touchstart'));
+  }, []);
 
-  const qid = current?.id;
-  const attempts = attemptCounts[qid] || 0;
+  const playBtnSound = () => {
+    const { btn } = audioRefs.current;
+    btn.currentTime = 0;
+    btn.play().catch(() => {});
+  };
 
-  if (attempts >= 2) {
-    setStageIndex((prev) => prev + 1);
-  }
-};
+  // Background music lifecycle
+  useEffect(() => {
+    const { bg } = audioRefs.current;
+    bg.loop = true;
+    bg.volume = 0.4;
+    bg.play().catch(() => {});
 
-const finishResult = () => {
-  setShowResult(false);
+    return () => {
+      bg.pause();
+      bg.currentTime = 0;
+    };
+  }, []);
 
-  if (!result) return;
+  // Celebration sound lifecycle
+  useEffect(() => {
+    const { bg, celeb } = audioRefs.current;
+    if (stageIndex === stages.length && stages.length > 0) {
+      bg.pause(); // Pause bg music so celebration stands out
+      celeb.currentTime = 0;
+      celeb.play().catch(() => {});
+    }
+  }, [stageIndex, stages.length]);
 
-  if (result.correct) {
-    setStageIndex((prev) => prev + 1);
-  } else if (result.attempt >= 2) {
-    setStageIndex((prev) => prev + 1);
-  }
-};
+  // Audio ducking (lower bg volume when video plays)
+  useEffect(() => {
+    const { bg } = audioRefs.current;
+    if (showResult) {
+      bg.volume = 0.1; // Duck the music
+    } else {
+      bg.volume = 0.4; // Bring volume back up
+    }
+  }, [showResult]);
 
-useEffect(() => {
-  if (!showResult) return;
+  const finishResult = () => {
+    setShowResult(false);
+    if (!result) return;
+    if (result.correct) {
+      setStageIndex((prev) => prev + 1);
+    } else if (result.attempt >= 2) {
+      setStageIndex((prev) => prev + 1);
+    }
+  };
 
-  const t = setTimeout(() => {
-    finishResult();
-  }, 4500); // adjust to your clip length (e.g. 3–6s)
+  useEffect(() => {
+    if (!showResult) return;
+    const t = setTimeout(() => { finishResult(); }, 4500); 
+    return () => clearTimeout(t);
+  }, [showResult, result]); 
 
-  return () => clearTimeout(t);
-}, [showResult, result]); 
+  const handleAnswer = (optionKey) => {
+    playBtnSound();
+    if (showResult) return;
 
- const handleAnswer = (optionKey) => {
-  if (showResult) return;
+    const correctAnswer = optionKey === current.ans;
+    const qid = current.id;
+    const prevCount = attemptCounts[qid] || 0;
+    const attempt = prevCount + 1;
 
-  const correctAnswer = optionKey === current.ans;
-  const qid = current.id;
+    setAttemptCounts((prev) => ({ ...prev, [qid]: attempt }));
+    setResultAttemptNumber(attempt);
 
-  const prevCount = attemptCounts[qid] || 0;
-  const attempt = prevCount + 1;
+    if (correctAnswer) {
+      setGeneralScore((s) => s + 1);
+      if (attempt === 1) setFirstTryScore((s) => s + 1);
+    }
 
-  setAttemptCounts((prev) => ({ ...prev, [qid]: attempt }));
-  setResultAttemptNumber(attempt);
+    const useLaterCorrect = correctAnswer && attempt > 1;
+    const firstTryVideo = correctFirstTryById[qid] ?? pravilen_v_drugo;
 
-  if (correctAnswer) {
-    setGeneralScore((s) => s + 1);
-    if (attempt === 1) setFirstTryScore((s) => s + 1);
-  }
+    const src = correctAnswer ? (useLaterCorrect ? pravilen_v_drugo : firstTryVideo) : napacen;
 
-  const useLaterCorrect = correctAnswer && attempt > 1;
-  const firstTryVideo = correctFirstTryById[qid] ?? pravilen_v_drugo;
+    setIsCorrect(correctAnswer);
+    setShowResult(true);
+    setResult({ qid, correct: correctAnswer, attempt, src });
+  };
 
-  const src = correctAnswer
+  const questionId = current?.id;
+  const useLaterCorrect = isCorrect && resultAttemptNumber > 1;
+  const firstTryVideo = correctFirstTryById[questionId] ?? pravilen_v_drugo;
+
+  const resultVideoSrc = current && isCorrect
     ? (useLaterCorrect ? pravilen_v_drugo : firstTryVideo)
     : napacen;
 
-  setIsCorrect(correctAnswer);
-  setShowResult(true);
-  setResult({ qid, correct: correctAnswer, attempt, src });
-};
+  useEffect(() => {
+    if (!showResult) return;
+    const v = videoRef.current;
+    if (!v) return;
+    v.pause();
+    v.currentTime = 0;
+    const p = v.play();
+    if (p && typeof p.catch === "function") p.catch(() => {});
+  }, [showResult, resultVideoSrc]);
 
-const questionId = current?.id;
-
-const useLaterCorrect = isCorrect && resultAttemptNumber > 1;
-
- const firstTryVideo = correctFirstTryById[questionId] ?? pravilen_v_drugo;
-
-
-const resultVideoSrc =
-  current && isCorrect
-    ? (useLaterCorrect ? pravilen_v_drugo : firstTryVideo)
-    : napacen;
-
-
-    const videoRef = React.useRef(null);
-
-useEffect(() => {
-  if (!showResult) return;
-  const v = videoRef.current;
-  if (!v) return;
-
-  // restart cleanly on mobile
-  v.pause();
-  v.currentTime = 0;
-
-  const p = v.play();
-  if (p && typeof p.catch === "function") p.catch(() => {});
-}, [showResult, resultVideoSrc]);
-
-if (!started) {
-  return (
-    <div className="quiz intro-page">
-      <div className="intro-card">
-        <div className="intro-content">
-          <p className="intro-title">{t("intro_title")}</p>
-
-          <p className="intro-line">{t("intro_line_1")}</p>
-          <p className="intro-line">{t("intro_line_2")}</p>
-          <p className="intro-line intro-spaced">{t("intro_line_3")}</p>
-
-          <button className="intro-btn" onClick={() => setStarted(true)}>
-            {t("start_quiz")}
-          </button>
+  if (!started) {
+    return (
+      <div className="quiz intro-page dark-theme">
+        <div className="intro-card">
+          <div className="intro-content">
+            <p className="intro-title">{t("intro_title")}</p>
+            <p className="intro-line">{t("intro_line_1")}</p>
+            <p className="intro-line">{t("intro_line_2")}</p>
+            <p className="intro-line intro-spaced">{t("intro_line_3")}</p>
+            <button className="intro-btn" onClick={() => { playBtnSound(); setStarted(true); }}>
+              {t("start_quiz")}
+            </button>
+          </div>
+          <div className="intro-character-slot" aria-hidden="true" />
+            <img src={srecka} alt="" className="intro-character" draggable="false" />
         </div>
-
-        {/* Character placeholder (you'll add later) */}
-        <div className="intro-character-slot" aria-hidden="true" />
-          <img
-        src={srecka}
-        alt=""
-        className="intro-character"
-        draggable="false"
-      />
       </div>
-    </div>
-  );
-}
+    );
+  }
 
   return (
-    <div className="quiz">
+    <div className="quiz dark-theme">
       {stageIndex < stages.length ? (
         <>
           <div className="stepper">
             {stages.map((stage, index) => (
               <div key={index} className="step-wrapper">
-                <div
-                  className={`step ${index <= stageIndex ? "active" : "inactive"} ${
-                    index === stageIndex ? "glow" : ""
-                  }`}
-                >
+                <div className={`step ${index <= stageIndex ? "active" : "inactive"} ${index === stageIndex ? "glow" : ""}`}>
                   {stage.icon && <img src={stage.icon} stroke={"white"} alt={stage.name} className="step-icon" />}
-                  
                 </div>
                 {index !== stages.length - 1 && (
                   <div className={`connector ${index < stageIndex ? "active-line" : "inactive-line"}`} />
                 )}
               </div>
             ))}
-             
           </div>
 
           <div className="options">
@@ -252,54 +237,45 @@ if (!started) {
             ))}
           </div>
           {showResult && (
-  <div className={`result-overlay ${showResult ? "show" : ""}`}>
-  <video
-    ref={videoRef}
-    className="result-video"
-    key={`${questionId}-${resultAttemptNumber}-${isCorrect ? "c" : "w"}`}
-    src={resultVideoSrc}
-    autoPlay
-    muted
-    playsInline
-    preload="auto"
-    onEnded={finishResult}
-    onError={finishResult}
-  />
-</div>
-
-)
-}
+            <div className={`result-overlay ${showResult ? "show" : ""}`}>
+              <video
+                ref={videoRef}
+                className="result-video"
+                key={`${questionId}-${resultAttemptNumber}-${isCorrect ? "c" : "w"}`}
+                src={resultVideoSrc}
+                autoPlay
+                playsInline
+                preload="auto"
+                onEnded={finishResult}
+                onError={finishResult}
+              />
+            </div>
+          )}
           </div>
         </>
       ) : (
         <div>
-            <div className="final-stage">
-              <h2 className="pater-title">
-                {firstTryScore === stages.length ? t("completed_text") : t("completed_text2")}
-              </h2>
-
-              <p className="fade-animation">
-                {firstTryScore === stages.length ? t("completed_subtext") : t("completed_subtext2")}
+          <div className="final-stage">
+            <h2 className="pater-title">
+              {firstTryScore === stages.length ? t("completed_text") : t("completed_text2")}
+            </h2>
+            <p className="fade-animation">
+              {firstTryScore === stages.length ? t("completed_subtext") : t("completed_subtext2")}
+            </p>
+            <div className="score-box">
+              <p className="score-line">
+                {t("score_total")}: <strong>{generalScore} / {stages.length}</strong>
               </p>
-
-              <div className="score-box">
-                <p className="score-line">
-                  {t("score_total")}: <strong>{generalScore} / {stages.length}</strong>
-                </p>
-                <p className="score-line">
-                  {t("score_first_try")}: <strong>{firstTryScore} / {stages.length}</strong>
-                </p>
-              </div>
+              <p className="score-line">
+                {t("score_first_try")}: <strong>{firstTryScore} / {stages.length}</strong>
+              </p>
+            </div>
           </div>
- <button onClick={onBack} className="back_to_menu_btn">
+          <button onClick={() => { playBtnSound(); onBack(); }} className="back_to_menu_btn">
             {t("back_to_menu")}
           </button>
-            </div>
-  
-  
-
+        </div>
       )}
-         
     </div>
   );
 };
