@@ -15,6 +15,7 @@ import legion from "./icons/legion1.svg";
 import helmet from "./icons/helmet1.svg";
 import napacen from "./assets/pravilen_v_prvo_mitraizem/napacen.webm";
 import srecka from "./assets/srecka.png"
+import viki from "./assets/Viki_Mitra2.png"
 import pravilen_v_drugo from "./assets/pravilen_v_prvo_mitraizem/pravilen_v_drugo.webm";
 import pravilen_Viki_1 from "./assets/pravilen_v_prvo_mitraizem/Pravilen_Viki_1.webm";
 import pravilen_Viki_2 from "./assets/pravilen_v_prvo_mitraizem/Pravilen_Viki_2.webm";
@@ -29,7 +30,10 @@ import pravilen_Viki_10 from "./assets/pravilen_v_prvo_mitraizem/Pravilen_Viki_1
 import pravilen_Viki_11 from "./assets/pravilen_v_prvo_mitraizem/Pravilen_Viki_11.webm";
 import pravilen_Viki_12 from "./assets/pravilen_v_prvo_mitraizem/Pravilen_Viki_12.webm";
 import { useTranslation } from "react-i18next";
-
+import zvokPrvicPrav from "./assets/pravilno_prvic.mp3"; 
+import zvokDrugicPrav from "./assets/pravilno_drugic.mp3"; 
+import zvokNapacno from "./assets/napacno.mp3";
+import BgLoop from "./assets/bg_loop.mp3";
 function sample(array, k) {
   const arr = array.slice();
   for (let i = arr.length - 1; i > 0; i--) {
@@ -71,6 +75,7 @@ const QuizOfMithras = ({ onBack, alreadyStarted }) => {
   const [generalScore, setGeneralScore] = useState(0);
   const [firstTryScore, setFirstTryScore] = useState(0);
   const [result, setResult] = useState(null);
+  const [isFadingOut, setIsFadingOut] = useState(false);
 
   const K = 7;
   const stages = useMemo(() => sample(BASE_STAGES, Math.min(K, BASE_STAGES.length)), []); 
@@ -78,10 +83,15 @@ const QuizOfMithras = ({ onBack, alreadyStarted }) => {
   const videoRef = useRef(null);
 
   // Audio setup
+  // Audio setup
   const audioRefs = useRef({
-    bg: new Audio('bg_loop.mp3'),
+    bg: new Audio(BgLoop),
+    celeb: new Audio('celebration2.mp3'),
     btn: new Audio('button.mp3'),
-    celeb: new Audio('celebration2.mp3')
+    // --- NOVI ZVOKI ---
+    prvic: new Audio(zvokPrvicPrav),
+    drugic: new Audio(zvokDrugicPrav),
+    napacno: new Audio(zvokNapacno)
   });
 
   // RESETIRAJ NEAKTIVNOST OB VSTOPU V KVIZ
@@ -119,14 +129,35 @@ const QuizOfMithras = ({ onBack, alreadyStarted }) => {
     }
   }, [stageIndex, stages.length]);
 
-  // Audio ducking (lower bg volume when video plays)
+  // Audio ducking z mehkim prehodom (Fade in / Fade out)
   useEffect(() => {
     const { bg } = audioRefs.current;
-    if (showResult) {
-      bg.volume = 0.1; // Duck the music
-    } else {
-      bg.volume = 0.4; // Bring volume back up
-    }
+    if (!bg) return;
+
+    // Zdaj lahko varno nastaviš tiho glasnost nazaj na 0.1, saj bo prehod mehak!
+    const ciljnaGlasnost = showResult ? 0.1 : 0.6; 
+    
+    // Kako hitro naj se drsnik premika (manjši korak = daljša animacija)
+    const korak = showResult ? -0.015 : 0.015; 
+
+    const fadeInterval = setInterval(() => {
+      let novaGlasnost = bg.volume + korak;
+
+      // Varnostna blokada, da vrednost ne gre pod 0 ali nad 1 (brskalnik bi vrgel napako)
+      novaGlasnost = Math.max(0, Math.min(1, novaGlasnost));
+
+      // Če smo dosegli ali presegli ciljno glasnost, ustavimo animacijo
+      if ((korak > 0 && novaGlasnost >= ciljnaGlasnost) || 
+          (korak < 0 && novaGlasnost <= ciljnaGlasnost)) {
+        bg.volume = ciljnaGlasnost;
+        clearInterval(fadeInterval);
+      } else {
+        bg.volume = novaGlasnost;
+      }
+    }, 50); // Animacija se osveži vsakih 50 milisekund
+
+    // Počistimo interval, če se komponenta nepričakovano zapre
+    return () => clearInterval(fadeInterval);
   }, [showResult]);
 
   const finishResult = () => {
@@ -141,18 +172,50 @@ const QuizOfMithras = ({ onBack, alreadyStarted }) => {
 
   useEffect(() => {
     if (!showResult) return;
-    const t = setTimeout(() => { finishResult(); }, 4500); 
+    const t = setTimeout(() => { finishResult(); }, 6000); 
     return () => clearTimeout(t);
   }, [showResult, result]); 
 
+  const handleVideoEnd = () => {
+    // Preverimo, če gre za pravilen odgovor v prvem poskusu
+    if (result && result.correct && result.attempt === 1) {
+      setIsFadingOut(true); // Sproži CSS zatemnitev
+      
+      // Počakaj 1.2 sekunde (čas fade-outa), preden greš na naslednje vprašanje
+      setTimeout(() => {
+        setIsFadingOut(false); // Resetiraj za naslednjič
+        finishResult();
+      }, 1200); 
+    } else {
+      // Za napačne odgovore ali pravilne v drugo -> pojdi naprej takoj!
+      finishResult();
+    }
+  };
+
   const handleAnswer = (optionKey) => {
-    playBtnSound();
+  
     if (showResult) return;
 
     const correctAnswer = optionKey === current.ans;
     const qid = current.id;
     const prevCount = attemptCounts[qid] || 0;
     const attempt = prevCount + 1;
+
+    // --- PREDVAJAJ SPECIFIČEN ZVOK ---
+    const { prvic, drugic, napacno } = audioRefs.current;
+    if (correctAnswer) {
+      if (attempt === 1) {
+        prvic.currentTime = 0;
+        prvic.play().catch(() => {});
+      } else {
+        drugic.currentTime = 0;
+        drugic.play().catch(() => {});
+      }
+    } else {
+      napacno.currentTime = 0;
+      napacno.play().catch(() => {});
+    }
+    // ---------------------------------
 
     setAttemptCounts((prev) => ({ ...prev, [qid]: attempt }));
     setResultAttemptNumber(attempt);
@@ -204,7 +267,7 @@ const QuizOfMithras = ({ onBack, alreadyStarted }) => {
             </button>
           </div>
           <div className="intro-character-slot" aria-hidden="true" />
-            <img src={srecka} alt="" className="intro-character" draggable="false" />
+            <img src={viki} alt="" className="intro-character" draggable="false" />
         </div>
       </div>
     );
@@ -231,7 +294,7 @@ const QuizOfMithras = ({ onBack, alreadyStarted }) => {
             <p className="question title-gold">{t(current.qKey)}</p>
             <div className="buttons">
             {current.opt.map((optKey) => (
-              <button key={optKey} className="question_btn" onClick={() => handleAnswer(optKey)}>
+              <button key={optKey} className="question_btn tihi-gumb" onClick={() => handleAnswer(optKey)}>
                 {t(optKey)}
               </button>
             ))}
@@ -242,10 +305,12 @@ const QuizOfMithras = ({ onBack, alreadyStarted }) => {
                 ref={videoRef}
                 className="result-video"
                 key={`${questionId}-${resultAttemptNumber}-${isCorrect ? "c" : "w"}`}
+               className={`result-video ${isFadingOut ? "video-fade-out" : ""}`}
                 src={resultVideoSrc}
                 autoPlay
                 playsInline
                 preload="auto"
+                onEnded={handleVideoEnd}
                 onEnded={finishResult}
                 onError={finishResult}
               />

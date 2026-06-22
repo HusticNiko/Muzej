@@ -368,6 +368,19 @@ z-index: 9999;
   animation: fadeInSlide 1.2s ease-out forwards;
 }
 
+.intro-title-image-dark {
+  max-width: 65%;
+  height: auto;
+  margin-bottom: -150px;
+  filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
+  background-color: #1e120a;
+  border: 2px solid #5a3e1b;
+  border-radius: 10px;
+  z-index: -10;
+  animation: fadeInSlide 1.2s ease-out forwards;
+}
+
+
 .intro-title {
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -598,7 +611,7 @@ z-index: 9999;
 .score-box {
   margin-top: 18px;
   text-align: center;
-  background: rgba(0,0,0,0.6);
+  background: rgba(76, 71, 71, 0.6);
   border: 1px solid var(--gold-bright);
   border-radius: 15px;
   padding: 25px;
@@ -607,7 +620,7 @@ z-index: 9999;
 .score-line {
   margin: 6px 0;
   letter-spacing: 0.04em;
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   color: var(--text-light);
 }
 
@@ -618,7 +631,7 @@ z-index: 9999;
 }
 
 .pater-title {
-  font-size: 3.5rem;
+  font-size: 2.5rem;
   color: var(--gold-bright);
   letter-spacing: 0.1em;
   margin-bottom: 20px;
@@ -675,7 +688,7 @@ z-index: 9999;
   background: linear-gradient(180deg, #503322, #2a190e);
 }
 
-.home_btn, .home_btn2 {
+.home_btn, .home_btn2, .home_btn-dark{
   border-radius: 10px;
   padding: 2rem 4rem;
   font-size: 1.7rem;
@@ -690,6 +703,13 @@ z-index: 9999;
   background-color: #fff4dc;
   color: #5a3e1b;
   border: 0;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+}
+
+.home_btn-dark {
+  background-color: rgba(20, 12, 8, 0.9);;
+  color: #f0d79a;
+  border: 1px solid #8e6730;
   box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
 }
 
@@ -885,15 +905,16 @@ video.loaded { opacity: 0; }
   padding: clamp(30px, 4vw, 40px);
   width: min(92vw, 600px);
   text-align: center;
+  align-items: center;
   box-shadow: 0 20px 50px rgba(0,0,0,0.8);
   animation: slideIn 0.3s ease;
   font-family: 'Cinzel', serif;
   color: var(--text-light);
 }
 
-.admin-dialog-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+.admin-dialog-header { display: flex; justify-content: center; align-items: center; margin-bottom: 2rem; }
 .admin-dialog-header h2 { margin: 0; color: var(--gold-bright); font-size: 2.4rem; letter-spacing: 0.14em; text-transform: uppercase;}
-.close-btn { background: none; border: none; font-size: 3rem; cursor: pointer; color: #cfb88d; padding: 0; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; }
+.close-btn { background: none; border: none; font-size: 3rem; cursor: pointer; color: #cfb88d; padding: 0; width: 40px; height: 40px; display: flex; align-items: top; justify-content: top; margin-top: -150px; margin-right: -25px; }
 .close-btn:hover { color: var(--text-light); }
 
 .form-group { margin-bottom: 2rem; }
@@ -903,7 +924,7 @@ video.loaded { opacity: 0; }
 .form-group input.error { border-color: #d32f2f; }
 .error-message { color: #d32f2f; font-size: 1.4rem; margin-top: 0.5rem; display: block; }
 
-.form-actions { display: flex; gap: 1.5rem; justify-content: flex-end; }
+.form-actions { display: flex; gap: 1.5rem; justify-content: center; }
 .cancel-btn, .login-btn { padding: 15px 30px; border: 1px solid var(--gold-deep); border-radius: 12px; font-size: 1.3rem; cursor: pointer; font-weight: bold; font-family: 'Cinzel', serif; }
 .cancel-btn { background: rgba(80,34,34,0.9); border-color: #8c4242; color: #f3e7cc; }
 .login-btn { background: linear-gradient(180deg, #3a2518, #1e120a); color: var(--gold-bright); }
@@ -1181,4 +1202,83 @@ screen and (orientation: landscape) and (device-width: 1280px) and (device-heigh
 .right-character {
   right: -50px; /* Odmik od desnega roba */
   height:52vh !important;
+}
+
+/* =========================================================
+   CROSSFADE ANIMACIJA (SLIKA V VIDEO)
+   ========================================================= */
+
+/* 1. Nastavimo .app, da ima zadaj IDENTIČNO sliko kot glavni meni */
+.app {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.6)), url('./assets/ozadje.png') !important;
+  background-size: cover !important;
+  background-position: center !important;
+}
+
+/* 2. Nastavimo video, da začne prozoren in se počasi prelije */
+.bg-video {
+  opacity: 0;
+  animation: videoCrossfade 1.5s ease-in-out forwards;
+}
+
+@keyframes videoCrossfade {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* =========================================================
+   CELOZASLONSKI KLIK ZA OPOZORILO
+   ========================================================= */
+.warning-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 999999; /* Postavi absolutno čez vse ostalo */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer; /* Uporabniku da vedeti, da lahko klikne */
+  
+  /* Če želiš, da ob opozorilu rahlo zatemni celoten ekran, obdrži to vrstico: */
+  background: rgba(0, 0, 0, 0.4); 
+}
+
+/* Rahla prilagoditev tvoje obstoječe škatle (če je potrebno) */
+.warning-popup {
+  cursor: pointer;
+}
+/* FADE OUT ZA ZMAGOVALNI VIDEO */
+.video-fade-out {
+  opacity: 0 !important;
+  transition: opacity 1.2s ease-in-out !important;
+}
+/* =========================================================
+   SPONZORSKI LOGOTIPI (Glavni meni)
+   ========================================================= */
+.sponsors-container {
+  position: absolute;
+  bottom: 15px; /* Odmik od čisto spodnjega roba */
+  transform: translateX(-50%);
+  display: flex;
+  gap: 25px; /* Razmak med logotipi */
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  width: 100%;
+  pointer-events: none; /* Da ne motijo klikov, če slučajno segajo čez gumb */
+  animation: fadeInSlide 1.5s ease-out forwards;
+}
+
+.sponsors-container img {
+  max-height: 45px; /* Tukaj določiš velikost logotipov! Povečaj ali zmanjšaj po želji */
+  width: auto;
+  opacity: 0.85; /* Rahlo prosojni, da ne kradejo pozornosti gumbom */
+}
+
+/* Prilagoditev za zelo velike ekrane (če je potrebno) */
+@media screen and (min-width: 2000px) {
+  .sponsors-container { bottom: 30px; gap: 40px; }
+  .sponsors-container img { max-height: 60px; }
 }

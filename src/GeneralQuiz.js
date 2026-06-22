@@ -29,7 +29,10 @@ import pravilen_srecka_10 from "./assets/pravilen_v_prvo_splosno/Pravilen_srecka
 import pravilen_srecka_11 from "./assets/pravilen_v_prvo_splosno/Pravilen_srecka_11.webm";
 import pravilen_srecka_12 from "./assets/pravilen_v_prvo_splosno/Pravilen_srecka_12.webm";
 import { useTranslation } from "react-i18next";
-
+import zvokPrvicPrav from "./assets/pravilno_prvic.mp3"; 
+import zvokDrugicPrav from "./assets/pravilno_drugic2.mp3"; 
+import zvokNapacno from "./assets/napacno2.mp3";
+import BgLoop from "./assets/bg_loop.mp3";
 
 function sample(array, k) {
   const arr = array.slice();
@@ -79,11 +82,15 @@ const GeneralQuiz = ({ onBack }) => {
   const videoRef = useRef(null);
 
   // Audio setup
-  const audioRefs = useRef({
-    bg: new Audio('bg_loop.mp3'),
-    btn: new Audio('button.mp3'),
-    celeb: new Audio('celebration2.mp3')
-  });
+   const audioRefs = useRef({
+     bg: new Audio(BgLoop),
+     btn: new Audio('button.mp3'),
+     celeb: new Audio('celebration2.mp3'),
+     // --- NOVI ZVOKI ---
+     prvic: new Audio(zvokPrvicPrav),
+     drugic: new Audio(zvokDrugicPrav),
+     napacno: new Audio(zvokNapacno)
+   });
 
 // RESETIRAJ NEAKTIVNOST OB VSTOPU V KVIZ
   useEffect(() => {
@@ -120,14 +127,35 @@ const GeneralQuiz = ({ onBack }) => {
     }
   }, [stageIndex, stages.length]);
 
-  // Audio ducking (lower bg volume when video plays)
+  // Audio ducking z mehkim prehodom (Fade in / Fade out)
   useEffect(() => {
     const { bg } = audioRefs.current;
-    if (showResult) {
-      bg.volume = 0.1; // Duck the music
-    } else {
-      bg.volume = 0.4; // Bring volume back up
-    }
+    if (!bg) return;
+
+    // Zdaj lahko varno nastaviš tiho glasnost nazaj na 0.1, saj bo prehod mehak!
+    const ciljnaGlasnost = showResult ? 0.1 : 0.6; 
+    
+    // Kako hitro naj se drsnik premika (manjši korak = daljša animacija)
+    const korak = showResult ? -0.015 : 0.015; 
+
+    const fadeInterval = setInterval(() => {
+      let novaGlasnost = bg.volume + korak;
+
+      // Varnostna blokada, da vrednost ne gre pod 0 ali nad 1 (brskalnik bi vrgel napako)
+      novaGlasnost = Math.max(0, Math.min(1, novaGlasnost));
+
+      // Če smo dosegli ali presegli ciljno glasnost, ustavimo animacijo
+      if ((korak > 0 && novaGlasnost >= ciljnaGlasnost) || 
+          (korak < 0 && novaGlasnost <= ciljnaGlasnost)) {
+        bg.volume = ciljnaGlasnost;
+        clearInterval(fadeInterval);
+      } else {
+        bg.volume = novaGlasnost;
+      }
+    }, 50); // Animacija se osveži vsakih 50 milisekund
+
+    // Počistimo interval, če se komponenta nepričakovano zapre
+    return () => clearInterval(fadeInterval);
   }, [showResult]);
 
   const finishResult = () => {
@@ -142,7 +170,7 @@ const GeneralQuiz = ({ onBack }) => {
 
   useEffect(() => {
     if (!showResult) return;
-    const t = setTimeout(() => { finishResult(); }, 4500); 
+    const t = setTimeout(() => { finishResult(); }, 6000); 
     return () => clearTimeout(t);
   }, [showResult, result]); 
 
@@ -154,6 +182,26 @@ const GeneralQuiz = ({ onBack }) => {
     const qid = current.id;
     const prevCount = attemptCounts[qid] || 0;
     const attempt = prevCount + 1;
+
+    // --- PREDVAJAJ SPECIFIČEN ZVOK ---
+    const { prvic, drugic, napacno } = audioRefs.current;
+    // NASTAVITEV GLASNOSTI (od 0.0 do 1.0)
+    prvic.volume = 0.4; 
+    drugic.volume = 0.4;
+    napacno.volume = 0.4;
+    if (correctAnswer) {
+      if (attempt === 1) {
+        prvic.currentTime = 0;
+        prvic.play().catch(() => {});
+      } else {
+        drugic.currentTime = 0;
+        drugic.play().catch(() => {});
+      }
+    } else {
+      napacno.currentTime = 0;
+      napacno.play().catch(() => {});
+    }
+    // ---------------------------------
 
     setAttemptCounts((prev) => ({ ...prev, [qid]: attempt }));
     setResultAttemptNumber(attempt);
@@ -224,7 +272,7 @@ const GeneralQuiz = ({ onBack }) => {
             <p className="question title-gold">{t(current.qKey)}</p>
             <div className="buttons">
             {current.opt.map((optKey) => (
-              <button key={optKey} className="question_btn" onClick={() => handleAnswer(optKey)}>
+              <button key={optKey} className="question_btn tihi-gumb" onClick={() => handleAnswer(optKey)}>
                 {t(optKey)}
               </button>
             ))}
@@ -253,7 +301,7 @@ const GeneralQuiz = ({ onBack }) => {
               {firstTryScore === stages.length ? t("completed_text3") : t("completed_text4")}
             </h2>
             <p className="fade-animation">
-              {firstTryScore === stages.length ? t("completed_subtext") : t("completed_subtext2")}
+              {firstTryScore === stages.length ? t("completed_subtext3") : t("completed_subtext2")}
             </p>
             <div className="score-box">
               <p className="score-line">

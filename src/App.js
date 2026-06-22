@@ -16,6 +16,8 @@ import UserSelection from "./components/UserSelection";
 import { UserProvider, useUser  } from './context/UserContext';
 import GeneralQuiz from "./GeneralQuiz";
 import naslovnica from "./assets/Ostala_naslovnica.png"; // Zamenjaj s pravim imenom in končnico
+import naslovnicaMitra from "./assets/Mitra_naslovnica.png"; // Tvoja slika za Mitraizem
+import klikZvok from './assets/button.mp3'; // Zamenjaj s pravim imenom in končnico!
   // Silent Long Press Hook (no visual feedback)
 const useSilentLongPress = (onLongPress, delay = 10000) => {
   const [isPressed, setIsPressed] = useState(false);
@@ -24,9 +26,9 @@ const useSilentLongPress = (onLongPress, delay = 10000) => {
 
   const start = (event) => {
     // Prevent default touch behaviors
-    if (event.type === 'touchstart') {
-      event.preventDefault();
-    }
+   // if (event.type === 'touchstart') {
+    //  event.preventDefault();
+   // }
     setIsPressed(true);
     
     // Long press timer
@@ -112,7 +114,7 @@ const AppContent = ({ currentGame = null, setCurrentGame, showWarning, setShowWa
           playsInline
           preload="auto"
         >
-          <source src={mitraizem} type="video/mp4" />
+          <source src={mitraizem} type="video/webm" />
           {/* Optional fallback text */}
           Your browser does not support the video tag.
         </video>
@@ -121,10 +123,17 @@ const AppContent = ({ currentGame = null, setCurrentGame, showWarning, setShowWa
 
           {currentGame === null && (
             <div className="menu">
-              <h1>{t('welcome')}</h1>
-              {/*<button onClick={() => setCurrentGame("quiz2")} className="home_btn">{t('general_faith')}</button>*/}
-              <button onClick={() => setCurrentGame("quiz")} className="home_btn btn_float">{t('trial_of_mithras')}</button>
-              {/*<button onClick={() => setCurrentGame("stars")} className="btn">{t('mysteri_of_skyes')}</button> */}
+              {/* 1. Nova naslovna slika namesto teksta */}
+              <img src={naslovnicaMitra} alt="Naslovnica Mitraizem" className="intro-title-image-dark" draggable="false" />
+              
+              {/* 2. Gumb z dodano animacijo za jezik (lang-fade) */}
+              <button 
+                onClick={() => setCurrentGame("quiz")} 
+                className="home_btn-dark lang-fade" 
+                key={i18n.language}
+              >
+                {t('trial_of_mithras')}
+              </button>
             </div>
           )}
           </div>
@@ -134,6 +143,7 @@ const AppContent = ({ currentGame = null, setCurrentGame, showWarning, setShowWa
               className="logout-btn customer-logout-btn" 
               onClick={() => {
                 logout();
+                setCurrentGame(null);
                 longPressProps.hideButton();
               }}
             >
@@ -141,14 +151,16 @@ const AppContent = ({ currentGame = null, setCurrentGame, showWarning, setShowWa
             </button>
           )}
             {showWarning && (
-          <div className="warning-popup" onClick={() => setShowWarning(false)}>              
-          {t('warning')}
+            <div className="warning-overlay" onClick={() => setShowWarning(false)}>
+              <div className="warning-popup">
+                {t('warning')}
+              </div>
             </div>
           )}
-          {currentGame === "wheel" && <WheelOfFortuna onBack={() => setCurrentGame(null)} />}
-          {currentGame === "quiz" && <QuizOfMithras alreadyStarted={showWarning} onBack={() => setCurrentGame(null)} />}
-          {currentGame === "quiz2" && <GeneralQuiz onBack={() => setCurrentGame(null)} />}
-          {currentGame === "stars" && <StarrySkyMystery onBack={() => setCurrentGame(null)} />}
+          {currentGame === "wheel" && <WheelOfFortuna onBack={() => { setCurrentGame(null); logout(); }} />}
+          {currentGame === "quiz" && <QuizOfMithras alreadyStarted={showWarning} onBack={() => { setCurrentGame(null); logout(); }} />}
+          {currentGame === "quiz2" && <GeneralQuiz onBack={() => { setCurrentGame(null); logout(); }} />}
+          {currentGame === "stars" && <StarrySkyMystery onBack={() => { setCurrentGame(null); logout(); }} />}
           
         
           
@@ -187,7 +199,7 @@ const AppContent = ({ currentGame = null, setCurrentGame, showWarning, setShowWa
           playsInline
           preload="auto"
         >
-          <source src={rimljani} type="video/mp4" />
+          <source src={rimljani} type="video/webm" />
           {/* Optional fallback text */}
           Your browser does not support the video tag.
         </video>
@@ -204,15 +216,16 @@ const AppContent = ({ currentGame = null, setCurrentGame, showWarning, setShowWa
           )}
           </div>
           {showWarning && (
-          <div className="warning-popup" onClick={() => setShowWarning(false)}>              
-          {t('warning')}
+            <div className="warning-overlay" onClick={() => setShowWarning(false)}>
+              <div className="warning-popup">
+                {t('warning')}
+              </div>
             </div>
           )}
-          {currentGame === "wheel" && <WheelOfFortuna onBack={() => setCurrentGame(null)} />}
-          {currentGame === "quiz" && <QuizOfMithras onBack={() => setCurrentGame(null)} />}
-          {currentGame === "quiz2" && <GeneralQuiz onBack={() => setCurrentGame(null)} />}
-          {currentGame === "stars" && <StarrySkyMystery onBack={() => setCurrentGame(null)} />}
-          
+          {currentGame === "wheel" && <WheelOfFortuna onBack={() => { setCurrentGame(null); logout(); }} />}
+          {currentGame === "quiz" && <QuizOfMithras onBack={() => { setCurrentGame(null); logout(); }} />}
+          {currentGame === "quiz2" && <GeneralQuiz onBack={() => { setCurrentGame(null); logout(); }} />}
+          {currentGame === "stars" && <StarrySkyMystery onBack={() => { setCurrentGame(null); logout(); }} />}
           {/* Hidden logout button that appears after 10s hold */}
           {longPressProps.showButton && (
             <button 
@@ -254,8 +267,35 @@ const App = () => {
     },
     100000, // 4 min for warning
     150000  // 5 min for timeout
+    
   );
 
+// ==========================================
+  // GLOBALNI ZVOK ZA VSE GUMBE
+  // ==========================================
+  useEffect(() => {
+    const audio = new Audio(klikZvok);
+    audio.volume = 0.5; // Opcijsko: nastavi glasnost (od 0.0 do 1.0)
+    
+    const predvajajZvok = (event) => {
+      const gumb = event.target.closest('button');
+      
+      if (gumb) {
+        // IZJEMA: Če ima gumb razred 'tihi-gumb', PREKINI in ne predvajaj klika!
+        if (gumb.classList.contains('tihi-gumb')) return;
+
+        audio.currentTime = 0; 
+        audio.play().catch(err => console.log("Brskalnik je blokiral zvok:", err));
+      }
+    };
+
+    // Pripni poslušalec na celoten dokument
+    document.addEventListener('click', predvajajZvok);
+    
+    // Počisti poslušalec, ko se komponenta odstrani
+    return () => document.removeEventListener('click', predvajajZvok);
+  }, []);
+  // ==========================================
 
   return (
     <UserProvider>

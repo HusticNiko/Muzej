@@ -6,6 +6,11 @@ import LanguageSwitcher from './LanguageSwitcher';
 import viki from '../assets/Viki_Mitra1.png';
 import srecka from '../assets/Srecka_Fortuna.png';
 import "../styles.css";
+import logo1 from '../assets/Logo_1.png';
+import logo2 from '../assets/Logo_2.png';
+import logo3 from '../assets/Logo_3.png';
+import logo4 from '../assets/Logo_4.png';
+import logo5 from '../assets/Logo_5.png';
 
 const UserSelection = () => {
   const { t, i18n } = useTranslation();
@@ -63,6 +68,14 @@ const UserSelection = () => {
           }}
         />
       )}
+      {/* --- SPONZORSKI LOGOTIPI --- */}
+      <div className="sponsors-container">
+        <img src={logo1} alt="Sponzor 1" />
+        <img src={logo2} alt="Sponzor 2" />
+        <img src={logo3} alt="Sponzor 3" />
+        <img src={logo4} alt="Sponzor 4" />
+        <img src={logo5} alt="Sponzor 5" />
+      </div>
     </div>
   );
 };
